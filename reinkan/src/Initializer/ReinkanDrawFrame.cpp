@@ -5,6 +5,7 @@ namespace Reinkan
 {
     void ReinkanApp::DrawFrame()
     {
+        // can only pass if inFlightFences is [SIGNAL]
         vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -28,6 +29,8 @@ namespace Reinkan
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
+        // Only reset the fence if we are submitting work
+        // [WAIT] inFlightFences[appCurrentFrame] or [UNSIGNAL]
         vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);
 
         vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
@@ -49,8 +52,8 @@ namespace Reinkan
 
         // [WAIT] imageAvailableSemaphores[appCurrentFrame]
         if (vkQueueSubmit(appGraphicsQueue, 1, &submitInfo, inFlightFences[appCurrentFrame]) != VK_SUCCESS)
-            // After finish on GPU
-            // > > > > > > > [SIGNAL] renderFinishedSemaphores[appCurrentFrame]
+        // After finish on GPU
+        // > > > > > > > [SIGNAL] renderFinishedSemaphores[appCurrentFrame]
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
@@ -67,6 +70,7 @@ namespace Reinkan
 
         // [WAIT] renderFinishedSemaphores[appCurrentFrame]
         vkQueuePresentKHR(appPresentQueue, &presentInfo);
+        // > > > > > > > [SIGNAL] inFlightFences[appCurrentFrame]
 
         appCurrentFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }

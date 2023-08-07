@@ -5,26 +5,23 @@ namespace Reinkan
 {
 	void ReinkanApp::Cleanup()
 	{
-		vkDestroySemaphore(appDevice, imageAvailableSemaphore, nullptr);
-		vkDestroySemaphore(appDevice, renderFinishedSemaphore, nullptr);
-		vkDestroyFence(appDevice, inFlightFence, nullptr);
+		vkDeviceWaitIdle(appDevice);
 
-		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
-
-		for (auto framebuffer : appSwapchainFramebuffers) {
-			vkDestroyFramebuffer(appDevice, framebuffer, nullptr);
-		}
+		CleanupSwapchain();
 
 		vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);
 		vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);
+
 		vkDestroyRenderPass(appDevice, appScanlineRenderPass, nullptr);
 
-		for (auto imageView : appSwapchainImageViews) 
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
 		{
-			vkDestroyImageView(appDevice, imageView, nullptr);
+			vkDestroySemaphore(appDevice, renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(appDevice, imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(appDevice, inFlightFences[i], nullptr);
 		}
-		
-		vkDestroySwapchainKHR(appDevice, appSwapchain, nullptr);
+
+		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
 
 		vkDestroyDevice(appDevice, nullptr);
 

@@ -162,4 +162,39 @@ namespace Reinkan
             }
         }
     }
+
+    void ReinkanApp::RecreateSwapchain()
+    {
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(appWindow, &width, &height);
+
+        while (width == 0 || height == 0) 
+        {
+            glfwGetFramebufferSize(appWindow, &width, &height);
+            glfwWaitEvents();
+        }
+
+        vkDeviceWaitIdle(appDevice);
+
+        CleanupSwapchain();
+
+        CreateSwapchain();
+        CreateSwapchainImageViews();
+        CreateSwapchainFrameBuffers();
+    }
+
+    void ReinkanApp::CleanupSwapchain()
+    {
+        for (size_t i = 0; i < appSwapchainFramebuffers.size(); i++) 
+        {
+            vkDestroyFramebuffer(appDevice, appSwapchainFramebuffers[i], nullptr);
+        }
+
+        for (size_t i = 0; i < appSwapchainImageViews.size(); i++) 
+        {
+            vkDestroyImageView(appDevice, appSwapchainImageViews[i], nullptr);
+        }
+
+        vkDestroySwapchainKHR(appDevice, appSwapchain, nullptr);
+    }
 }

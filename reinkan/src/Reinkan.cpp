@@ -38,7 +38,7 @@ namespace Reinkan
 		CreateSyncObjects();
 
 
-		std::printf("\n=============================== END of INIT ===============================\n\n");
+		std::printf("\n=============================== END OF INIT ===============================\n\n");
 	}
 
 	void ReinkanApp::MainLoop()
@@ -49,6 +49,8 @@ namespace Reinkan
 
 			DrawFrame();
 		}
+
+		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
 	}
 }
 

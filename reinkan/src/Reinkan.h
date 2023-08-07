@@ -36,6 +36,8 @@ namespace Reinkan
             Cleanup();
         }
 
+        bool appFramebufferResized = false;
+
     private:
         // Reinkan.cpp
         void InitVulkan();
@@ -113,6 +115,10 @@ namespace Reinkan
 
         void CreateSwapchainImageViews();
 
+        void RecreateSwapchain();
+
+        void CleanupSwapchain();
+
         VkSwapchainKHR          appSwapchain;
         VkFormat                appSwapchainImageFormat;
         VkExtent2D              appSwapchainExtent;
@@ -145,16 +151,19 @@ namespace Reinkan
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
         VkCommandPool appCommandPool;
-        VkCommandBuffer appCommandBuffer;
+        std::vector<VkCommandBuffer> appCommandBuffers;
 
         // ReinkanSyncObjects.cpp
         void CreateSyncObjects();
 
-        VkSemaphore imageAvailableSemaphore;
-        VkSemaphore renderFinishedSemaphore;
-        VkFence inFlightFence;
+        std::vector<VkSemaphore> imageAvailableSemaphores;
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::vector<VkFence> inFlightFences;
 
         // ReinkanDrawFrame.cpp
         void DrawFrame();
+
+        uint32_t appCurrentFrame = 0;
+
     };
 }

@@ -5,19 +5,36 @@ namespace Reinkan
 {
     void ReinkanApp::DrawFrame()
     {
-        vkWaitForFences(appDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-        vkResetFences(appDevice, 1, &inFlightFence);
+        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
-        vkAcquireNextImageKHR(appDevice, appSwapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+        VkResult result = vkAcquireNextImageKHR(appDevice, 
+                                                appSwapchain, 
+                                                UINT64_MAX, 
+                                                imageAvailableSemaphores[appCurrentFrame], 
+                                                VK_NULL_HANDLE, 
+                                                &imageIndex);
         // After finish on GPU
-        // > > > > > > > [SIGNAL] imageAvailableSemaphore
-        
-        vkResetCommandBuffer(appCommandBuffer, 0);
-        RecordCommandBuffer(appCommandBuffer, imageIndex);
+        // > > > > > > > [SIGNAL] imageAvailableSemaphores[appCurrentFrame]
 
-        VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
-        VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+        {
+            appFramebufferResized = false;
+            RecreateSwapchain();
+            return;
+        }
+        else if (result != VK_SUCCESS) 
+        {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
+
+        vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);
+
+        vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
+        RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
+        VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[appCurrentFrame] };
         VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         VkSubmitInfo submitInfo{};
@@ -26,20 +43,20 @@ namespace Reinkan
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &appCommandBuffer;
+        submitInfo.pCommandBuffers = &appCommandBuffers[appCurrentFrame];
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        // [WAIT] imageAvailableSemaphore
-        if (vkQueueSubmit(appGraphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) 
-        // After finish on GPU
-        // > > > > > > > [SIGNAL] renderFinishedSemaphore
+        // [WAIT] imageAvailableSemaphores[appCurrentFrame]
+        if (vkQueueSubmit(appGraphicsQueue, 1, &submitInfo, inFlightFences[appCurrentFrame]) != VK_SUCCESS)
+            // After finish on GPU
+            // > > > > > > > [SIGNAL] renderFinishedSemaphores[appCurrentFrame]
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
 
         VkSwapchainKHR swapchains[] = { appSwapchain };
-        
+
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         presentInfo.waitSemaphoreCount = 1;
@@ -48,8 +65,9 @@ namespace Reinkan
         presentInfo.pSwapchains = swapchains;
         presentInfo.pImageIndices = &imageIndex;
 
-        // [WAIT] renderFinishedSemaphore
+        // [WAIT] renderFinishedSemaphores[appCurrentFrame]
         vkQueuePresentKHR(appPresentQueue, &presentInfo);
 
+        appCurrentFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 }

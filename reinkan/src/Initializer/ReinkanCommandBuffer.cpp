@@ -3,7 +3,8 @@
 
 namespace Reinkan
 {
-    void ReinkanApp::CreateCommandPool() {
+    void ReinkanApp::CreateCommandPool() 
+    {
         QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(appPhysicalDevice);
 
         VkCommandPoolCreateInfo poolInfo{};
@@ -11,24 +12,30 @@ namespace Reinkan
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-        if (vkCreateCommandPool(appDevice, &poolInfo, nullptr, &appCommandPool) != VK_SUCCESS) {
+        if (vkCreateCommandPool(appDevice, &poolInfo, nullptr, &appCommandPool) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create command pool!");
         }
     }
 
-    void ReinkanApp::CreateCommandBuffer() {
+    void ReinkanApp::CreateCommandBuffer() 
+    {
+        appCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = appCommandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = 1;
+        allocInfo.commandBufferCount = (uint32_t)appCommandBuffers.size();;
 
-        if (vkAllocateCommandBuffers(appDevice, &allocInfo, &appCommandBuffer) != VK_SUCCESS) {
+        if (vkAllocateCommandBuffers(appDevice, &allocInfo, appCommandBuffers.data()) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to allocate command buffers!");
         }
     }
 
-    void ReinkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void ReinkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) 
+    {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 

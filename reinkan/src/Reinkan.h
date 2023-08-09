@@ -15,6 +15,10 @@
 
 #include "Constant/CoreConstant.h"
 #include "Structure/InitializationStruct.h"
+#include "Structure/BufferWrap.h"
+
+//#include "MemoryBinding/ReinkanVertexBuffer.h"
+#include "../shaders/SharedStruct.h"
 
 namespace Reinkan
 {
@@ -148,7 +152,9 @@ namespace Reinkan
 
         void CreateCommandBuffer();
 
-        void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        VkCommandBuffer BeginTempCommandBuffer(); // should be change to dedicated Command Buffer for Buffer Initialzation
+
+        void EndTempCommandBuffer(VkCommandBuffer commandBuffer); // should be change to dedicated Command Buffer for Buffer Initialzation
 
         VkCommandPool appCommandPool;
         std::vector<VkCommandBuffer> appCommandBuffers;
@@ -163,7 +169,41 @@ namespace Reinkan
         // ReinkanDrawFrame.cpp
         void DrawFrame();
 
+        void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
         uint32_t appCurrentFrame = 0;
 
+        ////////////////////////////////////////
+        //      Resources Binding
+        ////////////////////////////////////////
+
+        // ReinkanVertexBuffer.cpp
+        static VkVertexInputBindingDescription GetBindingDescription();
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
+
+        void CreateVertexBuffer(std::vector<Vertex> vertices);
+
+        BufferWrap appVertexBufferWrap;
+
+        // ReinkanBufferUtility.cpp
+        BufferWrap CreateBufferWrap(VkDeviceSize size,
+                          VkBufferUsageFlags usage, 
+                          VkMemoryPropertyFlags properties);
+        
+        BufferWrap CreateStagedBufferWrap(const VkDeviceSize& size,
+                                           const void* data, 
+                                           VkBufferUsageFlags usage);
+
+        template <typename T>
+        BufferWrap CreateStagedBufferWrap(const std::vector<T>& data,
+                                          VkBufferUsageFlags     usage)
+        {
+            return CreateStagedBufferWrap(sizeof(T) * data.size(), data.data(), usage);
+        }
+
+        uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+        void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     };
 }

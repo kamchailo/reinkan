@@ -37,6 +37,9 @@ namespace Reinkan
 
 		CreateSyncObjects();
 
+		// VertexBuffer
+
+		CreateVertexBuffer(vertices);
 
 		std::printf("\n=============================== END OF INIT ===============================\n\n");
 	}

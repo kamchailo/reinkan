@@ -7,6 +7,8 @@ namespace Reinkan
 	{
 		vkDeviceWaitIdle(appDevice);
 
+		appVertexBufferWrap.Destroy(appDevice); 
+
 		CleanupSwapchain();
 
 		vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);

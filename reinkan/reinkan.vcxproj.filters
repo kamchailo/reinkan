@@ -63,7 +63,13 @@
     <ClCompile Include="src\Initializer\ReinkanSyncObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanDrawFrame.cpp">
+    <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MemoryBinding\ReinkanVertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MemoryBinding\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,6 +87,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Structure\ImageWrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\shaders\SharedStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Structure\BufferWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

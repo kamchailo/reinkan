@@ -169,7 +169,7 @@
   <ItemGroup>
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
-    <ClCompile Include="src\Initializer\ReinkanDrawFrame.cpp" />
+    <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
     <ClCompile Include="src\Initializer\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\Initializer\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Initializer\ReinkanScanlinePipeline.cpp" />
@@ -179,6 +179,8 @@
     <ClCompile Include="src\Initializer\ReinkanSurface.cpp" />
     <ClCompile Include="src\Initializer\ReinkanSwapchain.cpp" />
     <ClCompile Include="src\Initializer\ReinkanSyncObjects.cpp" />
+    <ClCompile Include="src\MemoryBinding\ReinkanBufferUtility.cpp" />
+    <ClCompile Include="src\MemoryBinding\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Reinkan.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -191,7 +193,9 @@
     <ClCompile Include="src\Window\ReinkanWIndow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shaders\SharedStruct.h" />
     <ClInclude Include="src\Constant\CoreConstant.h" />
+    <ClInclude Include="src\Structure\BufferWrap.h" />
     <ClInclude Include="src\Structure\ImageWrap.h" />
     <ClInclude Include="src\Structure\InitializationStruct.h" />
     <ClInclude Include="src\Reinkan.h" />

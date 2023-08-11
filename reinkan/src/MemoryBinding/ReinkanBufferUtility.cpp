@@ -4,14 +4,14 @@
 namespace Reinkan
 {
 
-    BufferWrap ReinkanApp::CreateBufferWrap(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
+    BufferWrap ReinkanApp::CreateBufferWrap(VkDeviceSize size, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags memoryProperties)
     {
         BufferWrap bufferWrap;
 
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
-        bufferInfo.usage = usage;
+        bufferInfo.usage = bufferUsage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateBuffer(appDevice, &bufferInfo, nullptr, &bufferWrap.buffer) != VK_SUCCESS)
@@ -25,7 +25,7 @@ namespace Reinkan
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, memoryProperties);
 
         if (vkAllocateMemory(appDevice, &allocInfo, nullptr, &bufferWrap.memory) != VK_SUCCESS)
         {

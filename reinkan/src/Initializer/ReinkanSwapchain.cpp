@@ -42,6 +42,7 @@ namespace Reinkan
             swapchainCreateInfo.queueFamilyIndexCount = 2;
             swapchainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
         }
+        // Almost all GPU has the same queue that support both.
         else 
         {
             swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -59,6 +60,7 @@ namespace Reinkan
             throw std::runtime_error("failed to create swap chain!");
         }
 
+        // Get VkImage from Swaphcain KHR, Developer does not create VkImage for swapchain manually.
         vkGetSwapchainImagesKHR(appDevice, appSwapchain, &imageCount, nullptr);
         appSwapchainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(appDevice, appSwapchain, &imageCount, appSwapchainImages.data());
@@ -106,8 +108,10 @@ namespace Reinkan
 
     VkPresentModeKHR ReinkanApp::ChooseSwapchainPresentMode(std::vector<VkPresentModeKHR>& availablePresentModes)
     {
-        for (const auto& availablePresentMode : availablePresentModes) {
-            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+        for (const auto& availablePresentMode : availablePresentModes) 
+        {
+            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) 
+            {
                 return availablePresentMode;
             }
         }
@@ -142,6 +146,7 @@ namespace Reinkan
 
         for (size_t i = 0; i < appSwapchainImages.size(); i++)
         {
+            /*
             VkImageViewCreateInfo createInfo{};
             createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             createInfo.image = appSwapchainImages[i];
@@ -160,6 +165,8 @@ namespace Reinkan
             if (vkCreateImageView(appDevice, &createInfo, nullptr, &appSwapchainImageViews[i]) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create image views!");
             }
+            */
+            appSwapchainImageViews[i] = CreateImageView(appSwapchainImages[i], appSwapchainImageFormat);
         }
     }
 

@@ -8,6 +8,7 @@
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -16,6 +17,7 @@
 #include "Constant/CoreConstant.h"
 #include "Structure/InitializationStruct.h"
 #include "Structure/BufferWrap.h"
+#include "Structure/ImageWrap.h"
 
 //#include "MemoryBinding/ReinkanVertexBuffer.h"
 #include "../shaders/SharedStruct.h"
@@ -177,19 +179,10 @@ namespace Reinkan
         //      Resources Binding
         ////////////////////////////////////////
 
-        // ReinkanVertexBuffer.cpp
-        static VkVertexInputBindingDescription GetBindingDescription();
-
-        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
-
-        void CreateVertexBuffer(std::vector<Vertex> vertices);
-
-        BufferWrap appVertexBufferWrap;
-
         // ReinkanBufferUtility.cpp
         BufferWrap CreateBufferWrap(VkDeviceSize size,
-                          VkBufferUsageFlags usage, 
-                          VkMemoryPropertyFlags properties);
+                          VkBufferUsageFlags bufferUsage, 
+                          VkMemoryPropertyFlags memoryProperties);
         
         BufferWrap CreateStagedBufferWrap(const VkDeviceSize& size,
                                            const void* data, 
@@ -205,5 +198,71 @@ namespace Reinkan
         uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+        // ReinkanVertexBuffer.cpp
+        static VkVertexInputBindingDescription GetBindingDescription();
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
+
+        void CreateVertexBuffer(std::vector<Vertex> vertices);
+
+        void CreateIndexBuffer(std::vector<uint16_t> indices);
+
+        BufferWrap appVertexBufferWrap;
+        BufferWrap appIndexBufferWrap;
+
+        // ReinkanScanlineUniformBuffer.cpp
+
+        void CreateScanlineDiscriptorSetLayout();
+
+        void CreateScanlineDescriptorPool();
+
+        void CreateScanlineDescriptorSets();
+
+        void CreateScanlineUniformBuffer();
+
+        void UpdateScanlineUBO(uint32_t currentImage);
+
+        VkDescriptorSetLayout appScanlineDescriptorSetLayout;
+        VkDescriptorPool appScanlineDescriptorPool;
+        std::vector<VkDescriptorSet> appScanlineDescriptorSets;
+        std::vector<BufferWrap> appScanlineUBO;
+        std::vector<void*> appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
+
+        // Temp
+        // ReinkanImageLoader.cpp
+        ImageWrap CreateTextureImageWrap(std::string path);
+
+        ImageWrap appTextureImageWrap;
+        //VkImage appTextureImage;
+        //VkDeviceMemory appTextureImageMemory;
+
+        // ReinkanImageUtility.cpp
+        ImageWrap CreateImageWrap(uint32_t width,
+                                  uint32_t height,
+                                  VkFormat format,
+                                  VkImageTiling tiling,
+                                  VkImageUsageFlags usage,
+                                  VkMemoryPropertyFlags properties);
+
+        VkImageView CreateImageView(VkImage image, 
+                                    VkFormat format,
+                                    VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT);
+
+        // Can be created as a few unique sampler 
+        // instead of create one for each texture, 
+        // and let use choose the setting.
+        VkSampler CreateImageSampler();
+
+        void TransitionImageLayout(VkImage image,
+                                   VkFormat format,
+                                   VkImageLayout oldLayout,
+                                   VkImageLayout newLayout);
+
+
+        void CopyBufferToImage(VkBuffer buffer, 
+                               VkImage image, 
+                               uint32_t width, 
+                               uint32_t height);
     };
 }

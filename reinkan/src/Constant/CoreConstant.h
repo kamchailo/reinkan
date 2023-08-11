@@ -15,7 +15,7 @@ namespace Reinkan
 
     const std::vector<const char*> validationLayers = 
     {
-        //"VK_LAYER_LUNARG_api_dumps",
+        //"VK_LAYER_LUNARG_api_dump",
         "VK_LAYER_KHRONOS_validation"
     };
 
@@ -27,10 +27,14 @@ namespace Reinkan
         //VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME	// Required by ray tracing pipeline;
     };
 
-    const std::vector<Vertex> vertices = 
-    {
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+    const std::vector<Vertex> vertices = {
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{ 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint16_t> indices = {
+        0, 1, 2, 2, 3, 0
     };
 }

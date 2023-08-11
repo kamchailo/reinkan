@@ -179,7 +179,10 @@
     <ClCompile Include="src\Initializer\ReinkanSurface.cpp" />
     <ClCompile Include="src\Initializer\ReinkanSwapchain.cpp" />
     <ClCompile Include="src\Initializer\ReinkanSyncObjects.cpp" />
+    <ClCompile Include="src\Loader\ReinkanImageLoader.cpp" />
+    <ClCompile Include="src\Loader\ReinkanImageUtility.cpp" />
     <ClCompile Include="src\MemoryBinding\ReinkanBufferUtility.cpp" />
+    <ClCompile Include="src\MemoryBinding\ReinkanScanlineUniformBuffer.cpp" />
     <ClCompile Include="src\MemoryBinding\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Reinkan.cpp" />
     <ClCompile Include="src\main.cpp" />

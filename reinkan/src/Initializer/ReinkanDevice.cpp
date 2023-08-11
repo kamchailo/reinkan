@@ -22,10 +22,9 @@ namespace Reinkan
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
-
-        VkPhysicalDeviceFeatures deviceFeatures{
-                                                // list of physical device feature to be enabled.
-                                                };
+        // list of physical device feature to be enabled.
+        VkPhysicalDeviceFeatures deviceFeatures{};
+        deviceFeatures.samplerAnisotropy = VK_TRUE;
 
         VkDeviceCreateInfo deviceCreateInfo{};
         deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

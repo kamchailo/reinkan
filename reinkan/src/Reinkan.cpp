@@ -25,6 +25,9 @@ namespace Reinkan
 
 		CreateScanlineRenderPass();
 
+			// Descriptors
+		CreateScanlineDiscriptorSetLayout();
+
 		CreateScanlinePipeline();
 
 		CreateSwapchainFrameBuffers();
@@ -41,6 +44,21 @@ namespace Reinkan
 
 		CreateVertexBuffer(vertices);
 
+		CreateIndexBuffer(indices);
+
+		// Image Loading
+
+		appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/Vampire_diffuse.png");
+
+		// UniformBuffer
+
+		CreateScanlineDescriptorPool();
+		
+		CreateScanlineUniformBuffer(); // UBO before DescriptorSet
+
+		CreateScanlineDescriptorSets();
+
+
 		std::printf("\n=============================== END OF INIT ===============================\n\n");
 	}
 
@@ -52,6 +70,8 @@ namespace Reinkan
 
 			DrawFrame();
 		}
+
+		vkDeviceWaitIdle(appDevice);
 
 		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
 	}

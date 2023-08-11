@@ -36,15 +36,17 @@ namespace Reinkan
 
     VkCommandBuffer ReinkanApp::BeginTempCommandBuffer()
     {
-        VkCommandBufferAllocateInfo allocateInfo{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
-        allocateInfo.commandBufferCount = 1;
+        VkCommandBufferAllocateInfo allocateInfo{};
+        allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocateInfo.commandPool = appCommandPool;
         allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocateInfo.commandBufferCount = 1;
 
         VkCommandBuffer cmdBuffer;
         vkAllocateCommandBuffers(appDevice, &allocateInfo, &cmdBuffer);
 
-        VkCommandBufferBeginInfo beginInfo{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(cmdBuffer, &beginInfo);
@@ -56,11 +58,12 @@ namespace Reinkan
     {
         vkEndCommandBuffer(commandBuffer);
 
-        VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        // appGraphicsQueue should be change to dedicate Buffer Initialzation
+        // appGraphicsQueue should be change to dedicate queue for Initialzation
         vkQueueSubmit(appGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(appGraphicsQueue);
 

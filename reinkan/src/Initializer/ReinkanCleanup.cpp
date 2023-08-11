@@ -5,16 +5,25 @@ namespace Reinkan
 {
 	void ReinkanApp::Cleanup()
 	{
-		vkDeviceWaitIdle(appDevice);
-
-		appVertexBufferWrap.Destroy(appDevice); 
-
 		CleanupSwapchain();
+
+		appTextureImageWrap.Destroy(appDevice);
 
 		vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);
 		vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);
-
 		vkDestroyRenderPass(appDevice, appScanlineRenderPass, nullptr);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+		{
+			appScanlineUBO[i].Destroy(appDevice);
+		}
+
+		vkDestroyDescriptorPool(appDevice, appScanlineDescriptorPool, nullptr);
+
+		vkDestroyDescriptorSetLayout(appDevice, appScanlineDescriptorSetLayout, nullptr);
+
+		appIndexBufferWrap.Destroy(appDevice);
+		appVertexBufferWrap.Destroy(appDevice); 
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
 		{
@@ -25,6 +34,7 @@ namespace Reinkan
 
 		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
 
+		// Destroy Foundation
 		vkDestroyDevice(appDevice, nullptr);
 
 		if (enableValidationLayers)

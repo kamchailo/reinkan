@@ -29,6 +29,12 @@ namespace Reinkan
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
+        ////////////////////////////////
+        //    Update Value per frame
+        ////////////////////////////////
+
+        UpdateScanlineUBO(appCurrentFrame);
+
         // Only reset the fence if we are submitting work
         // [WAIT] inFlightFences[appCurrentFrame] or [UNSIGNAL]
         vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);
@@ -84,18 +90,18 @@ namespace Reinkan
             throw std::runtime_error("failed to begin recording command buffer!");
         }
         {
-            VkRenderPassBeginInfo renderPassInfo{};
-            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-            renderPassInfo.renderPass = appScanlineRenderPass;
-            renderPassInfo.framebuffer = appSwapchainFramebuffers[imageIndex];
-            renderPassInfo.renderArea.offset = { 0, 0 };
-            renderPassInfo.renderArea.extent = appSwapchainExtent;
+            VkRenderPassBeginInfo renderPassBeginInfo{};
+            renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+            renderPassBeginInfo.renderPass = appScanlineRenderPass;
+            renderPassBeginInfo.framebuffer = appSwapchainFramebuffers[imageIndex];
+            renderPassBeginInfo.renderArea.offset = { 0, 0 };
+            renderPassBeginInfo.renderArea.extent = appSwapchainExtent;
 
-            VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
-            renderPassInfo.clearValueCount = 1;
-            renderPassInfo.pClearValues = &clearColor;
+            VkClearValue clearColor = { {{0.1f, 0.1f, 0.2f, 1.0f}} };
+            renderPassBeginInfo.clearValueCount = 1;
+            renderPassBeginInfo.pClearValues = &clearColor;
 
-            vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+            vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
             {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
 
@@ -113,11 +119,20 @@ namespace Reinkan
                 scissor.extent = appSwapchainExtent;
                 vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-                VkBuffer vertexBuffers[] = { appVertexBufferWrap.buffer };
-                VkDeviceSize offsets[] = { 0 };
-                vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+                VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
+                vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appVertexBufferWrap.buffer, offsets);
+                vkCmdBindIndexBuffer(commandBuffer, appIndexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT16);
 
-                vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+                vkCmdBindDescriptorSets(commandBuffer, 
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS, 
+                                        appScanlinePipelineLayout, 
+                                        0, 
+                                        1, 
+                                        &appScanlineDescriptorSets[appCurrentFrame], 
+                                        0, 
+                                        nullptr);
+
+                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
             }
             vkCmdEndRenderPass(commandBuffer);

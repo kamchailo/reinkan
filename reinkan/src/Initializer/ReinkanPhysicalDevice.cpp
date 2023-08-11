@@ -94,7 +94,10 @@ namespace Reinkan
             swapchainAdequate = !swapchainSupport.formats.empty() && !swapchainSupport.presentModes.empty();
         }
 
-        return indices.IsComplete() && extensionsSupported && swapchainAdequate;
+        VkPhysicalDeviceFeatures supportedFeatures;
+        vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
+        return indices.IsComplete() && extensionsSupported && swapchainAdequate && supportedFeatures.samplerAnisotropy;
     }
     
 

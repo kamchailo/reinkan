@@ -36,4 +36,9 @@ namespace Reinkan
     {
         appVertexBufferWrap = CreateStagedBufferWrap(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
     }
+
+    void ReinkanApp::CreateIndexBuffer(std::vector<uint16_t> indices)
+    {
+        appIndexBufferWrap = CreateStagedBufferWrap(indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    }
 }

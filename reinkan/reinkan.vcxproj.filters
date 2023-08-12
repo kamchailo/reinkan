@@ -45,16 +45,16 @@
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanSwapchain.cpp">
+    <ClCompile Include="src\Draw\ReinkanSwapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanScanlinePipeline.cpp">
+    <ClCompile Include="src\Pipeline\ReinkanScanlinePipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanScanlineRenderPass.cpp">
+    <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanFrameBuffers.cpp">
+    <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp">
@@ -79,6 +79,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Loader\ReinkanImageUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderPass\ReinkanDepthBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

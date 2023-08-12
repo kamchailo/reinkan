@@ -23,15 +23,6 @@ namespace Reinkan
 
 		CreateSwapchainImageViews();
 
-		CreateScanlineRenderPass();
-
-			// Descriptors
-		CreateScanlineDiscriptorSetLayout();
-
-		CreateScanlinePipeline();
-
-		CreateSwapchainFrameBuffers();
-
 		// Command or Drawing Resources Init
 
 		CreateCommandPool();
@@ -39,6 +30,19 @@ namespace Reinkan
 		CreateCommandBuffer();
 
 		CreateSyncObjects();
+
+		// Render Pass
+
+		CreateScanlineRenderPass();
+
+		CreateSwapchainDepthResource();
+
+		CreateSwapchainFrameBuffers(); // require renderpass
+
+			// Descriptors
+		CreateScanlineDiscriptorSetLayout();
+
+		CreateScanlinePipeline();
 
 		// VertexBuffer
 
@@ -48,7 +52,7 @@ namespace Reinkan
 
 		// Image Loading
 
-		appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/Vampire_diffuse.png");
+		appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/cloth_knit_feb-20-2022_basecolor.png");
 
 		// UniformBuffer
 

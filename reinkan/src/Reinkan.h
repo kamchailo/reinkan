@@ -202,7 +202,7 @@ namespace Reinkan
         // ReinkanVertexBuffer.cpp
         static VkVertexInputBindingDescription GetBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
 
         void CreateVertexBuffer(std::vector<Vertex> vertices);
 
@@ -264,5 +264,18 @@ namespace Reinkan
                                VkImage image, 
                                uint32_t width, 
                                uint32_t height);
+
+        // ReinkanDepthBuffer.cpp
+        void CreateSwapchainDepthResource();
+
+        VkFormat FindDepthFormat();
+
+        VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates,
+                                     VkImageTiling tiling,
+                                     VkFormatFeatureFlags features);
+
+        bool HasStencilComponent(VkFormat format);
+
+        ImageWrap appSwapchainDepthImageWrap;
     };
 }

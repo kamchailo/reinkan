@@ -44,11 +44,11 @@ namespace Reinkan
 
 		CreateScanlinePipeline();
 
-		// VertexBuffer
+		// VertexBuffer -> Move to Bind Loaded Resources
 
-		CreateVertexBuffer(vertices);
+		//CreateVertexBuffer(vertices);
 
-		CreateIndexBuffer(indices);
+		//CreateIndexBuffer(indices);
 
 		// Image Loading
 

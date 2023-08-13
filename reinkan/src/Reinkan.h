@@ -18,6 +18,8 @@
 #include "Structure/InitializationStruct.h"
 #include "Structure/BufferWrap.h"
 #include "Structure/ImageWrap.h"
+#include "Structure/ModelData.h"
+#include "Structure/ObjectData.h"
 
 //#include "MemoryBinding/ReinkanVertexBuffer.h"
 #include "../shaders/SharedStruct.h"
@@ -31,18 +33,29 @@ namespace Reinkan
             : windowWidth(width), windowHeight(height) 
         {}
 
-        void Run() 
+        void Init()
         {
             InitWindow();
 
             InitVulkan();
+        }
+        
+        void BindResources()
+        {
+            BindModelData();
+        }
 
+        void Run() 
+        {
             MainLoop();
 
             Cleanup();
         }
 
         bool appFramebufferResized = false;
+
+        // ReinkanModelLoader.cpp
+        void LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform);
 
     private:
         // Reinkan.cpp
@@ -206,7 +219,7 @@ namespace Reinkan
 
         void CreateVertexBuffer(std::vector<Vertex> vertices);
 
-        void CreateIndexBuffer(std::vector<uint16_t> indices);
+        void CreateIndexBuffer(std::vector<uint32_t> indices);
 
         BufferWrap appVertexBufferWrap;
         BufferWrap appIndexBufferWrap;
@@ -277,5 +290,12 @@ namespace Reinkan
         bool HasStencilComponent(VkFormat format);
 
         ImageWrap appSwapchainDepthImageWrap;
+
+        // ReinkanModelLoader.cpp
+        void BindModelData();
+
+        std::vector<std::pair<std::shared_ptr<ModelData>, glm::mat4>> appModelDataToBeLoaded;
+
+        std::vector<ObjectData> appObjects;
     };
 }

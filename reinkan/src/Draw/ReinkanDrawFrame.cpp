@@ -81,12 +81,19 @@ namespace Reinkan
         appCurrentFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 
+    /*
+    * To interface this record command
+    * - Interface how the pipeline construct
+    * - Interface hot to let use create descriptor set easily
+    * - Pass in pipeline and descriptor set
+    */
     void ReinkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
     {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to begin recording command buffer!");
         }
         {
@@ -108,6 +115,14 @@ namespace Reinkan
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
             {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
+                vkCmdBindDescriptorSets(commandBuffer,
+                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    appScanlinePipelineLayout,
+                    0,
+                    1,
+                    &appScanlineDescriptorSets[appCurrentFrame],
+                    0,
+                    nullptr);
 
                 VkViewport viewport{};
                 viewport.x = 0.0f;
@@ -123,9 +138,22 @@ namespace Reinkan
                 scissor.extent = appSwapchainExtent;
                 vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+                for (auto object : appObjects)
+                {
+
+                    // Push Constant
+
+                    VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
+                    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object.vertexBuffer.buffer, offsets);
+                    vkCmdBindIndexBuffer(commandBuffer, object.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+
+                    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
+                }
+
+                /*
                 VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
                 vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appVertexBufferWrap.buffer, offsets);
-                vkCmdBindIndexBuffer(commandBuffer, appIndexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT16);
+                vkCmdBindIndexBuffer(commandBuffer, appIndexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
 
                 vkCmdBindDescriptorSets(commandBuffer, 
                                         VK_PIPELINE_BIND_POINT_GRAPHICS, 
@@ -137,6 +165,7 @@ namespace Reinkan
                                         nullptr);
 
                 vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+                */
 
             }
             vkCmdEndRenderPass(commandBuffer);

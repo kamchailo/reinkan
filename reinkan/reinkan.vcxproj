@@ -107,6 +107,9 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\lib\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -133,6 +136,9 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\lib\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -155,6 +161,9 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\lib\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,11 +190,15 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "..\lib\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
+    <ClCompile Include="src\Loader\ReinkanModelLoader.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanScanlinePipeline.cpp" />
@@ -215,11 +228,14 @@
   <ItemGroup>
     <ClInclude Include="..\shaders\SharedStruct.h" />
     <ClInclude Include="src\Constant\CoreConstant.h" />
+    <ClInclude Include="src\Loader\ReinkanModelLoader.h" />
+    <ClInclude Include="src\Structure\ObjectData.h" />
     <ClInclude Include="src\Structure\BufferWrap.h" />
     <ClInclude Include="src\Structure\ImageWrap.h" />
     <ClInclude Include="src\Structure\InitializationStruct.h" />
     <ClInclude Include="src\Reinkan.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Structure\ModelData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

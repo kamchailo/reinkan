@@ -87,9 +87,6 @@
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pipeline\ReinkanScanlineDescriptorSetUtility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Descriptor\DescriptorWrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Descriptor\DescriptorWrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pipeline\GraphicsProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

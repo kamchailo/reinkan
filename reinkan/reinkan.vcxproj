@@ -200,7 +200,6 @@
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp" />
-    <ClCompile Include="src\Pipeline\ReinkanScanlineDescriptorSetUtility.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanScanlinePipeline.cpp" />
@@ -233,6 +232,7 @@
     <ClInclude Include="src\Constant\CoreConstant.h" />
     <ClInclude Include="src\Descriptor\DescriptorWrap.h" />
     <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h" />
+    <ClInclude Include="src\Pipeline\GraphicsProgram.h" />
     <ClInclude Include="src\ResourceLoader\ReinkanModelLoader.h" />
     <ClInclude Include="src\Structure\ObjectData.h" />
     <ClInclude Include="src\Structure\BufferWrap.h" />

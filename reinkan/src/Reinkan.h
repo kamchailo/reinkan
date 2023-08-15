@@ -39,6 +39,8 @@ namespace Reinkan
             InitWindow();
 
             InitVulkan();
+
+            std::printf("\n=============================== END OF INIT ===============================\n\n");
         }
         
         void BindResources()
@@ -51,11 +53,22 @@ namespace Reinkan
             BindTextures();
 
             CreateScanlineDescriptorWrap();
+
+            CreateScanlinePipeline(appScanlineDescriptorWrap);
+
+            std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
+        }
+
+        void SetupScanlinePipeline()
+        {
+
         }
 
         void Run() 
         {
             MainLoop();
+
+            std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
 
             Cleanup();
         }
@@ -153,7 +166,7 @@ namespace Reinkan
         std::vector<VkImageView> appSwapchainImageViews;
 
         // ReinkanScanlinePipeline.cpp
-        void CreateScanlinePipeline();
+        void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
 
         VkShaderModule CreateShaderModule(const std::vector<char>& code);
 

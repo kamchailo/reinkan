@@ -24,7 +24,7 @@ namespace Reinkan
         return buffer;
     }
 
-    void ReinkanApp::CreateScanlinePipeline()
+    void ReinkanApp::CreateScanlinePipeline(DescriptorWrap& descriptorWrap)
     {
         
         auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
@@ -126,7 +126,8 @@ namespace Reinkan
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &appScanlineDescriptorSetLayout;
+        //pipelineLayoutInfo.pSetLayouts = &appScanlineDescriptorSetLayout;
+        pipelineLayoutInfo.pSetLayouts = &descriptorWrap.descriptorSetLayout;
         pipelineLayoutInfo.pushConstantRangeCount = 1;
         pipelineLayoutInfo.pPushConstantRanges = &pushConstantRanges;
 

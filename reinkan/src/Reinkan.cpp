@@ -43,9 +43,9 @@ namespace Reinkan
 		// May have to split pipeline to take pipelineLayout after DescriptorSet
 
 			// Descriptors
-		CreateScanlineDiscriptorSetLayout();
+		//CreateScanlineDiscriptorSetLayout();
 
-		CreateScanlinePipeline();
+		//CreateScanlinePipeline();
 
 		// VertexBuffer -> Move to Bind Loaded Resources
 
@@ -66,7 +66,6 @@ namespace Reinkan
 		//CreateScanlineDescriptorSets();
 
 
-		std::printf("\n=============================== END OF INIT ===============================\n\n");
 	}
 
 	void ReinkanApp::MainLoop()
@@ -80,7 +79,6 @@ namespace Reinkan
 
 		vkDeviceWaitIdle(appDevice);
 
-		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
 	}
 }
 

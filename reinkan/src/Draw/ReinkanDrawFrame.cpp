@@ -120,7 +120,7 @@ namespace Reinkan
                                         appScanlinePipelineLayout,
                                         0,
                                         1,
-                                        &appScanlineDescriptorSets[appCurrentFrame],
+                                        &appScanlineDescriptorWrap.descriptorSets[appCurrentFrame],
                                         0,
                                         nullptr);
 

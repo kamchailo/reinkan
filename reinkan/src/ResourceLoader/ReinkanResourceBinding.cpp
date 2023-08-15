@@ -91,6 +91,7 @@ namespace Reinkan
             appScanlineUBO[i] = CreateBufferWrap(bufferSize,
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
         }
         appScanlineDescriptorWrap.Write(appDevice, 0, appScanlineUBO);
         

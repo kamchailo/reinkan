@@ -7,6 +7,8 @@ namespace Reinkan
 	{
 		CleanupSwapchain();
 
+		appScanlineDescriptorWrap.Destroy(appDevice);
+
 		for (auto object : appObjects)
 		{
 			object.vertexBufferWrap.Destroy(appDevice);

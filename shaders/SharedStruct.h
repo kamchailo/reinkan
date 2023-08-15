@@ -7,7 +7,7 @@ namespace Reinkan
 	struct Vertex
 	{
 		glm::vec3 position;
-		glm::vec3 color;
+		glm::vec3 normal;
 		glm::vec2 texCoord;
 	};
 
@@ -17,10 +17,19 @@ namespace Reinkan
 		alignas(16) glm::mat4 proj;
 	};
 
+	struct PushConstant
+	{
+		alignas(16) glm::mat4 modelMatrix;
+		alignas(16) uint32_t objectId;
+		alignas(16) uint32_t materialId;
+	};
+
 	struct Material {
 		alignas(16) glm::vec3 diffuse;
 		alignas(16) glm::vec3 specular;
 		alignas(16) float shininess;
-		alignas(16) int textureId;
+		alignas(16) uint32_t diffuseMapId;
+		alignas(16) uint32_t normalMapId;
+		alignas(16) uint32_t heightMapId;
 	};
 }

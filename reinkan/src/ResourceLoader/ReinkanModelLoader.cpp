@@ -17,26 +17,9 @@ namespace Reinkan
         appModelDataToBeLoaded.push_back(std::pair<std::shared_ptr<ModelData>, glm::mat4>(modelData, transform));
     }
 
-    void Reinkan::ReinkanApp::BindModelData()
-    {
-        for (auto modelData : appModelDataToBeLoaded)
-        {
-            ObjectData object;
-            object.nbVertices = modelData.first->vertices.size();
-            object.nbIndices = modelData.first->indices.size();
-
-            object.transform = modelData.second;
-
-            object.vertexBuffer = CreateStagedBufferWrap(modelData.first->vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-            object.indexBuffer = CreateStagedBufferWrap(modelData.first->indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-
-            appObjects.push_back(object);
-        }
-    }
-
     void ReadAssimpFile(const std::string& path, const glm::mat4 mat, ModelData& modelData)
 	{
-        printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
+        std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
 
         aiMatrix4x4 modelTr(mat[0][0], mat[1][0], mat[2][0], mat[3][0],
                             mat[0][1], mat[1][1], mat[2][1], mat[3][1],
@@ -51,35 +34,48 @@ namespace Reinkan
         }
 
         // Invoke assimp to read the file.
-        printf("- - [ASSIMP]: Assimp %d.%d Reading %s\n", aiGetVersionMajor(), aiGetVersionMinor(), path.c_str());
+        std::printf("- - [ASSIMP]: Assimp %d.%d Reading %s\n", aiGetVersionMajor(), aiGetVersionMinor(), path.c_str());
         Assimp::Importer importer;
         const aiScene* aiscene = importer.ReadFile(path.c_str(),
             aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 
         if (!aiscene) {
-            printf("- - [ASSIMP]: ... Failed to read.\n");
+            std::printf("- - [ASSIMP]: ... Failed to read.\n");
             exit(-1);
         }
 
         if (!aiscene->mRootNode) {
-            printf("- - [ASSIMP]: Scene has no rootnode.\n");
+            std::printf("- - [ASSIMP]: Scene has no rootnode.\n");
             exit(-1);
         }
 
-        printf("- - [ASSIMP]: Assimp mNumMeshes: %d\n", aiscene->mNumMeshes);
-        printf("- - [ASSIMP]: Assimp mNumMaterials: %d\n", aiscene->mNumMaterials);
-        printf("- - [ASSIMP]: Assimp mNumTextures: %d\n", aiscene->mNumTextures);
+        std::printf("- - [ASSIMP]: Assimp mNumMeshes: %d\n", aiscene->mNumMeshes);
+        std::printf("- - [ASSIMP]: Assimp mNumMaterials: %d\n", aiscene->mNumMaterials);
+        std::printf("- - [ASSIMP]: Assimp mNumTextures: %d\n", aiscene->mNumTextures);
 
-        for (int i = 0; i < aiscene->mNumMaterials; i++) {
+        // Check Animation
+        if (aiscene->mNumAnimations > 0)
+        {
+            for (int i = 0; i < aiscene->mNumAnimations; ++i)
+            {
+                std::printf("- - [ASSIMP]: Animation %d: %s\n", i, aiscene->mAnimations[i]->mName.C_Str());
+                // Load Animation
+            }
+        }
+
+        for (int i = 0; i < aiscene->mNumMaterials; i++) 
+        {
             aiMaterial* mtl = aiscene->mMaterials[i];
             aiString name;
             mtl->Get(AI_MATKEY_NAME, name);
+            std::printf("- - [ASSIMP]: Material %d: %s\n", i, name.C_Str());
             aiColor3D emit(0.f, 0.f, 0.f);
-            aiColor3D diff(0.f, 0.f, 0.f), spec(0.f, 0.f, 0.f);
-            float alpha = 20.0;
             bool he = mtl->Get(AI_MATKEY_COLOR_EMISSIVE, emit);
+            aiColor3D diff(0.f, 0.f, 0.f);
             bool hd = mtl->Get(AI_MATKEY_COLOR_DIFFUSE, diff);
+            aiColor3D spec(0.f, 0.f, 0.f);
             bool hs = mtl->Get(AI_MATKEY_COLOR_SPECULAR, spec);
+            float alpha = 20.0;
             bool ha = mtl->Get(AI_MATKEY_SHININESS, &alpha, NULL);
             aiColor3D trans;
             bool ht = mtl->Get(AI_MATKEY_COLOR_TRANSPARENT, trans);
@@ -90,7 +86,7 @@ namespace Reinkan
                 newmat.specular = { 0,0,0 };
                 newmat.shininess = 0.0;
                 //newmat.emission = { emit.r, emit.g, emit.b };
-                newmat.textureId = -1;
+                newmat.diffuseMapId = -1;
             }
 
             else {
@@ -105,14 +101,29 @@ namespace Reinkan
                 newmat.specular = { Ks[0], Ks[1], Ks[2] };
                 newmat.shininess = alpha; //sqrtf(2.0f/(2.0f+alpha));
                 //newmat.emission = { 0,0,0 };
-                newmat.textureId = -1;
+                newmat.diffuseMapId = -1;
             }
 
             aiString texPath;
+            // DIFFUSE
             if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, 0, &texPath)) {
-                printf("- - [ASSIMP]: Texture: %s\n", texPath.C_Str());
-                newmat.textureId = modelData.textures.size();
+                newmat.diffuseMapId = modelData.textures.size();
                 modelData.textures.push_back(std::string(texPath.C_Str()));
+                std::printf("- - [ASSIMP]: ID: %d \tDiffuse Texture: \t%s\n", newmat.diffuseMapId, texPath.C_Str());
+            }
+
+            // NORMAL
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_NORMALS, 0, &texPath)) {
+                newmat.normalMapId = modelData.textures.size();
+                modelData.textures.push_back(std::string(texPath.C_Str()));
+                std::printf("- - [ASSIMP]: ID: %d \tNormal Texture: \t%s\n", newmat.normalMapId, texPath.C_Str());
+            }
+
+            // HEIGHT
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DISPLACEMENT, 0, &texPath)) {
+                newmat.heightMapId = modelData.textures.size();
+                modelData.textures.push_back(std::string(texPath.C_Str()));
+                std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texPath.C_Str());
             }
 
             modelData.materials.push_back(newmat);
@@ -129,9 +140,9 @@ namespace Reinkan
                            const int level)
     {
         // Print line with indentation to show structure of the model node hierarchy.
-        printf("- - [ASSIMP]: ");
-        for (int i = 0; i < level; i++) printf(" | ");
-        printf("%s \n", node->mName.data);
+        std::printf("- - [ASSIMP]: ");
+        for (int i = 0; i <= level; i++) std::printf(" |%d| ", i);
+        std::printf("%s \n", node->mName.data);
 
         // Accumulating transformations while traversing down the hierarchy.
         aiMatrix4x4 childTr = parentTr * node->mTransformation;
@@ -140,16 +151,16 @@ namespace Reinkan
         // Loop through this node's meshes
         for (unsigned int m = 0; m < node->mNumMeshes; ++m) {
             aiMesh* aimesh = aiscene->mMeshes[node->mMeshes[m]];
-            printf("- - [ASSIMP]:   %d: vert-%d: face-%d\n", m, aimesh->mNumVertices, aimesh->mNumFaces);
+            std::printf("- - [ASSIMP]:   %d: vert-%d: face-%d\n", m, aimesh->mNumVertices, aimesh->mNumFaces);
 
             // Load Bone
             for (int boneIndex = 0; boneIndex < aimesh->mNumBones; ++boneIndex)
             {
                 aiBone* aibone = aimesh->mBones[boneIndex];
-                printf("- - [ASSIMP]: #%d Bone: %s weight: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
+                //std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
                 for (int vertW = 0; vertW < aibone->mNumWeights; ++vertW)
                 {
-                    //printf("- - [ASSIMP]:   VertID: %d Weight: %f\n", aibone->mWeights[vertW].mVertexId, aibone->mWeights[vertW].mWeight);
+                    //std::printf("- - [ASSIMP]:   VertID: %d Weight: %f\n", aibone->mWeights[vertW].mVertexId, aibone->mWeights[vertW].mWeight);
                 }
             }
 
@@ -157,7 +168,8 @@ namespace Reinkan
             // vertex/normal/texture/tangent data with the node's model
             // transformation applied.
             unsigned int faceOffset = modelData.vertices.size();
-            for (unsigned int t = 0; t < aimesh->mNumVertices; ++t) {
+            for (unsigned int t = 0; t < aimesh->mNumVertices; ++t) 
+            {
                 aiVector3D aipnt = childTr * aimesh->mVertices[t];
                 aiVector3D ainrm = aimesh->HasNormals() ? normalTr * aimesh->mNormals[t] : aiVector3D(0, 0, 1);
                 aiVector3D aitex = aimesh->HasTextureCoords(0) ? aimesh->mTextureCoords[0][t] : aiVector3D(0, 0, 0);
@@ -165,15 +177,18 @@ namespace Reinkan
 
 
                 modelData.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
-                                              {ainrm.x, ainrm.y, ainrm.z},
-                                              {aitex.x, aitex.y} });
+                                               {ainrm.x, ainrm.y, ainrm.z},
+                                               {aitex.x, aitex.y} });
             }
 
             // Loop through all faces, recording indices
-            for (unsigned int t = 0; t < aimesh->mNumFaces; ++t) {
+            for (unsigned int t = 0; t < aimesh->mNumFaces; ++t) 
+            {
                 aiFace* aiface = &aimesh->mFaces[t];
                 for (int i = 2; i < aiface->mNumIndices; i++) {
                     modelData.materialIndex.push_back(aimesh->mMaterialIndex);
+                    //std::printf("matId: %d size: %d\n", modelData.materialIndex[modelData.materialIndex.size() - 1], modelData.materialIndex.size());
+                    
                     modelData.indices.push_back(aiface->mIndices[0] + faceOffset);
                     modelData.indices.push_back(aiface->mIndices[i - 1] + faceOffset);
                     modelData.indices.push_back(aiface->mIndices[i] + faceOffset);

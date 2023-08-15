@@ -195,10 +195,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
-    <ClCompile Include="src\Loader\ReinkanModelLoader.cpp" />
+    <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp" />
+    <ClCompile Include="src\Pipeline\ReinkanScanlineDescriptorSetUtility.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanScanlinePipeline.cpp" />
@@ -208,8 +210,8 @@
     <ClCompile Include="src\Initializer\ReinkanSurface.cpp" />
     <ClCompile Include="src\Draw\ReinkanSwapchain.cpp" />
     <ClCompile Include="src\Initializer\ReinkanSyncObjects.cpp" />
-    <ClCompile Include="src\Loader\ReinkanImageLoader.cpp" />
-    <ClCompile Include="src\Loader\ReinkanImageUtility.cpp" />
+    <ClCompile Include="src\ResourceLoader\ReinkanImageLoader.cpp" />
+    <ClCompile Include="src\ResourceLoader\ReinkanImageUtility.cpp" />
     <ClCompile Include="src\MemoryBinding\ReinkanBufferUtility.cpp" />
     <ClCompile Include="src\MemoryBinding\ReinkanScanlineUniformBuffer.cpp" />
     <ClCompile Include="src\MemoryBinding\ReinkanVertexBuffer.cpp" />
@@ -223,12 +225,15 @@
     </ClCompile>
     <ClCompile Include="src\Initializer\ReinkanValidationLayers.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanDepthBuffer.cpp" />
+    <ClCompile Include="src\ResourceLoader\ReinkanResourceBinding.cpp" />
     <ClCompile Include="src\Window\ReinkanWIndow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shaders\SharedStruct.h" />
     <ClInclude Include="src\Constant\CoreConstant.h" />
-    <ClInclude Include="src\Loader\ReinkanModelLoader.h" />
+    <ClInclude Include="src\Descriptor\DescriptorWrap.h" />
+    <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h" />
+    <ClInclude Include="src\ResourceLoader\ReinkanModelLoader.h" />
     <ClInclude Include="src\Structure\ObjectData.h" />
     <ClInclude Include="src\Structure\BufferWrap.h" />
     <ClInclude Include="src\Structure\ImageWrap.h" />

@@ -9,8 +9,8 @@ namespace Reinkan
 
 		for (auto object : appObjects)
 		{
-			object.vertexBuffer.Destroy(appDevice);
-			object.indexBuffer.Destroy(appDevice);
+			object.vertexBufferWrap.Destroy(appDevice);
+			object.indexBufferWrap.Destroy(appDevice);
 		}
 
 		appTextureImageWrap.Destroy(appDevice);

@@ -116,13 +116,13 @@ namespace Reinkan
             {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
                 vkCmdBindDescriptorSets(commandBuffer,
-                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    appScanlinePipelineLayout,
-                    0,
-                    1,
-                    &appScanlineDescriptorSets[appCurrentFrame],
-                    0,
-                    nullptr);
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                        appScanlinePipelineLayout,
+                                        0,
+                                        1,
+                                        &appScanlineDescriptorSets[appCurrentFrame],
+                                        0,
+                                        nullptr);
 
                 VkViewport viewport{};
                 viewport.x = 0.0f;
@@ -142,10 +142,24 @@ namespace Reinkan
                 {
 
                     // Push Constant
+                    // Information pushed at each draw call
+                    PushConstant pushConstant{};
+                    pushConstant.modelMatrix = object.transform;
+                    //pushConstant.modelMatrix[3][3] = 1.0;
+                    pushConstant.materialId = 0;
+                    pushConstant.objectId = 1;
+
+                    vkCmdPushConstants(commandBuffer,
+                        appScanlinePipelineLayout,
+                        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                        0,
+                        sizeof(PushConstant),
+                        &pushConstant
+                    );
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
-                    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object.vertexBuffer.buffer, offsets);
-                    vkCmdBindIndexBuffer(commandBuffer, object.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+                    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object.vertexBufferWrap.buffer, offsets);
+                    vkCmdBindIndexBuffer(commandBuffer, object.indexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
 
                     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
                 }

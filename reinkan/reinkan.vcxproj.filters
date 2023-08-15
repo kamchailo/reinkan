@@ -75,16 +75,25 @@
     <ClCompile Include="src\MemoryBinding\ReinkanScanlineUniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Loader\ReinkanImageLoader.cpp">
+    <ClCompile Include="src\ResourceLoader\ReinkanImageLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Loader\ReinkanImageUtility.cpp">
+    <ClCompile Include="src\ResourceLoader\ReinkanImageUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderPass\ReinkanDepthBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Loader\ReinkanModelLoader.cpp">
+    <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pipeline\ReinkanScanlineDescriptorSetUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Descriptor\DescriptorWrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceLoader\ReinkanResourceBinding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,10 +122,16 @@
     <ClInclude Include="src\Structure\ModelData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Loader\ReinkanModelLoader.h">
+    <ClInclude Include="src\ResourceLoader\ReinkanModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Structure\ObjectData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Descriptor\DescriptorWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

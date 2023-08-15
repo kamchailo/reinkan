@@ -22,7 +22,7 @@ namespace Reinkan
 			vkDestroySampler(device, sampler, nullptr);
 		}
 
-		VkDescriptorImageInfo Descriptor() const
+		VkDescriptorImageInfo GetDescriptorImageInfo() const
 		{
 			return VkDescriptorImageInfo({ sampler, imageView, imageLayout });
 		}

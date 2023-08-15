@@ -39,6 +39,9 @@ namespace Reinkan
 
 		CreateSwapchainFrameBuffers(); // require renderpass
 
+		// Below this point can move to resources binding stage 
+		// May have to split pipeline to take pipelineLayout after DescriptorSet
+
 			// Descriptors
 		CreateScanlineDiscriptorSetLayout();
 
@@ -52,15 +55,15 @@ namespace Reinkan
 
 		// Image Loading
 
-		appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/cloth_knit_feb-20-2022_basecolor.png");
+		//appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/Vampire_diffuse.png");
 
 		// UniformBuffer
 
-		CreateScanlineDescriptorPool();
+		//CreateScanlineDescriptorPool();
 		
-		CreateScanlineUniformBuffer(); // UBO before DescriptorSet
+		//CreateScanlineUniformBuffer(); // UBO before DescriptorSet
 
-		CreateScanlineDescriptorSets();
+		//CreateScanlineDescriptorSets();
 
 
 		std::printf("\n=============================== END OF INIT ===============================\n\n");

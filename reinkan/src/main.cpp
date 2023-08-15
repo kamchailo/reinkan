@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Reinkan.h"
-#include "Loader/ReinkanModelLoader.h"
+#include "ResourceLoader/ReinkanModelLoader.h"
 #include "Structure/ModelData.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,19 +13,19 @@ int main()
     app.Init();
 
     // Load Resources
-    {
+    {   // Indent to free model data after load
+
         Reinkan::ModelData model;
         Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", glm::mat4(0.1), model);
         Reinkan::ModelData vampire;
         Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", glm::mat4(0.1), vampire);
 
-        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(1.0, 0.0, 0.0));
+        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.1, 0.0));
 
         app.LoadModel(std::make_shared<Reinkan::ModelData>(model), glm::mat4(1));
         app.LoadModel(std::make_shared<Reinkan::ModelData>(vampire), vampireTr);
 
         app.BindResources();
-
     }
 
     try 

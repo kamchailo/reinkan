@@ -20,6 +20,7 @@
 #include "Structure/ImageWrap.h"
 #include "Structure/ModelData.h"
 #include "Structure/ObjectData.h"
+#include "Descriptor/DescriptorWrap.h"
 
 //#include "MemoryBinding/ReinkanVertexBuffer.h"
 #include "../shaders/SharedStruct.h"
@@ -42,7 +43,14 @@ namespace Reinkan
         
         void BindResources()
         {
+            // ReinkanImageLoader.cpp
             BindModelData();
+
+            BindMaterials();
+
+            BindTextures();
+
+            CreateScanlineDescriptorWrap();
         }
 
         void Run() 
@@ -217,15 +225,15 @@ namespace Reinkan
 
         static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
 
-        void CreateVertexBuffer(std::vector<Vertex> vertices);
+        // Obsolete to Object system
+        // void CreateVertexBuffer(std::vector<Vertex> vertices);
 
-        void CreateIndexBuffer(std::vector<uint32_t> indices);
+        // void CreateIndexBuffer(std::vector<uint32_t> indices);
 
         BufferWrap appVertexBufferWrap;
         BufferWrap appIndexBufferWrap;
 
         // ReinkanScanlineUniformBuffer.cpp
-
         void CreateScanlineDiscriptorSetLayout();
 
         void CreateScanlineDescriptorPool();
@@ -291,11 +299,25 @@ namespace Reinkan
 
         ImageWrap appSwapchainDepthImageWrap;
 
-        // ReinkanModelLoader.cpp
+        // ReinkanResourceBinding.cpp
         void BindModelData();
+
+        void BindMaterials();
+
+        void BindTextures();
+
+        void CreateScanlineDescriptorWrap();
 
         std::vector<std::pair<std::shared_ptr<ModelData>, glm::mat4>> appModelDataToBeLoaded;
 
-        std::vector<ObjectData> appObjects;
+        std::vector<ObjectData>     appObjects;
+
+        std::vector<Material>       appMaterials;
+        BufferWrap                  appMaterialBufferWrap;
+
+        std::vector<std::string>    appTexturePaths;
+        std::vector<ImageWrap>      appTextureImageWraps;
+
+        DescriptorWrap appScanlineDescriptorWrap;
     };
 }

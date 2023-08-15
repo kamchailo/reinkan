@@ -40,6 +40,7 @@ namespace Reinkan
 		CreateSwapchainFrameBuffers(); // require renderpass
 
 		// Below this point can move to resources binding stage 
+		// ---------------------------------------------------
 		// May have to split pipeline to take pipelineLayout after DescriptorSet
 
 			// Descriptors

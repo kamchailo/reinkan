@@ -43,6 +43,18 @@ namespace Reinkan
             std::printf("\n=============================== END OF INIT ===============================\n\n");
         }
         
+        // ------------------------------ TEMP ------------------------------
+
+        std::vector<Material>& GetAppMaterialPool() 
+        {
+            return appMaterials;
+        }
+
+        std::vector<std::string>& GetAppTexturePool() 
+        {
+            return appTexturePaths;
+        }
+
         void BindResources()
         {
             // ReinkanImageLoader.cpp

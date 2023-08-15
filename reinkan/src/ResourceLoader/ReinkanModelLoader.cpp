@@ -17,18 +17,23 @@ namespace Reinkan
         appModelDataToBeLoaded.push_back(std::pair<std::shared_ptr<ModelData>, glm::mat4>(modelData, transform));
     }
 
-    void ReadAssimpFile(const std::string& path, const glm::mat4 mat, ModelData& modelData)
+    void ReadAssimpFile(const std::string& path, 
+                        const glm::mat4 modelTransform, 
+                        ModelData& modelData, 
+                        std::vector<Material>& materialPool,
+                        std::vector<std::string>& texturePool)
 	{
         std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
 
-        aiMatrix4x4 modelTr(mat[0][0], mat[1][0], mat[2][0], mat[3][0],
-                            mat[0][1], mat[1][1], mat[2][1], mat[3][1],
-                            mat[0][2], mat[1][2], mat[2][2], mat[3][2],
-                            mat[0][3], mat[1][3], mat[2][3], mat[3][3]);
+        aiMatrix4x4 modelTr(modelTransform[0][0], modelTransform[1][0], modelTransform[2][0], modelTransform[3][0],
+                            modelTransform[0][1], modelTransform[1][1], modelTransform[2][1], modelTransform[3][1],
+                            modelTransform[0][2], modelTransform[1][2], modelTransform[2][2], modelTransform[3][2],
+                            modelTransform[0][3], modelTransform[1][3], modelTransform[2][3], modelTransform[3][3]);
 
         // Does the file exist?
         std::ifstream find_it(path.c_str());
-        if (find_it.fail()) {
+        if (find_it.fail()) 
+        {
             std::cerr << "File not found: " << path << std::endl;
             exit(-1);
         }
@@ -39,12 +44,14 @@ namespace Reinkan
         const aiScene* aiscene = importer.ReadFile(path.c_str(),
             aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 
-        if (!aiscene) {
+        if (!aiscene) 
+        {
             std::printf("- - [ASSIMP]: ... Failed to read.\n");
             exit(-1);
         }
 
-        if (!aiscene->mRootNode) {
+        if (!aiscene->mRootNode) 
+        {
             std::printf("- - [ASSIMP]: Scene has no rootnode.\n");
             exit(-1);
         }
@@ -81,7 +88,8 @@ namespace Reinkan
             bool ht = mtl->Get(AI_MATKEY_COLOR_TRANSPARENT, trans);
 
             Material newmat;
-            if (!emit.IsBlack()) { // An emitter
+            if (!emit.IsBlack()) // An emitter
+            { 
                 newmat.diffuse = { 1,1,1 };  // An emitter needs (1,1,1), else black screen!  WTF???
                 newmat.specular = { 0,0,0 };
                 newmat.shininess = 0.0;
@@ -89,7 +97,8 @@ namespace Reinkan
                 newmat.diffuseMapId = -1;
             }
 
-            else {
+            else 
+            {
                 ////////////////////////////////////////////////
                 // Read material from mtl and make own material
                 ////////////////////////////////////////////////
@@ -105,28 +114,48 @@ namespace Reinkan
             }
 
             aiString texPath;
+
             // DIFFUSE
-            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, 0, &texPath)) {
-                newmat.diffuseMapId = modelData.textures.size();
-                modelData.textures.push_back(std::string(texPath.C_Str()));
-                std::printf("- - [ASSIMP]: ID: %d \tDiffuse Texture: \t%s\n", newmat.diffuseMapId, texPath.C_Str());
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, 0, &texPath)) 
+            {
+                std::string texturePathExtended("../assets/textures/");
+                texturePathExtended += texPath.C_Str();
+                //newmat.diffuseMapId = modelData.textures.size();
+                newmat.diffuseMapId = texturePool.size();
+                // use texturePool appTexturePaths
+                //modelData.textures.push_back(std::string(texPath.C_Str()));
+                texturePool.push_back(std::string(texturePathExtended));
+                std::printf("- - [ASSIMP]: ID: %d \tDiffuse Texture: \t%s\n", newmat.diffuseMapId, texturePathExtended.c_str());
             }
 
             // NORMAL
-            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_NORMALS, 0, &texPath)) {
-                newmat.normalMapId = modelData.textures.size();
-                modelData.textures.push_back(std::string(texPath.C_Str()));
-                std::printf("- - [ASSIMP]: ID: %d \tNormal Texture: \t%s\n", newmat.normalMapId, texPath.C_Str());
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_NORMALS, 0, &texPath))
+            {
+                std::string texturePathExtended("../assets/textures/");
+                texturePathExtended += texPath.C_Str();
+                //newmat.normalMapId = modelData.textures.size();
+                newmat.normalMapId = texturePool.size();
+                // use texturePool appTexturePaths
+                texturePool.push_back(std::string(texturePathExtended));
+                std::printf("- - [ASSIMP]: ID: %d \tNormal Texture: \t%s\n", newmat.normalMapId, texturePathExtended.c_str());
             }
 
             // HEIGHT
-            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DISPLACEMENT, 0, &texPath)) {
-                newmat.heightMapId = modelData.textures.size();
-                modelData.textures.push_back(std::string(texPath.C_Str()));
-                std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texPath.C_Str());
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DISPLACEMENT, 0, &texPath)) 
+            {
+                std::string texturePathExtended("../assets/textures/");
+                texturePathExtended += texPath.C_Str();
+                //newmat.normalMapId = modelData.texture
+                //newmat.heightMapId = modelData.textures.size();
+                newmat.heightMapId = texturePool.size();
+                // use texturePool appTexturePaths
+                texturePool.push_back(std::string(texturePathExtended));
+                std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
             }
 
-            modelData.materials.push_back(newmat);
+            // change to materialPool appMaterials
+            //modelData.materials.push_back(newmat);
+            materialPool.push_back(newmat);
         }
 
         RecurseModelNodes(modelData, aiscene, aiscene->mRootNode, modelTr);

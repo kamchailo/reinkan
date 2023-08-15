@@ -12,8 +12,10 @@ namespace Reinkan
 	{
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
+		// To be moved to material pool
 		std::vector<Material> materials;
 		std::vector<uint32_t> materialIndex;
+		// To be moved to texture pool
 		std::vector<std::string> textures;
 	};
 

@@ -7,6 +7,11 @@ namespace Reinkan
 	{
 		CleanupSwapchain();
 
+		for (auto textureImageWrap : appTextureImageWraps)
+			textureImageWrap.Destroy(appDevice);
+
+		appMaterialBufferWrap.Destroy(appDevice);
+
 		appScanlineDescriptorWrap.Destroy(appDevice);
 
 		for (auto object : appObjects)
@@ -15,7 +20,7 @@ namespace Reinkan
 			object.indexBufferWrap.Destroy(appDevice);
 		}
 
-		appTextureImageWrap.Destroy(appDevice);
+		//appTextureImageWrap.Destroy(appDevice);
 
 		vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);
 		vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);

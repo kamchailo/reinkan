@@ -90,9 +90,94 @@ namespace Reinkan
         vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	}
 
+    // Obsolete for each buffer need to match MAX_FRAME_IN_FLIGHT
+    /*
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkBuffer& buffer)
     {
-        
+        //typedef struct VkDescriptorBufferInfo {
+        //    VkBuffer        buffer;
+        //    VkDeviceSize    offset;
+        //    VkDeviceSize    range;
+        //} VkDescriptorBufferInfo;
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = buffer;
+        bufferInfo.offset = 0;
+        bufferInfo.range = VK_WHOLE_SIZE;
+        //typedef struct VkWriteDescriptorSet {
+        //    VkStructureType                  sType;
+        //    const void*                      pNext;
+        //    VkDescriptorSet                  dstSet;
+        //    uint32_t                         dstBinding;
+        //    uint32_t                         dstArrayElement;
+        //    uint32_t                         descriptorCount;
+        //    VkDescriptorType                 descriptorType;
+        //    const VkDescriptorImageInfo*     pImageInfo;
+        //    const VkDescriptorBufferInfo*    pBufferInfo;
+        //    const VkBufferView*              pTexelBufferView;
+        //} VkWriteDescriptorSet;
+        VkWriteDescriptorSet writeSet{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+        writeSet.dstSet = descSet;
+        writeSet.dstBinding = index;
+        writeSet.dstArrayElement = 0;
+        writeSet.descriptorCount = 1;
+        writeSet.descriptorType = bindingTable[index].descriptorType;
+        writeSet.pBufferInfo = &bufferInfo;
+
+        assert(bindingTable[index].binding == index);
+
+        assert(writeSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
+            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
+            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC);
+
+        vkUpdateDescriptorSets(device, 1, &writeSet, 0, nullptr);
+    }
+    */
+
+    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkBuffer& buffer, const uint32_t maxSets)
+    {
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = buffer;
+        bufferInfo.offset = 0;
+        bufferInfo.range = VK_WHOLE_SIZE;
+
+        for (size_t i = 0; i < maxSets; i++) // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
+        {
+            //typedef struct VkWriteDescriptorSet {
+            //    VkStructureType                  sType;
+            //    const void*                      pNext;
+            //    VkDescriptorSet                  dstSet;
+            //    uint32_t                         dstBinding;
+            //    uint32_t                         dstArrayElement;
+            //    uint32_t                         descriptorCount;
+            //    VkDescriptorType                 descriptorType;
+            //    const VkDescriptorImageInfo*     pImageInfo;
+            //    const VkDescriptorBufferInfo*    pBufferInfo;
+            //    const VkBufferView*              pTexelBufferView;
+            //} VkWriteDescriptorSet;
+            VkWriteDescriptorSet descriptorWrite;
+            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrite.pNext = nullptr;
+            descriptorWrite.dstSet = this->descriptorSets[i];
+            descriptorWrite.dstBinding = index;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.descriptorType = bindingTable[index].descriptorType;
+            descriptorWrite.pBufferInfo = &bufferInfo;
+
+            assert(bindingTable[index].binding == index);
+
+            assert(descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC);
+
+            vkUpdateDescriptorSets(device,
+                1,
+                &descriptorWrite,
+                0,
+                nullptr);
+        }
     }
 
     
@@ -148,9 +233,36 @@ namespace Reinkan
 
     }
 
-    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures)
+    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures, const uint32_t maxSets)
     {
+        std::vector<VkDescriptorImageInfo> des;
+        for (auto& texture : textures)
+            des.emplace_back(texture.GetDescriptorImageInfo());
 
+        for (size_t i = 0; i < maxSets; i++) // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
+        {
+            VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            descriptorWrite.dstSet = this->descriptorSets[i];
+            descriptorWrite.dstBinding = index;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorCount = des.size();
+            descriptorWrite.descriptorType = bindingTable[index].descriptorType;
+            descriptorWrite.pImageInfo = des.data();
+
+            assert(bindingTable[index].binding == index);
+
+            assert(descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
+
+            vkUpdateDescriptorSets(device,
+                1,
+                &descriptorWrite,
+                0,
+                nullptr);
+        }
     }
 
 }

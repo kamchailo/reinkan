@@ -40,7 +40,8 @@ namespace Reinkan
     {
         for (auto texturePath : appTexturePaths)
         {
-            appTextureImageWraps.push_back(CreateTextureImageWrap(texturePath));
+            auto textureImageWrap = CreateTextureImageWrap(texturePath);
+            appTextureImageWraps.push_back(textureImageWrap);
         }
     }
 
@@ -98,13 +99,13 @@ namespace Reinkan
         // Material only once
         if (appTextureImageWraps.size() > 0)
         {
-            appScanlineDescriptorWrap.Write(appDevice, 1, appMaterialBufferWrap.buffer);
+            appScanlineDescriptorWrap.Write(appDevice, 1, appMaterialBufferWrap.buffer, MAX_FRAMES_IN_FLIGHT);
         }
 
         // Texture only once
         if (appTextureImageWraps.size() > 0)
         {
-            appScanlineDescriptorWrap.Write(appDevice, 1, appTextureImageWraps);
+            appScanlineDescriptorWrap.Write(appDevice, 2, appTextureImageWraps, MAX_FRAMES_IN_FLIGHT);
         }
     }
 }

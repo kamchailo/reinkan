@@ -17,11 +17,12 @@ namespace Reinkan
         appModelDataToBeLoaded.push_back(std::pair<std::shared_ptr<ModelData>, glm::mat4>(modelData, transform));
     }
 
-    void ReadAssimpFile(const std::string& path, 
+    void ReadAssimpFile(const std::string& path,
                         const glm::mat4 modelTransform, 
                         ModelData& modelData, 
                         std::vector<Material>& materialPool,
-                        std::vector<std::string>& texturePool)
+                        std::vector<std::string>& texturePool,
+                        unsigned int materialOffset)
 	{
         std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
 
@@ -158,15 +159,15 @@ namespace Reinkan
             materialPool.push_back(newmat);
         }
 
-        RecurseModelNodes(modelData, aiscene, aiscene->mRootNode, modelTr);
+        RecurseModelNodes(modelData, aiscene, aiscene->mRootNode, modelTr, 0, materialOffset);
 
 	}
-
     void RecurseModelNodes(ModelData& modelData,
-                           const aiScene* aiscene, 
-                           const aiNode* node, 
-                           const aiMatrix4x4& parentTr, 
-                           const int level)
+                           const aiScene* aiscene,
+                           const aiNode* node,
+                           const aiMatrix4x4& parentTr,
+                           const int level,
+                           unsigned int materialOffset)
     {
         // Print line with indentation to show structure of the model node hierarchy.
         std::printf("- - [ASSIMP]: ");
@@ -204,10 +205,14 @@ namespace Reinkan
                 aiVector3D aitex = aimesh->HasTextureCoords(0) ? aimesh->mTextureCoords[0][t] : aiVector3D(0, 0, 0);
                 aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
 
-
                 modelData.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
                                                {ainrm.x, ainrm.y, ainrm.z},
-                                               {aitex.x, aitex.y} });
+                                               {aitex.x , 1.0 - aitex.y} }); 
+                                            // The OBJ format assumes a coordinate system 
+                                            // where a vertical coordinate of 0 means the bottom of the image, 
+                                            // however we've uploaded our image into Vulkan in a top to bottom orientation 
+                                            // where 0 means the top of the image. Solve this by 
+                                            // flipping the vertical component of the texture coordinates
             }
 
             // Loop through all faces, recording indices
@@ -215,7 +220,8 @@ namespace Reinkan
             {
                 aiFace* aiface = &aimesh->mFaces[t];
                 for (int i = 2; i < aiface->mNumIndices; i++) {
-                    modelData.materialIndex.push_back(aimesh->mMaterialIndex);
+                    //modelData.materialIndex.push_back(aimesh->mMaterialIndex);
+                    modelData.materialIndex.push_back(materialOffset + aimesh->mMaterialIndex);
                     //std::printf("matId: %d size: %d\n", modelData.materialIndex[modelData.materialIndex.size() - 1], modelData.materialIndex.size());
                     
                     modelData.indices.push_back(aiface->mIndices[0] + faceOffset);
@@ -228,7 +234,7 @@ namespace Reinkan
         // Recurse onto this node's children
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            RecurseModelNodes(modelData, aiscene, node->mChildren[i], childTr, level + 1);
+            RecurseModelNodes(modelData, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
         }
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Reinkan
 {
+    /*
     void ReinkanApp::CreateScanlineDiscriptorSetLayout()
     {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
@@ -125,6 +126,7 @@ namespace Reinkan
                                    nullptr);
         }
     }
+    */
 
     void ReinkanApp::UpdateScanlineUBO(uint32_t currentImage)
     {

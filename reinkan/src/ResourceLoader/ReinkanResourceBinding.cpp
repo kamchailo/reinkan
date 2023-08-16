@@ -18,6 +18,9 @@ namespace Reinkan
             object.vertexBufferWrap = CreateStagedBufferWrap(modelData.first->vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
             object.indexBufferWrap = CreateStagedBufferWrap(modelData.first->indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
+            object.objectId = appObjects.size();
+            object.materialId =  modelData.first->materialIndex[0];
+
             appObjects.push_back(object);
         }
 
@@ -107,5 +110,6 @@ namespace Reinkan
         {
             appScanlineDescriptorWrap.Write(appDevice, 2, appTextureImageWraps, MAX_FRAMES_IN_FLIGHT);
         }
+        std::printf("heuy");
     }
 }

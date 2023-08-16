@@ -9,8 +9,8 @@
 struct PushConstant
 {
     mat4 modelMatrix;
-	uint objectId;
-    uint materialId;
+	int objectId;
+    int materialId;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -20,11 +20,13 @@ layout(push_constant) uniform PushConstantRaster_T
 struct Material
 {
     vec3 diffuse;
+    uint diffuse_padding;
     vec3 specular;
-    float shininess;
-    uint diffuseMapId;
+    uint specular_padding;
     uint normalMapId;
     uint heightMapId;
+    float shininess;
+    uint diffuseMapId;
 };
 layout(binding = 1) buffer MaterialBlock 
 {
@@ -51,9 +53,31 @@ layout(location = 0) out vec4 outColor;
 void main() {
     Material material = materials[pushConstant.materialId];
     // sampler2D diffuseMap = ;
-    // outColor = vec4(1.0, 0.0, 0.0, 1.0);
+
+
     // outColor = vec4(0.0, fragTexCoord, 1.0);
     // outColor = vec4(normal, 1.0);
+    
+    // int debug = pushConstant.materialId;
+    uint debug = material.diffuseMapId;
+    if(debug == 0)
+    {
+        outColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+    if(debug == 1)
+    {
+        outColor = vec4(0.0, 1.0, 0.0, 1.0);
+    }
+    if( debug == 2)
+    {
+        outColor = vec4(0.0, 0.0, 1.0, 1.0);
+    }
+    if( debug > 2)
+    {
+        outColor = vec4(0.0, 1.0, 1.0, 1.0);
+    }
+
     outColor = vec4(texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb, 1.0);
-    // outColor = vec4(texture(texSampler, fragTexCoord).rgb, 1.0);
+
+    // outColor  = vec4(material.diffuse, 1.0);
 }

@@ -146,8 +146,8 @@ namespace Reinkan
                     PushConstant pushConstant{};
                     pushConstant.modelMatrix = object.transform;
                     //pushConstant.modelMatrix[3][3] = 1.0;
-                    pushConstant.materialId = 0;
-                    pushConstant.objectId = 1;
+                    pushConstant.materialId = object.materialId;
+                    pushConstant.objectId = object.objectId;
 
                     vkCmdPushConstants(commandBuffer,
                         appScanlinePipelineLayout,

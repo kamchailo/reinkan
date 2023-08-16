@@ -3,8 +3,8 @@
 struct PushConstant
 {
     mat4 modelMatrix;
-	uint objectId;
-    uint materialId;
+	int objectId;
+    int materialId;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -27,7 +27,8 @@ layout(location = 1) out vec2 fragTexCoord;
 
 void main() 
 {
-    gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
+    // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
+    gl_Position =  ubo.proj * ubo.view  * vec4(inPosition, 1.0);
     normal = inColor;
     fragTexCoord = inTexCoord;
 }

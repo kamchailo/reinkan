@@ -13,6 +13,8 @@ namespace Reinkan
         glm::mat4       transform;      // Instance matrix of the object
         BufferWrap      vertexBufferWrap;   // Buffer of vertices 
         BufferWrap      indexBufferWrap;    // Buffer of triangle indices
+        uint32_t        objectId;
+        uint32_t        materialId;
         //BufferWrap      matColorBuffer; // Buffer of materials
         //BufferWrap      matIndexBuffer; // Buffer of each triangle's material index
 	};

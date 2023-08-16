@@ -259,13 +259,13 @@ namespace Reinkan
         BufferWrap appIndexBufferWrap;
 
         // ReinkanScanlineUniformBuffer.cpp
-        void CreateScanlineDiscriptorSetLayout();
+        //void CreateScanlineDiscriptorSetLayout();
 
-        void CreateScanlineDescriptorPool();
+        //void CreateScanlineDescriptorPool();
 
-        void CreateScanlineDescriptorSets();
+        //void CreateScanlineDescriptorSets();
 
-        void CreateScanlineUniformBuffer();
+        //void CreateScanlineUniformBuffer();
 
         void UpdateScanlineUBO(uint32_t currentImage);
 
@@ -279,7 +279,7 @@ namespace Reinkan
         // ReinkanImageLoader.cpp
         ImageWrap CreateTextureImageWrap(std::string path);
 
-        ImageWrap appTextureImageWrap;
+        //ImageWrap appTextureImageWrap;
         //VkImage appTextureImage;
         //VkDeviceMemory appTextureImageMemory;
 

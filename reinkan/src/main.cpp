@@ -16,11 +16,11 @@ int main()
     {   // Indent to free model data after load
 
         Reinkan::ModelData model;
-        Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", glm::mat4(0.1), model, app.GetAppMaterialPool(), app.GetAppTexturePool());
+        Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", glm::mat4(0.2), model, app.GetAppMaterialPool(), app.GetAppTexturePool(), app.GetAppMaterialPool().size());
         Reinkan::ModelData vampire;
-        Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", glm::mat4(0.1), vampire, app.GetAppMaterialPool(), app.GetAppTexturePool());
+        Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", glm::mat4(0.2), vampire, app.GetAppMaterialPool(), app.GetAppTexturePool(), app.GetAppMaterialPool().size());
 
-        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.1, 0.0));
+        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.2, 0.0));
 
         app.LoadModel(std::make_shared<Reinkan::ModelData>(model), glm::mat4(1));
         app.LoadModel(std::make_shared<Reinkan::ModelData>(vampire), vampireTr);

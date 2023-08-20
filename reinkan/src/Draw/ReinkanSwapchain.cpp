@@ -187,6 +187,7 @@ namespace Reinkan
 
         CreateSwapchain();
         CreateSwapchainImageViews();
+        CreateSwapchainColorResources();
         CreateSwapchainDepthResource();
         CreateSwapchainFrameBuffers();
     }
@@ -202,6 +203,8 @@ namespace Reinkan
         {
             vkDestroyImageView(appDevice, appSwapchainImageViews[i], nullptr);
         }
+
+        appMsaaImageWrap.Destroy(appDevice);
 
         appSwapchainDepthImageWrap.Destroy(appDevice);
 

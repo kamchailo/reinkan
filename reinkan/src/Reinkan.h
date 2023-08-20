@@ -284,7 +284,8 @@ namespace Reinkan
                                   VkImageTiling tiling,
                                   VkImageUsageFlags usage,
                                   VkMemoryPropertyFlags properties,
-                                  uint32_t  mipLevels = 1);
+                                  uint32_t  mipLevels = 1,
+                                  VkSampleCountFlagBits numSamples = VK_SAMPLE_COUNT_1_BIT);
 
         VkImageView CreateImageView(VkImage image, 
                                     VkFormat format,
@@ -349,6 +350,15 @@ namespace Reinkan
         std::vector<ImageWrap>      appTextureImageWraps;
 
         DescriptorWrap appScanlineDescriptorWrap;
+
+        // ReinkanMultiSampling.cpp
+        VkSampleCountFlagBits GetMaxUsableSampleCount();
+
+        void CreateSwapchainColorResources();
+
+        VkSampleCountFlagBits appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
+
+        ImageWrap appMsaaImageWrap;
 
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;

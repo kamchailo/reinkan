@@ -9,7 +9,8 @@ namespace Reinkan
                                           VkImageTiling tiling,
                                           VkImageUsageFlags usage,
                                           VkMemoryPropertyFlags properties,
-                                          uint32_t  mipLevels)
+                                          uint32_t  mipLevels,
+                                          VkSampleCountFlagBits numSamples)
     {
         ImageWrap imageWrap;
         
@@ -25,7 +26,7 @@ namespace Reinkan
         imageCreateInfo.tiling = tiling;
         imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         imageCreateInfo.usage = usage;
-        imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageCreateInfo.samples = numSamples;
         imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateImage(appDevice, &imageCreateInfo, nullptr, &imageWrap.image) != VK_SUCCESS) 

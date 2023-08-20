@@ -200,6 +200,7 @@
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
+    <ClCompile Include="src\MultiSampling\ReinkanMultiSampling.cpp" />
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp" />

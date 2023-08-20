@@ -69,8 +69,6 @@ namespace Reinkan
         }
 
         imageWrap.imageView = CreateImageView(imageWrap.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
-        //imageWrap.sampler = CreateImageSampler();
-        // Not Working right now
         imageWrap.sampler = CreateTextureSampler(mipLevels);
         imageWrap.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 

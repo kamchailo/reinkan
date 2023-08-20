@@ -9,10 +9,11 @@ namespace Reinkan
 
         for (size_t i = 0; i < appSwapchainImageViews.size(); i++) 
         {
-            std::array<VkImageView, 2> attachments = {
-                            appSwapchainImageViews[i],
-                            appSwapchainDepthImageWrap.imageView
-                                    };
+            std::array<VkImageView, 3> attachments = {
+                            appMsaaImageWrap.imageView,
+                            appSwapchainDepthImageWrap.imageView,
+                            appSwapchainImageViews[i]
+                            };
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;

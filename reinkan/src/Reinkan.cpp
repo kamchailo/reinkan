@@ -35,6 +35,9 @@ namespace Reinkan
 
 		CreateScanlineRenderPass();
 
+		// MultiSampling
+		CreateSwapchainColorResources();
+
 		CreateSwapchainDepthResource();
 
 		CreateSwapchainFrameBuffers(); // require renderpass

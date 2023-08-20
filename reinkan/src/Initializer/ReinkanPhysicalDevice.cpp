@@ -69,6 +69,10 @@ namespace Reinkan
             if (IsDeviceSuitable(physicalDevice) && GPUproperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
             {
                 appPhysicalDevice = physicalDevice;
+                
+                // MultiSampling
+                appMsaaSamples = GetMaxUsableSampleCount();
+
                 std::printf("- - Chosen appPhysicalDevice: %p %s\n", appPhysicalDevice, GPUproperties.deviceName);
                 break;
             }

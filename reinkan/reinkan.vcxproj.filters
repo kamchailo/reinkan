@@ -96,6 +96,9 @@
     <ClCompile Include="src\Camera\ReinkanCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\MultiSampling\ReinkanMultiSampling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Reinkan.h">

@@ -57,7 +57,6 @@ namespace Reinkan
 
         void BindResources()
         {
-            // ReinkanImageLoader.cpp
             BindModelData();
 
             BindMaterials();
@@ -90,28 +89,31 @@ namespace Reinkan
         // ReinkanModelLoader.cpp
         void LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform);
 
+        // ReinkanCamera.cpp
+        void SetEyePosition(float eyeX, float eyeY, float eyeZ);
+
     private:
-        // Reinkan.cpp
+    // Reinkan.cpp
         void InitVulkan();
 
         void MainLoop();
 
-        // ReinkanCleanup.cpp
+    // ReinkanCleanup.cpp
         void Cleanup();
 
-        // ReinkanWindow.cpp
+    // ReinkanWindow.cpp
         void InitWindow();
 
         GLFWwindow* appWindow;
         unsigned int windowWidth;
         unsigned int windowHeight;
 
-        // ReinkanInstance.cpp
+    // ReinkanInstance.cpp
         void CreateInstance();
 
         VkInstance appInstance;
 
-        // ReinkanValidationLayers.cpp
+    // ReinkanValidationLayers.cpp
         bool CheckValidationLayerSupport();
 
         std::vector<const char*> GetRequiredExtensions();
@@ -131,7 +133,7 @@ namespace Reinkan
         
         VkDebugUtilsMessengerEXT appDebugMessenger;
         
-        // ReinkanPhysicalDevice.cpp
+    // ReinkanPhysicalDevice.cpp
         void PickPhysicalDevice();
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
@@ -140,19 +142,19 @@ namespace Reinkan
 
         VkPhysicalDevice appPhysicalDevice;
 
-        // ReinkanDevice.cpp
+    // ReinkanDevice.cpp
         void CreateLogicalDevice();
 
         VkDevice appDevice;
         VkQueue appGraphicsQueue;
 
-        // ReinkanSurface.cpp
+    // ReinkanSurface.cpp
         void CreateSurface();
 
         VkSurfaceKHR appSurface;
         VkQueue appPresentQueue;
 
-        // ReinkanSwapchain.cpp
+    // ReinkanSwapchain.cpp
         void CreateSwapchain();
 
         SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice device);
@@ -177,7 +179,7 @@ namespace Reinkan
         std::vector<VkImage>    appSwapchainImages;
         std::vector<VkImageView> appSwapchainImageViews;
 
-        // ReinkanScanlinePipeline.cpp
+    // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
 
         VkShaderModule CreateShaderModule(const std::vector<char>& code);
@@ -185,17 +187,17 @@ namespace Reinkan
         VkPipelineLayout appScanlinePipelineLayout;
         VkPipeline appScanlinePipeline;
 
-        // ReinkanRenderPass.cpp
+    // ReinkanRenderPass.cpp
         void CreateScanlineRenderPass();
 
         VkRenderPass appScanlineRenderPass;
 
-        // ReinkanFrameBuffer.cpp
+    // ReinkanFrameBuffer.cpp
         void CreateSwapchainFrameBuffers();
 
         std::vector<VkFramebuffer> appSwapchainFramebuffers;
 
-        // ReinkanCommandBuffer.cpp
+    // ReinkanCommandBuffer.cpp
         void CreateCommandPool();
 
         void CreateCommandBuffer();
@@ -207,25 +209,25 @@ namespace Reinkan
         VkCommandPool appCommandPool;
         std::vector<VkCommandBuffer> appCommandBuffers;
 
-        // ReinkanSyncObjects.cpp
+    // ReinkanSyncObjects.cpp
         void CreateSyncObjects();
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;
         std::vector<VkFence> inFlightFences;
 
-        // ReinkanDrawFrame.cpp
+    // ReinkanDrawFrame.cpp
         void DrawFrame();
 
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
         uint32_t appCurrentFrame = 0;
 
-        ////////////////////////////////////////
-        //      Resources Binding
-        ////////////////////////////////////////
+    ////////////////////////////////////////
+    //      Resources Binding
+    ////////////////////////////////////////
 
-        // ReinkanBufferUtility.cpp
+    // ReinkanBufferUtility.cpp
         BufferWrap CreateBufferWrap(VkDeviceSize size,
                           VkBufferUsageFlags bufferUsage, 
                           VkMemoryPropertyFlags memoryProperties);
@@ -245,10 +247,10 @@ namespace Reinkan
 
         void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
-        // ReinkanVertexBuffer.cpp
+    // ReinkanVertexBuffer.cpp
         static VkVertexInputBindingDescription GetBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
 
         // Obsolete to Object system
         // void CreateVertexBuffer(std::vector<Vertex> vertices);
@@ -258,15 +260,11 @@ namespace Reinkan
         BufferWrap appVertexBufferWrap;
         BufferWrap appIndexBufferWrap;
 
-        // ReinkanScanlineUniformBuffer.cpp
+    // ReinkanScanlineUniformBuffer.cpp
         //void CreateScanlineDiscriptorSetLayout();
-
         //void CreateScanlineDescriptorPool();
-
         //void CreateScanlineDescriptorSets();
-
         //void CreateScanlineUniformBuffer();
-
         void UpdateScanlineUBO(uint32_t currentImage);
 
         VkDescriptorSetLayout appScanlineDescriptorSetLayout;
@@ -275,35 +273,36 @@ namespace Reinkan
         std::vector<BufferWrap> appScanlineUBO;
         std::vector<void*> appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
 
-        // Temp
-        // ReinkanImageLoader.cpp
+    
+    // ReinkanImageLoader.cpp
         ImageWrap CreateTextureImageWrap(std::string path);
 
-        //ImageWrap appTextureImageWrap;
-        //VkImage appTextureImage;
-        //VkDeviceMemory appTextureImageMemory;
-
-        // ReinkanImageUtility.cpp
+    // ReinkanImageUtility.cpp
         ImageWrap CreateImageWrap(uint32_t width,
                                   uint32_t height,
                                   VkFormat format,
                                   VkImageTiling tiling,
                                   VkImageUsageFlags usage,
-                                  VkMemoryPropertyFlags properties);
+                                  VkMemoryPropertyFlags properties,
+                                  uint32_t  mipLevels = 1);
 
         VkImageView CreateImageView(VkImage image, 
                                     VkFormat format,
-                                    VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT);
+                                    VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT,
+                                    uint32_t  mipLevels = 1);
 
         // Can be created as a few unique sampler 
         // instead of create one for each texture, 
         // and let use choose the setting.
         VkSampler CreateImageSampler();
 
+        VkSampler CreateTextureSampler(uint32_t mipLevels);
+
         void TransitionImageLayout(VkImage image,
                                    VkFormat format,
                                    VkImageLayout oldLayout,
-                                   VkImageLayout newLayout);
+                                   VkImageLayout newLayout,
+                                   uint32_t  mipLevels = 1);
 
 
         void CopyBufferToImage(VkBuffer buffer, 
@@ -311,7 +310,13 @@ namespace Reinkan
                                uint32_t width, 
                                uint32_t height);
 
-        // ReinkanDepthBuffer.cpp
+        void CreateMipmaps(VkImage image, 
+                           VkFormat imageFormat,
+                           int32_t texWidth, 
+                           int32_t texHeight, 
+                           uint32_t mipLevels);
+
+    // ReinkanDepthBuffer.cpp
         void CreateSwapchainDepthResource();
 
         VkFormat FindDepthFormat();
@@ -324,7 +329,7 @@ namespace Reinkan
 
         ImageWrap appSwapchainDepthImageWrap;
 
-        // ReinkanResourceBinding.cpp
+    // ReinkanResourceBinding.cpp
         void BindModelData();
 
         void BindMaterials();
@@ -344,5 +349,8 @@ namespace Reinkan
         std::vector<ImageWrap>      appTextureImageWraps;
 
         DescriptorWrap appScanlineDescriptorWrap;
+
+    // ReinkanCamera.cpp
+        glm::vec3 appEyePosition;
     };
 }

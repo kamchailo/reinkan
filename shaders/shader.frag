@@ -4,8 +4,6 @@
 
 // #extension GL_EXT_buffer_reference2 : require
 
-// layout(binding = 1) uniform sampler2D texSampler;
-
 struct PushConstant
 {
     mat4 modelMatrix;
@@ -17,8 +15,16 @@ layout(push_constant) uniform PushConstantRaster_T
     PushConstant pushConstant;
 };
 
-struct Material
+layout(binding = 0) uniform UniformBufferObject 
 {
+    mat4 model;
+    mat4 view;
+    mat4 viewInverse;
+    mat4 proj;
+} ubo;
+
+struct Material
+{    
     vec3 diffuse;
     uint diffuse_padding;
     vec3 specular;
@@ -32,11 +38,9 @@ layout(binding = 1) buffer MaterialBlock
 {
     Material materials[];
 };
-// layout(buffer_reference, scalar) buffer Materials {Material m[]; };
 
 // Get material by using PushConstant::materialId
 // Material material = materials[pushConstant.materialId];
-
 
 layout(binding = 2) uniform sampler2D[] textureSamplers;
 // pack all textures together (diffuse, normal, height)
@@ -45,39 +49,45 @@ layout(binding = 2) uniform sampler2D[] textureSamplers;
 // vec3 normal = textureSamplers[material.normalMapId];
 // vec3 height = textureSamplers[material.heightMapId];
 
-layout(location = 0) in vec3 normal;
-layout(location = 1) in vec2 fragTexCoord;
+layout(location = 0) in vec3 worldPos;
+layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec3 vertexTangent;
+layout(location = 3) in vec3 viewDir;
+layout(location = 4) in vec2 fragTexCoord;
 
 layout(location = 0) out vec4 outColor;
 
-void main() {
+// include BRDF calculation
+#include "brdf.glsl"
+
+void main() 
+{
     Material material = materials[pushConstant.materialId];
-    // sampler2D diffuseMap = ;
-
-
-    // outColor = vec4(0.0, fragTexCoord, 1.0);
-    // outColor = vec4(normal, 1.0);
     
-    // int debug = pushConstant.materialId;
-    uint debug = material.diffuseMapId;
-    if(debug == 0)
+    vec3 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb;
+
+    // overrride material
+    material.diffuse = diffuse;
+
+    vec3 N = normalize(vertexNormal);
+    vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
+    if(material.normalMapId <= 200)
     {
-        outColor = vec4(1.0, 0.0, 0.0, 1.0);
-    }
-    if(debug == 1)
-    {
-        outColor = vec4(0.0, 1.0, 0.0, 1.0);
-    }
-    if( debug == 2)
-    {
-        outColor = vec4(0.0, 0.0, 1.0, 1.0);
-    }
-    if( debug > 2)
-    {
-        outColor = vec4(0.0, 1.0, 1.0, 1.0);
+        N = normalize(normalMap * 2.0 - 1.0);
     }
 
-    outColor = vec4(texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb, 1.0);
+    vec3 L = vec3(2.0, 0.5, 1.0);
+    vec3 V = normalize(viewDir);
+    // vec3 worldPosVisible = worldPos * 10
 
+
+
+    vec3 brdfColor = EvalBrdf(N, L, V, material);
+
+    vec3 finalColor = (vec3(0.4) + diffuse) * brdfColor;  
+
+
+    outColor = vec4(brdfColor, 1.0);
+     
     // outColor  = vec4(material.diffuse, 1.0);
 }

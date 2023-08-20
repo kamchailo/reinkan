@@ -7,13 +7,15 @@ namespace Reinkan
 	struct Vertex
 	{
 		glm::vec3 position;
-		glm::vec3 normal;
+		glm::vec3 vertexNormal;
+		glm::vec3 vertexTangent;
 		glm::vec2 texCoord;
 	};
 
 	struct UniformBufferObject {
 		alignas(16) glm::mat4 model;
 		alignas(16) glm::mat4 view;
+		alignas(16) glm::mat4 viewInverse;
 		alignas(16) glm::mat4 proj;
 	};
 

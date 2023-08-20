@@ -28,6 +28,21 @@ namespace Reinkan
 
         VkDeviceCreateInfo deviceCreateInfo{};
         deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        
+        // @@ Enable fratures 11 shaderDrawParameters
+        /*
+        VkPhysicalDeviceVulkan11Features features11 = {};
+
+        VkPhysicalDeviceFeatures2 physical_features2 = {};
+        physical_features2.pNext = &features11;
+
+        vkGetPhysicalDeviceFeatures2(appPhysicalDevice, &physical_features2);
+
+        // Logic if feature is not supported
+        if (features11.shaderDrawParameters == VK_FALSE) {
+            std::printf("Does not support: shaderDrawParameters");
+        }
+        */
 
         deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
         deviceCreateInfo.queueCreateInfoCount = queueCreateInfos.size();

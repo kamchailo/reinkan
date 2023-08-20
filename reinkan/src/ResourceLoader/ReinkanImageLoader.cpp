@@ -18,6 +18,8 @@ namespace Reinkan
             throw std::runtime_error("failed to load texture image!");
         }
 
+        uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
+
         BufferWrap stagingBufferWrap = CreateBufferWrap(imageSize,
                                                         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -33,28 +35,44 @@ namespace Reinkan
             texHeight,
             VK_FORMAT_R8G8B8A8_SRGB,                                         // Image Format
             VK_IMAGE_TILING_OPTIMAL,                                         // Image Tilling
-            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,    // Image Usage
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);                            // Memory Property
+            VK_IMAGE_USAGE_TRANSFER_SRC_BIT  // Added for creating mipmaps which is considers a transfer operation
+            | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,  // Image Usage
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                             // Memory Property
+            mipLevels);                                                      // Mip Levels
 
         TransitionImageLayout(imageWrap.image,
-            VK_FORMAT_R8G8B8A8_SRGB,
-            VK_IMAGE_LAYOUT_UNDEFINED,
-            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+                              VK_FORMAT_R8G8B8A8_SRGB,
+                              VK_IMAGE_LAYOUT_UNDEFINED,
+                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                              mipLevels);
 
         CopyBufferToImage(stagingBufferWrap.buffer,
             imageWrap.image,
             static_cast<uint32_t>(texWidth),
             static_cast<uint32_t>(texHeight));
-
-        TransitionImageLayout(imageWrap.image,
-                              VK_FORMAT_R8G8B8A8_SRGB, 
-                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
-                              VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
+        
         stagingBufferWrap.Destroy(appDevice);
 
-        imageWrap.imageView = CreateImageView(imageWrap.image, VK_FORMAT_R8G8B8A8_SRGB);
-        imageWrap.sampler = CreateImageSampler();
+        // Skip transfer for staying as VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
+        // to create mipmaps        
+        if (mipLevels > 0)
+        {
+            CreateMipmaps(imageWrap.image, VK_FORMAT_R8G8B8A8_UNORM, texWidth, texHeight, mipLevels);
+        }
+        else
+        {
+            TransitionImageLayout(imageWrap.image,
+                                  VK_FORMAT_R8G8B8A8_SRGB, 
+                                  VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
+                                  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                                  mipLevels);
+        }
+
+        imageWrap.imageView = CreateImageView(imageWrap.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
+        //imageWrap.sampler = CreateImageSampler();
+        // Not Working right now
+        imageWrap.sampler = CreateTextureSampler(mipLevels);
+        imageWrap.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
         return imageWrap;
 	}

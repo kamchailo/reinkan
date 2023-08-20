@@ -44,6 +44,10 @@ namespace Reinkan
         for (auto texturePath : appTexturePaths)
         {
             auto textureImageWrap = CreateTextureImageWrap(texturePath);
+            TransitionImageLayout(textureImageWrap.image, 
+                VK_FORMAT_R8G8B8A8_SRGB,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             appTextureImageWraps.push_back(textureImageWrap);
         }
     }
@@ -110,6 +114,5 @@ namespace Reinkan
         {
             appScanlineDescriptorWrap.Write(appDevice, 2, appTextureImageWraps, MAX_FRAMES_IN_FLIGHT);
         }
-        std::printf("heuy");
     }
 }

@@ -205,8 +205,15 @@ namespace Reinkan
                 aiVector3D aitex = aimesh->HasTextureCoords(0) ? aimesh->mTextureCoords[0][t] : aiVector3D(0, 0, 0);
                 aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
 
+                // Model doesn't have tangent information
+                if (aimesh->HasTangentsAndBitangents())
+                {
+                    std::printf("I have Tangent\n");
+;                }
+
                 modelData.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
                                                {ainrm.x, ainrm.y, ainrm.z},
+                                               {aitan.x, aitan.y, aitan.z},
                                                {aitex.x , 1.0 - aitex.y} }); 
                                             // The OBJ format assumes a coordinate system 
                                             // where a vertical coordinate of 0 means the bottom of the image, 

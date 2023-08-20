@@ -79,7 +79,8 @@ namespace Reinkan
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-        multisampling.sampleShadingEnable = VK_FALSE;
+        multisampling.sampleShadingEnable = VK_TRUE; // enable sample shading in the pipeline
+        multisampling.minSampleShading = 0.2f; // min fraction for sample shading; closer to one is smoother
         multisampling.rasterizationSamples = appMsaaSamples;
 
         VkPipelineDepthStencilStateCreateInfo depthStencil{};

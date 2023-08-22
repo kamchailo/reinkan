@@ -16,9 +16,20 @@ int main()
     {   // Indent to free model data after load
 
         Reinkan::ModelData model;
-        Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", glm::mat4(0.2), model, app.GetAppMaterialPool(), app.GetAppTexturePool(), app.GetAppMaterialPool().size());
+        Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", 
+                                glm::mat4(0.2), 
+                                model, 
+                                app.GetAppMaterialPool(), 
+                                app.GetAppTexturePool(), 
+                                app.GetAppMaterialPool().size());
+
         Reinkan::ModelData vampire;
-        Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", glm::mat4(0.2), vampire, app.GetAppMaterialPool(), app.GetAppTexturePool(), app.GetAppMaterialPool().size());
+        Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", 
+                                glm::mat4(0.2), 
+                                vampire, 
+                                app.GetAppMaterialPool(), 
+                                app.GetAppTexturePool(), 
+                                app.GetAppMaterialPool().size());
 
         glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.2, 1.0));
         glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.1, 0.0));
@@ -30,6 +41,8 @@ int main()
     }
 
     app.SetEyePosition(0.0, 1.0, 1.0);
+
+    // Expose object list and their properties for game 
 
     try 
     {

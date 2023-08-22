@@ -73,7 +73,8 @@ void main()
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
     if(material.normalMapId <= 200)
     {
-        N = normalize(normalMap * 2.0 - 1.0);
+        // Need to calculate vertexNormal while loading model
+        // N = normalize(normalMap * 2.0 - 1.0);
     }
 
     vec3 L = vec3(2.0, 0.5, 1.0);

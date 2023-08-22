@@ -10,6 +10,9 @@ namespace Reinkan
         for (size_t i = 0; i < appSwapchainImageViews.size(); i++) 
         {
             std::array<VkImageView, 3> attachments = {
+                            // Make MSAA first attachment
+                            // to display MSAA instead of 
+                            // Swapchain ImageViews
                             appMsaaImageWrap.imageView,
                             appSwapchainDepthImageWrap.imageView,
                             appSwapchainImageViews[i]

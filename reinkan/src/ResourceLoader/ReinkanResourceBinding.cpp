@@ -64,15 +64,17 @@ namespace Reinkan
         //} VkDescriptorSetLayoutBinding;
         std::vector<VkDescriptorSetLayoutBinding> bindingTable;
 
+        uint32_t bindingIndex = 0;
+
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                  0,                                                            // binding;
+                                  bindingIndex++,                                                            // binding;
                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                            // descriptorType;
                                   1,                                                            // descriptorCount; 
                                   VK_SHADER_STAGE_VERTEX_BIT });                                // stageFlags;
-        if (appTextureImageWraps.size() > 0)
+        if (appMaterials.size() > 0)
         {
             bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                      1,                                                            // binding;
+                                      bindingIndex++,                                                            // binding;
                                       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                            // descriptorType;
                                       1,                                                            // descriptorCount;
                                       VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
@@ -80,7 +82,7 @@ namespace Reinkan
         if (appTextureImageWraps.size() > 0)
         {
             bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                      2,                                                            // binding;
+                                      bindingIndex++,                                                            // binding;
                                       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
                                       static_cast<uint32_t>(appTextureImageWraps.size()),           // descriptorCount; // Has to > 0
                                       VK_SHADER_STAGE_FRAGMENT_BIT });                              // stageFlags;

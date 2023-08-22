@@ -72,7 +72,7 @@ namespace Reinkan
 
         void SetupScanlinePipeline()
         {
-
+            // Move Bind Resource code part which belong to pipeline here
         }
 
         void Run() 
@@ -147,12 +147,13 @@ namespace Reinkan
 
         VkDevice appDevice;
         VkQueue appGraphicsQueue;
+        VkQueue appPresentQueue;
+        // Compute Shader
+        VkQueue appComputeQueue;
 
     // ReinkanSurface.cpp
         void CreateSurface();
-
         VkSurfaceKHR appSurface;
-        VkQueue appPresentQueue;
 
     // ReinkanSwapchain.cpp
         void CreateSwapchain();
@@ -341,6 +342,7 @@ namespace Reinkan
 
         std::vector<std::pair<std::shared_ptr<ModelData>, glm::mat4>> appModelDataToBeLoaded;
 
+        // Expose to user to manipulate the objects' properties
         std::vector<ObjectData>     appObjects;
 
         std::vector<Material>       appMaterials;

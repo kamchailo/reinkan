@@ -35,5 +35,15 @@ namespace Reinkan
 		alignas(4) uint32_t diffuseMapId;
 	};
 
+	struct Particle
+	{
+		glm::vec2 position;
+		glm::vec2 velocity;
+		glm::vec4 color;
+	};
 
+	struct ComputeParticleUniformBufferObject
+	{
+		float deltaTime = 1.0f;
+	};
 }

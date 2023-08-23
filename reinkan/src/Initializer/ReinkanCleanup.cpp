@@ -7,43 +7,55 @@ namespace Reinkan
 	{
 		CleanupSwapchain();
 
-		for (auto textureImageWrap : appTextureImageWraps)
-			textureImageWrap.Destroy(appDevice);
+		{ // ComputeParticle
+		// Resources
+			appComputeParticleDescriptorWrap.Destroy(appDevice);
+			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+			{
+				appComputePartibleUBO[i].Destroy(appDevice);
+				appComputeParticleStorageBufferWraps[i].Destroy(appDevice);
+			}
+		// Pipeline
+			vkDestroyPipeline(appDevice, appComputeParticlePipeline, nullptr);
+			vkDestroyPipelineLayout(appDevice, appComputeParticlePipelineLayout, nullptr);
+		// Sync
+			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+			{
+				vkDestroySemaphore(appDevice, appComputeParticleFinishedSemaphores[i], nullptr);
+				vkDestroyFence(appDevice, appComputeParticleInFlightFences[i], nullptr);
+			}
+		} // End ComputeParticle
 
-		appMaterialBufferWrap.Destroy(appDevice);
+		{ // Scanline 
+		// Resources
+			for (auto textureImageWrap : appTextureImageWraps)
+				textureImageWrap.Destroy(appDevice);
 
-		appScanlineDescriptorWrap.Destroy(appDevice);
+			appMaterialBufferWrap.Destroy(appDevice);
+			appScanlineDescriptorWrap.Destroy(appDevice);
 
-		for (auto object : appObjects)
-		{
-			object.vertexBufferWrap.Destroy(appDevice);
-			object.indexBufferWrap.Destroy(appDevice);
-		}
+			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+			{
+				appScanlineUBO[i].Destroy(appDevice);
+			}
 
-		//appTextureImageWrap.Destroy(appDevice);
-
-		vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);
-		vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);
-		vkDestroyRenderPass(appDevice, appScanlineRenderPass, nullptr);
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
-		{
-			appScanlineUBO[i].Destroy(appDevice);
-		}
-
-		vkDestroyDescriptorPool(appDevice, appScanlineDescriptorPool, nullptr);
-
-		vkDestroyDescriptorSetLayout(appDevice, appScanlineDescriptorSetLayout, nullptr);
-
-		appIndexBufferWrap.Destroy(appDevice);
-		appVertexBufferWrap.Destroy(appDevice); 
-
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
-		{
-			vkDestroySemaphore(appDevice, renderFinishedSemaphores[i], nullptr);
-			vkDestroySemaphore(appDevice, imageAvailableSemaphores[i], nullptr);
-			vkDestroyFence(appDevice, inFlightFences[i], nullptr);
-		}
+			for (auto object : appObjects)
+			{
+				object.vertexBufferWrap.Destroy(appDevice);
+				object.indexBufferWrap.Destroy(appDevice);
+			}
+		// Pipeline & RenderPass
+			vkDestroyPipeline(appDevice, appScanlinePipeline, nullptr);
+			vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);
+			vkDestroyRenderPass(appDevice, appScanlineRenderPass, nullptr);
+		// Sync
+			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+			{
+				vkDestroySemaphore(appDevice, renderFinishedSemaphores[i], nullptr);
+				vkDestroySemaphore(appDevice, imageAvailableSemaphores[i], nullptr);
+				vkDestroyFence(appDevice, inFlightFences[i], nullptr);
+			}
+		} // End Scanline Resources
 
 		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
 

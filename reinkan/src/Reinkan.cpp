@@ -32,7 +32,6 @@ namespace Reinkan
 		CreateSyncObjects();
 
 		// Render Pass
-
 		CreateScanlineRenderPass();
 
 		// MultiSampling
@@ -41,6 +40,11 @@ namespace Reinkan
 		CreateSwapchainDepthResource();
 
 		CreateSwapchainFrameBuffers(); // require renderpass
+		
+		// From ComputeParticle
+		CreateComputeParticleSyncObjects();
+
+		CreateComputeParticleCommandBuffer();
 
 		// Below this point can move to resources binding stage 
 		// ---------------------------------------------------
@@ -79,6 +83,10 @@ namespace Reinkan
 			glfwPollEvents();
 
 			DrawFrame();
+
+			double currentTime = glfwGetTime();
+			appLastFrameTime = (currentTime - appLastTime) * 1000.0;
+			appLastTime = currentTime;
 		}
 
 		vkDeviceWaitIdle(appDevice);

@@ -41,6 +41,7 @@ namespace Reinkan
 
     void ReinkanApp::BindTextures()
     {
+        // Need to change to use same memory with mem offset
         for (auto texturePath : appTexturePaths)
         {
             auto textureImageWrap = CreateTextureImageWrap(texturePath);

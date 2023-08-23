@@ -10,7 +10,7 @@ namespace Reinkan
         QueueFamilyIndices indices = FindQueueFamilies(appPhysicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-        std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+        std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsAndComputeFamily.value(), indices.presentFamily.value() };
 
         float queuePriority = 1.0f;
         for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -68,7 +68,8 @@ namespace Reinkan
             throw std::runtime_error("failed to create logical device!");
         }
 
-        vkGetDeviceQueue(appDevice, indices.graphicsFamily.value(), 0, &appGraphicsQueue);
+        vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appGraphicsQueue);
+        vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appComputeQueue);
         vkGetDeviceQueue(appDevice, indices.presentFamily.value(), 0, &appPresentQueue);
     }
 }

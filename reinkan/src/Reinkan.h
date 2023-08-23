@@ -67,6 +67,12 @@ namespace Reinkan
 
             CreateScanlinePipeline(appScanlineDescriptorWrap);
 
+            CreateComputeParticleBufferWraps();
+
+            CreateComputeParticleDescriptorSetWrap();
+
+            CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
+
             std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
         }
 
@@ -183,10 +189,19 @@ namespace Reinkan
     // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
 
-        VkShaderModule CreateShaderModule(const std::vector<char>& code);
-
         VkPipelineLayout appScanlinePipelineLayout;
         VkPipeline appScanlinePipeline;
+
+    // ReinkanComputeParticlePipeline.cpp
+        void CreateComputeParticlePipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout appComputeParticlePipelineLayout;
+        VkPipeline appComputeParticlePipeline;
+
+    // ReinkanPipelineUtility.cpp
+        static std::vector<char> ReadFile(const std::string& filename);
+
+        VkShaderModule CreateShaderModule(const std::vector<char>& code);
 
     // ReinkanRenderPass.cpp
         void CreateScanlineRenderPass();
@@ -221,6 +236,8 @@ namespace Reinkan
         void DrawFrame();
 
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+        void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer);
 
         uint32_t appCurrentFrame = 0;
 
@@ -258,8 +275,8 @@ namespace Reinkan
 
         // void CreateIndexBuffer(std::vector<uint32_t> indices);
 
-        BufferWrap appVertexBufferWrap;
-        BufferWrap appIndexBufferWrap;
+        //BufferWrap appVertexBufferWrap;
+        //BufferWrap appIndexBufferWrap;
 
     // ReinkanScanlineUniformBuffer.cpp
         //void CreateScanlineDiscriptorSetLayout();
@@ -268,8 +285,8 @@ namespace Reinkan
         //void CreateScanlineUniformBuffer();
         void UpdateScanlineUBO(uint32_t currentImage);
 
-        VkDescriptorSetLayout appScanlineDescriptorSetLayout;
-        VkDescriptorPool appScanlineDescriptorPool;
+        //VkDescriptorSetLayout appScanlineDescriptorSetLayout;
+        //VkDescriptorPool appScanlineDescriptorPool;
         std::vector<VkDescriptorSet> appScanlineDescriptorSets;
         std::vector<BufferWrap> appScanlineUBO;
         std::vector<void*> appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
@@ -364,5 +381,34 @@ namespace Reinkan
 
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;
+
+    // ReinkanParticleSystem.cpp
+        void CreateComputeParticleBufferWraps();
+
+        void CreateComputeParticleDescriptorSetWrap();
+
+        void CreateComputeParticleSyncObjects();
+
+        void CreateComputeParticleCommandBuffer();
+
+        void UpdateComputeParticleUBO(uint32_t currentImage);
+
+        static VkVertexInputBindingDescription GetParticleBindingDescription();
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetParticleAttributeDescriptions();
+
+        DescriptorWrap                  appComputeParticleDescriptorWrap;
+        
+        std::vector<BufferWrap>         appComputePartibleUBO;
+        std::vector<void*>              appComputePartibleUBOMapped;
+
+        std::vector<BufferWrap>         appComputeParticleStorageBufferWraps;
+
+        std::vector<VkFence>            appComputeParticleInFlightFences;
+        std::vector<VkSemaphore>        appComputeParticleFinishedSemaphores;
+
+        std::vector<VkCommandBuffer>    appComputeParticleCommandBuffers;
+        float                           appLastFrameTime = 0.0f;
+        double                          appLastTime = 0.0f;
     };
 }

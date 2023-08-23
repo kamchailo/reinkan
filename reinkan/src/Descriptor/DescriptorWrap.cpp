@@ -134,6 +134,7 @@ namespace Reinkan
     }
     */
 
+    // Write 1 buffer for multiple frames
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkBuffer& buffer, const uint32_t maxSets)
     {
         VkDescriptorBufferInfo bufferInfo{};
@@ -180,7 +181,7 @@ namespace Reinkan
         }
     }
 
-    
+    // Write 1-to-1 buffers[] to frames
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const std::vector<BufferWrap>& bufferWraps)
     {
         for (size_t i = 0; i < bufferWraps.size(); i++) // In Scanline Buffer bufferWraps.size() is MAX_FRAME_IN_FLIGHT

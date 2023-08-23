@@ -121,7 +121,7 @@ namespace Reinkan
             if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
                 && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
             {
-                indices.graphicsFamily = i;
+                indices.graphicsAndComputeFamily = i;
             }
 
             VkBool32 presentSupport = false;

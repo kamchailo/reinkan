@@ -196,6 +196,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera\ReinkanCamera.cpp" />
+    <ClCompile Include="src\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />

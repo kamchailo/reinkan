@@ -154,8 +154,6 @@ namespace Reinkan
         VkDevice appDevice;
         VkQueue appGraphicsQueue;
         VkQueue appPresentQueue;
-        // Compute Shader
-        VkQueue appComputeQueue;
 
     // ReinkanSurface.cpp
         void CreateSurface();
@@ -186,17 +184,20 @@ namespace Reinkan
         std::vector<VkImage>    appSwapchainImages;
         std::vector<VkImageView> appSwapchainImageViews;
 
+    // ReinkanMultiSampling.cpp
+        VkSampleCountFlagBits GetMaxUsableSampleCount();
+
+        void CreateSwapchainColorResources();
+
+        VkSampleCountFlagBits appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
+
+        ImageWrap appMsaaImageWrap;
+
     // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
 
         VkPipelineLayout appScanlinePipelineLayout;
         VkPipeline appScanlinePipeline;
-
-    // ReinkanComputeParticlePipeline.cpp
-        void CreateComputeParticlePipeline(DescriptorWrap& descriptorWrap);
-
-        VkPipelineLayout appComputeParticlePipelineLayout;
-        VkPipeline appComputeParticlePipeline;
 
     // ReinkanPipelineUtility.cpp
         static std::vector<char> ReadFile(const std::string& filename);
@@ -270,19 +271,7 @@ namespace Reinkan
 
         static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
 
-        // Obsolete to Object system
-        // void CreateVertexBuffer(std::vector<Vertex> vertices);
-
-        // void CreateIndexBuffer(std::vector<uint32_t> indices);
-
-        //BufferWrap appVertexBufferWrap;
-        //BufferWrap appIndexBufferWrap;
-
     // ReinkanScanlineUniformBuffer.cpp
-        //void CreateScanlineDiscriptorSetLayout();
-        //void CreateScanlineDescriptorPool();
-        //void CreateScanlineDescriptorSets();
-        //void CreateScanlineUniformBuffer();
         void UpdateScanlineUBO(uint32_t currentImage);
 
         //VkDescriptorSetLayout appScanlineDescriptorSetLayout;
@@ -359,7 +348,6 @@ namespace Reinkan
 
         std::vector<std::pair<std::shared_ptr<ModelData>, glm::mat4>> appModelDataToBeLoaded;
 
-        // Expose to user to manipulate the objects' properties
         std::vector<ObjectData>     appObjects;
 
         std::vector<Material>       appMaterials;
@@ -370,17 +358,32 @@ namespace Reinkan
 
         DescriptorWrap appScanlineDescriptorWrap;
 
-        // ReinkanMultiSampling.cpp
-        VkSampleCountFlagBits GetMaxUsableSampleCount();
-
-        void CreateSwapchainColorResources();
-
-        VkSampleCountFlagBits appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
-
-        ImageWrap appMsaaImageWrap;
+    ////////////////////////////////////////
+    //          User Control
+    ////////////////////////////////////////
 
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;
+
+    // Expose Object Property from std::vector<ObjectData> appObjects
+        // - position
+        // - rotation
+        // - scale
+        // - push constant
+
+    ////////////////////////////////////////
+    //          Compute Shaders
+    ////////////////////////////////////////
+        
+        VkQueue appComputeQueue;        // Create in CreateDevice();
+
+    // -------- Particle System -------- //
+
+    // ReinkanComputeParticlePipeline.cpp
+        void CreateComputeParticlePipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout appComputeParticlePipelineLayout;
+        VkPipeline appComputeParticlePipeline;
 
     // ReinkanParticleSystem.cpp
         void CreateComputeParticleBufferWraps();
@@ -399,8 +402,8 @@ namespace Reinkan
 
         DescriptorWrap                  appComputeParticleDescriptorWrap;
         
-        std::vector<BufferWrap>         appComputePartibleUBO;
-        std::vector<void*>              appComputePartibleUBOMapped;
+        std::vector<BufferWrap>         appComputeParticleUBO;
+        std::vector<void*>              appComputeParticleUBOMapped;
 
         std::vector<BufferWrap>         appComputeParticleStorageBufferWraps;
 
@@ -410,5 +413,35 @@ namespace Reinkan
         std::vector<VkCommandBuffer>    appComputeParticleCommandBuffers;
         float                           appLastFrameTime = 0.0f;
         double                          appLastTime = 0.0f;
+
+    // -------- Clustered Shading -------- //
+
+    // ReinkanClusteredPipeline.cpp
+        void CreateClusteredPipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout appClusteredPipelineLayout;
+        VkPipeline appClusteredPipeline;
+
+    // ReinkanClusteredShading.cpp
+        void CreateComputeClusteredBufferWraps();
+
+        void CreateComputeClusteredDescriptorSetWrap();
+
+        void CreateComputeClusteredSyncObjects();
+
+        void CreateComputeClusteredCommandBuffer();
+
+        void UpdateComputeClusteredUBO(uint32_t currentImage);
+
+        DescriptorWrap                  appClusteredDescriptorWrap;
+
+        std::vector<BufferWrap>         appClusteredUBO;
+        std::vector<void*>              appClusteredUBOMapped;
+
+        std::vector<BufferWrap>         appClusteredGlobalLights;
+        
+        std::vector<BufferWrap>         appClusteredLightIndexMap;
+        
+        std::vector<BufferWrap>         appClusteredLightGrid;
     };
 }

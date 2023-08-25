@@ -46,34 +46,7 @@ namespace Reinkan
 
 		CreateComputeParticleCommandBuffer();
 
-		// Below this point can move to resources binding stage 
-		// ---------------------------------------------------
-		// May have to split pipeline to take pipelineLayout after DescriptorSet
-
-			// Descriptors
-		//CreateScanlineDiscriptorSetLayout();
-
-		//CreateScanlinePipeline();
-
-		// VertexBuffer -> Move to Bind Loaded Resources
-
-		//CreateVertexBuffer(vertices);
-
-		//CreateIndexBuffer(indices);
-
-		// Image Loading
-
-		//appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/Vampire_diffuse.png");
-
-		// UniformBuffer
-
-		//CreateScanlineDescriptorPool();
-		
-		//CreateScanlineUniformBuffer(); // UBO before DescriptorSet
-
-		//CreateScanlineDescriptorSets();
-
-
+		// Resources Binding will happen after this point
 	}
 
 	void ReinkanApp::MainLoop()

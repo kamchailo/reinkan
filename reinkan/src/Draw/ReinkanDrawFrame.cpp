@@ -10,7 +10,7 @@ namespace Reinkan
         ////////////////////////////////////////
         //          Compute Dispatch
         ////////////////////////////////////////
-
+        /*
         VkSubmitInfo submitComputeInfo{};
         submitComputeInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -22,7 +22,7 @@ namespace Reinkan
 
         vkResetFences(appDevice, 1, &appComputeParticleInFlightFences[appCurrentFrame]);
 
-        vkResetCommandBuffer(appComputeParticleCommandBuffers[appCurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+        vkResetCommandBuffer(appComputeParticleCommandBuffers[appCurrentFrame], 0);
         RecordComputeCommandBuffer(appComputeParticleCommandBuffers[appCurrentFrame]);
 
         submitComputeInfo.commandBufferCount = 1;
@@ -34,6 +34,7 @@ namespace Reinkan
         {
             throw std::runtime_error("failed to submit compute command buffer!");
         };
+        */
 
         ////////////////////////////////////////
         //          Graphics Draw
@@ -76,17 +77,19 @@ namespace Reinkan
         vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
         RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
 
-        //VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
+        VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[appCurrentFrame] };
-        //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         // With Compute
-        VkSemaphore waitSemaphores[] = { appComputeParticleFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
-        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        //VkSemaphore waitSemaphores[] = { appComputeParticleFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
+        //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.waitSemaphoreCount = 2;
+        submitInfo.waitSemaphoreCount = 1;
+        // With Compute
+        //submitInfo.waitSemaphoreCount = 2;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
         submitInfo.commandBufferCount = 1;
@@ -211,23 +214,6 @@ namespace Reinkan
 
                     vkCmdDraw(commandBuffer, PARTICLE_COUNT, 1, 0, 0);
                 }
-                */
-
-                /*
-                VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
-                vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appVertexBufferWrap.buffer, offsets);
-                vkCmdBindIndexBuffer(commandBuffer, appIndexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
-
-                vkCmdBindDescriptorSets(commandBuffer, 
-                                        VK_PIPELINE_BIND_POINT_GRAPHICS, 
-                                        appScanlinePipelineLayout, 
-                                        0, 
-                                        1, 
-                                        &appScanlineDescriptorSets[appCurrentFrame], 
-                                        0, 
-                                        nullptr);
-
-                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
                 */
 
             }

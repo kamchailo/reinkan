@@ -31,7 +31,7 @@ int main()
                                 app.GetAppTexturePool(), 
                                 app.GetAppMaterialPool().size());
 
-        glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.2, 1.0));
+        glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.2, 0.0));
         glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.1, 0.0));
 
         app.LoadModel(std::make_shared<Reinkan::ModelData>(model), modelTr);

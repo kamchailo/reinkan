@@ -40,8 +40,14 @@ namespace Reinkan
         //          Graphics Draw
         ////////////////////////////////////////
 
+        // Skip draw if fence is not ready
+        if (vkGetFenceStatus(appDevice, inFlightFences[appCurrentFrame]) == VK_NOT_READY)
+        {
+            return;
+        }
+
         // can only pass if inFlightFences is [SIGNAL]
-        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
+        //vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(appDevice, 
@@ -185,7 +191,7 @@ namespace Reinkan
 
                     // Push Constant
                     // Information pushed at each draw call
-                    PushConstant pushConstant{};
+                    PushConstantScanline pushConstant{};
                     pushConstant.modelMatrix = object.transform;
                     //pushConstant.modelMatrix[3][3] = 1.0;
                     pushConstant.materialId = object.materialId;
@@ -195,7 +201,7 @@ namespace Reinkan
                         appScanlinePipelineLayout,
                         VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                         0,
-                        sizeof(PushConstant),
+                        sizeof(PushConstantScanline),
                         &pushConstant
                     );
 

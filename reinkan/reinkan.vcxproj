@@ -201,8 +201,10 @@
     <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
+    <ClCompile Include="src\Lights\ReinkanLightUtility.cpp" />
     <ClCompile Include="src\MultiSampling\ReinkanMultiSampling.cpp" />
     <ClCompile Include="src\ParticleSystem\ReinkanParticleSystem.cpp" />
+    <ClCompile Include="src\Pipeline\ReinkanComputeClusteredPipeline.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanComputeParticlePipeline.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanPipelineUtility.cpp" />
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp" />

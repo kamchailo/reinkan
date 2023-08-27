@@ -77,18 +77,22 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
-    vec3 L = vec3(2.0, 0.5, 1.0);
+    vec3 L = vec3(2.0, 1.0, 1.0);
+    float ambientLight = 0.4;
+    float intensity = 2.0;
     vec3 V = normalize(viewDir);
     // vec3 worldPosVisible = worldPos * 10
 
 
 
-    vec3 brdfColor = EvalBrdf(N, L, V, material);
-
-    vec3 finalColor = (vec3(0.4) + diffuse) * brdfColor;  
-
+    vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
 
     outColor = vec4(brdfColor, 1.0);
      
+
+    float depth = length(viewDir) / 10.0;
+    outColor = vec4(vec3(depth), 1.0);
+    // outColor = vec4(worldPos, 1.0);
+
     // outColor  = vec4(material.diffuse, 1.0);
 }

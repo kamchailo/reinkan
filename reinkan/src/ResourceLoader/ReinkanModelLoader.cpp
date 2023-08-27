@@ -14,7 +14,11 @@ namespace Reinkan
 {
     void ReinkanApp::LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform)
     {
-        appModelDataToBeLoaded.push_back(std::pair<std::shared_ptr<ModelData>, glm::mat4>(modelData, transform));
+        ModelDataLoading modelDataLoading;
+        modelDataLoading.modelDataPtr = modelData;
+        modelDataLoading.modelTransform = transform;
+
+        appModelDataToBeLoaded.push_back(modelDataLoading);
     }
 
     void ReadAssimpFile(const std::string& path,
@@ -83,8 +87,8 @@ namespace Reinkan
             bool hd = mtl->Get(AI_MATKEY_COLOR_DIFFUSE, diff);
             aiColor3D spec(0.f, 0.f, 0.f);
             bool hs = mtl->Get(AI_MATKEY_COLOR_SPECULAR, spec);
-            float alpha = 20.0;
-            bool ha = mtl->Get(AI_MATKEY_SHININESS, &alpha, NULL);
+            float shininess = 20.0;
+            bool ha = mtl->Get(AI_MATKEY_SHININESS, &shininess, NULL);
             aiColor3D trans;
             bool ht = mtl->Get(AI_MATKEY_COLOR_TRANSPARENT, trans);
 
@@ -109,7 +113,7 @@ namespace Reinkan
                 if (AI_SUCCESS == hs) Ks = glm::vec3(spec.r, spec.g, spec.b);
                 newmat.diffuse = { Kd[0], Kd[1], Kd[2] };
                 newmat.specular = { Ks[0], Ks[1], Ks[2] };
-                newmat.shininess = alpha; //sqrtf(2.0f/(2.0f+alpha));
+                newmat.shininess = shininess; //sqrtf(2.0f/(2.0f+shininess));
                 //newmat.emission = { 0,0,0 };
                 newmat.diffuseMapId = -1;
             }

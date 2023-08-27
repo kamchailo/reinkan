@@ -49,6 +49,7 @@ namespace Reinkan
 		// Resources Binding will happen after this point
 	}
 
+	/* obsolete
 	void ReinkanApp::MainLoop()
 	{
 		while (!glfwWindowShouldClose(appWindow)) 
@@ -64,6 +65,24 @@ namespace Reinkan
 
 		vkDeviceWaitIdle(appDevice);
 
+		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
+	}
+	*/
+
+	bool ReinkanApp::ShouldClose()
+	{
+		return glfwWindowShouldClose(appWindow);
+	}
+
+	void ReinkanApp::ReinkanUpdate()
+	{
+		glfwPollEvents();
+
+		DrawFrame();
+
+		double currentTime = glfwGetTime();
+		appLastFrameTime = (currentTime - appLastTime) * 1000.0;
+		appLastTime = currentTime;
 	}
 }
 

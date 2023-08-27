@@ -5,6 +5,10 @@ namespace Reinkan
 {
 	void ReinkanApp::Cleanup()
 	{
+		std::printf("\n=============================== START OF CLEAN UP ===============================\n\n");
+
+		vkDeviceWaitIdle(appDevice);
+
 		CleanupSwapchain();
 
 		{ // ComputeParticle

@@ -46,7 +46,17 @@ int main()
 
     try 
     {
-        app.Run();
+        //app.Run();
+        //app.MainLoop();
+
+        while (!app.ShouldClose())
+        {
+            app.ReinkanUpdate();
+
+        }
+
+        app.Cleanup();
+
     }
     catch (const std::exception& e) 
     {

@@ -27,6 +27,8 @@
 
 namespace Reinkan
 {
+    typedef void (*updateFunction)();
+
 	class ReinkanApp
 	{
     public:
@@ -67,6 +69,8 @@ namespace Reinkan
 
             CreateScanlinePipeline(appScanlineDescriptorWrap);
 
+            CreateComputeClusteredPlanes(0.3, 100, 32);
+
             CreateComputeParticleBufferWraps();
 
             CreateComputeParticleDescriptorSetWrap();
@@ -81,31 +85,39 @@ namespace Reinkan
             // Move Bind Resource code part which belong to pipeline here
         }
 
+        // To Be Obsolete
+        /*
         void Run() 
         {
             MainLoop();
 
-            std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
+            
 
             Cleanup();
         }
+        */
+
+    // Reinkan.cpp
+        //void MainLoop();
+
+        bool ShouldClose();
+
+        void ReinkanUpdate();
+
+    // ReinkanCleanup.cpp
+        void Cleanup();
 
         bool appFramebufferResized = false;
 
-        // ReinkanModelLoader.cpp
+    // ReinkanModelLoader.cpp
         void LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform);
 
-        // ReinkanCamera.cpp
+    // ReinkanCamera.cpp
         void SetEyePosition(float eyeX, float eyeY, float eyeZ);
 
     private:
     // Reinkan.cpp
         void InitVulkan();
-
-        void MainLoop();
-
-    // ReinkanCleanup.cpp
-        void Cleanup();
 
     // ReinkanWindow.cpp
         void InitWindow();
@@ -346,7 +358,7 @@ namespace Reinkan
 
         void CreateScanlineDescriptorWrap();
 
-        std::vector<std::pair<std::shared_ptr<ModelData>, glm::mat4>> appModelDataToBeLoaded;
+        std::vector<ModelDataLoading> appModelDataToBeLoaded;
 
         std::vector<ObjectData>     appObjects;
 
@@ -364,6 +376,8 @@ namespace Reinkan
 
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;
+
+        std::vector<updateFunction> appUpdates;
 
     // Expose Object Property from std::vector<ObjectData> appObjects
         // - position
@@ -423,6 +437,12 @@ namespace Reinkan
         VkPipeline appClusteredPipeline;
 
     // ReinkanClusteredShading.cpp
+        void CreateComputeClusteredPlanes(float nearClippingPlane, float farClippingPlane, uint32_t sizeZ);
+
+        void CreateComputeClusteredGrids(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ);
+
+        void CreateComputeClusteredGlobalLights();
+
         void CreateComputeClusteredBufferWraps();
 
         void CreateComputeClusteredDescriptorSetWrap();
@@ -438,10 +458,26 @@ namespace Reinkan
         std::vector<BufferWrap>         appClusteredUBO;
         std::vector<void*>              appClusteredUBOMapped;
 
-        std::vector<BufferWrap>         appClusteredGlobalLights;
+        // readonly in FrustumCalculation
+        BufferWrap                      appClusteredPlanes;
+
+        // out FrustumCalculation       in CollisionDectection
+        std::vector<BufferWrap>         appClusteredGrids;
+
+        // readonly in CollisionDectection  readonly in Scanline
+        BufferWrap                      appClusteredGlobalLights;
         
+        // out CollisionDectection          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightIndexMap;
         
+        // out CollisionDectection          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightGrid;
+
+
+        // ReinkanLightUtility.cpp
+        void AppendLight(const LightObject& lightObject);
+
+        // User assigned Light
+        std::vector<LightObject>        appLightObjects;
     };
 }

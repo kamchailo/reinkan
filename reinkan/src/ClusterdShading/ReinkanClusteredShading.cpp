@@ -5,6 +5,39 @@
 
 namespace Reinkan
 {
+    void ReinkanApp::CreateComputeClusteredBufferWraps(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ, float nearClippingPlane, float farClippingPlane)
+    {
+        CreateComputeClusteredUBO();
+
+        CreateComputeClusteredPlanes(nearClippingPlane, farClippingPlane, sizeZ);
+
+        CreateComputeClusteredGrids(sizeX, sizeY, sizeZ);
+
+        if (appLightObjects.size() == 0) { return; }
+
+        CreateComputeClusteredGlobalLights();
+
+        CreateComputeClusteredLightBuffers(sizeX, sizeY, sizeZ);
+    }
+
+    void ReinkanApp::CreateComputeClusteredUBO()
+    {
+        //std::vector<BufferWrap>         appClusteredUBO;
+        //std::vector<void*>              appClusteredUBOMapped;
+        VkDeviceSize uboBufferSize = sizeof(ComputeClusteredUniformBufferObject);
+
+        appClusteredUBO.resize(MAX_FRAMES_IN_FLIGHT);
+        appClusteredUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appClusteredUBO[i] = CreateBufferWrap(uboBufferSize,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkMapMemory(appDevice, appClusteredUBO[i].memory, 0, uboBufferSize, 0, &appClusteredUBOMapped[i]);
+        }
+    }
+
     void ReinkanApp::CreateComputeClusteredPlanes(float nearClippingPlane, float farClippingPlane, uint32_t sizeZ)
     {
         // appClusteredPlanes
@@ -21,7 +54,7 @@ namespace Reinkan
 
             currentZFar = nearClippingPlane * pow(farClippingPlane / nearClippingPlane, static_cast<float>(i+1) / sizeZ);
             clusterPlanes[i].zFar = currentZFar;
-            //std::printf("i: %d  near: %f  far: %f size: %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar, clusterPlanes[i].zFar - clusterPlanes[i].zNear);
+            std::printf("i: %d  near: %f  far: %f size: %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar, clusterPlanes[i].zFar - clusterPlanes[i].zNear);
         }
 
         VkDeviceSize bufferSize = sizeof(ClusterPlane) * sizeZ;
@@ -31,51 +64,36 @@ namespace Reinkan
 
     void ReinkanApp::CreateComputeClusteredGrids(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ)
     {
-        // out FrustumCalculation       in CollisionDectection
+        // out clusteredGrid       in clusteredCullLight
         //std::vector<BufferWrap>         appClusteredGrids;
         uint32_t bufferSize = sizeof(ClusterGrid) * sizeX * sizeY * sizeZ;
+
+        appClusteredGrids.resize(MAX_FRAMES_IN_FLIGHT);
+
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            appComputeParticleStorageBufferWraps[i] = CreateBufferWrap(bufferSize,
-                                                                       VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-                                                                       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+            appClusteredGrids[i] = CreateBufferWrap(bufferSize,
+                                                    VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
         }
     }
 
     void ReinkanApp::CreateComputeClusteredGlobalLights()
     {
-        // readonly in CollisionDectection  readonly in Scanline
+        // readonly in clusteredCullLight  readonly in Scanline
         //BufferWrap                      appClusteredGlobalLights;
-        if (appLightObjects.size() > 0)
-        {
-            appClusteredGlobalLights = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        }
+        appClusteredGlobalLights = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     }
 
-    void ReinkanApp::CreateComputeClusteredBufferWraps()
+    void ReinkanApp::CreateComputeClusteredLightBuffers(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ)
     {
-        //std::vector<BufferWrap>         appClusteredUBO;
-        //std::vector<void*>              appClusteredUBOMapped;
-        VkDeviceSize uboBufferSize = sizeof(ComputeClusteredUniformBufferObject);
-
-        appClusteredUBO.resize(MAX_FRAMES_IN_FLIGHT);
-        appClusteredUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appClusteredUBO[i] = CreateBufferWrap(uboBufferSize,
-                                                  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-            vkMapMemory(appDevice, appClusteredUBO[i].memory, 0, uboBufferSize, 0, &appClusteredUBOMapped[i]);
-        }
-
-        // out CollisionDectection          readonly in Scanline
+        // out clusteredCullLight          readonly in Scanline
         //std::vector<BufferWrap>         appClusteredLightIndexMap;
-        uint32_t maxBufferSize = appLightObjects.size() * 16 * 9 * 32; // N lights * M Grids
+        uint32_t maxBufferSize = appLightObjects.size() * sizeX * sizeY * sizeZ; // N lights * M Grids
 
-        // out CollisionDectection          readonly in Scanline
+        // out clusteredCullLight          readonly in Scanline
         //std::vector<BufferWrap>         appClusteredLightGrid;
-        uint32_t bufferSize = 16 * 9 * 32;
+        uint32_t bufferSize = sizeX * sizeY * sizeZ;
 
         appClusteredLightIndexMap.resize(MAX_FRAMES_IN_FLIGHT);
         appClusteredLightGrid.resize(MAX_FRAMES_IN_FLIGHT);
@@ -90,22 +108,57 @@ namespace Reinkan
                                                         VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
                                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
         }
-
     }
 
     void ReinkanApp::CreateComputeClusteredDescriptorSetWrap()
-    {
+    {   
+        //DescriptorWrap                  appClusteredGridDescriptorWrap;
+        
+        
+        
+        
+        //DescriptorWrap                  appClusteredCullLightDescriptorWrap;
+
+
 
     }
 
     void ReinkanApp::CreateComputeClusteredSyncObjects()
     {
+        appComputeClusteredInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+        appComputeClusteredFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            if (vkCreateSemaphore(appDevice, &semaphoreInfo, nullptr, &appComputeClusteredFinishedSemaphores[i]) != VK_SUCCESS
+                || vkCreateFence(appDevice, &fenceInfo, nullptr, &appComputeClusteredInFlightFences[i]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create compute synchronization objects for a frame!");
+            }
+        }
     }
 
     void ReinkanApp::CreateComputeClusteredCommandBuffer()
     {
+        appComputeClusteredCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = appCommandPool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = (uint32_t)appComputeClusteredCommandBuffers.size();
+
+        if (vkAllocateCommandBuffers(appDevice, &allocInfo, appComputeClusteredCommandBuffers.data()) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to allocate compute command buffers!");
+        }
     }
 
     void ReinkanApp::UpdateComputeClusteredUBO(uint32_t currentImage)

@@ -47,12 +47,13 @@ namespace Reinkan
 		float deltaTime = 1.0f;
 	};
 
-	struct LightObject
+	struct ComputeClusteredUniformBufferObject
 	{
-		alignas(16) glm::vec3	position;
-		alignas(16) glm::vec3	color;
-		alignas(4) float 		intensity;
-		alignas(4) float 		radius;
+		alignas(16) glm::mat4 	view;
+		alignas(16) glm::mat4 	proj;
+		alignas(16) glm::mat4 	projInverse;
+		alignas(8) glm::vec2 	screenDimensions;
+		// alignas(4) uint32_t 	tileSizePx;
 	};
 
 	struct ClusterPlane
@@ -67,12 +68,16 @@ namespace Reinkan
 		alignas(16) glm::vec3	maxPosition;
 	};
 
-	struct ComputeClusteredUniformBufferObject
+	struct LightObject
 	{
-		alignas(16) glm::mat4 view;
-		alignas(16) glm::mat4 proj;
-		alignas(16) glm::mat4 projInverse;
+		alignas(16) glm::vec3	position;
+		alignas(16) glm::vec3	color;
+		alignas(4) float 		intensity;
+		alignas(4) float 		radius;
 	};
+
+	// LightGridIndex
+	// uint	value;
 
 	struct LightGrid
 	{

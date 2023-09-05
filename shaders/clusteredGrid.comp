@@ -1,0 +1,46 @@
+#version 450
+
+#extension GL_EXT_nonuniform_qualifier : enable
+
+layout (binding = 0) uniform ComputeClusteredUniformBufferObject {
+    mat4    view;
+    mat4    proj;
+    mat4    projInverse;
+    vec2    screenDimensions;
+    // uint    tileSizePx; 
+    // can be calculate 
+    // tileSizePx = screenDimensions / gl_NumWorkGroups.x 
+} ubo;
+
+struct ClusterPlane
+{
+    float	zNear;
+    float	zFar;
+};
+layout(binding = 1) readonly buffer ClusterPlaneBlock 
+{
+    ClusterPlane clusterPlanes[];
+    // access by using 
+    // this invocation planes = clusterPlanes[gl_WorkGroupID.z]
+};
+
+struct ClusterGrid
+{
+    vec3	minPosition;
+    uint    minPos_padding;
+    vec3	maxPosition;
+    uint    maxPos_padding;
+};
+layout(binding = 2) buffer ClusterGridBlock 
+{
+    ClusterGrid clusterGrids[];
+};
+
+#include "clusteredGridFunc.glsl"
+
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+void main()
+{
+    // write to grid
+}

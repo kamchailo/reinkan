@@ -8,16 +8,20 @@
 
 int main() 
 {
+    ////////////////////////////////////////
+    //          Vulkan Init
+    ////////////////////////////////////////
     Reinkan::ReinkanApp app(800,600);
-
     app.Init();
 
-    // Load Resources
+    ////////////////////////////////////////
+    //          Load & Bind Resources
+    ////////////////////////////////////////
     {   // Indent to free model data after load
 
         Reinkan::ModelData model;
         Reinkan::ReadAssimpFile("../assets/models/simpleshape.obj", 
-                                glm::mat4(0.2), 
+                                glm::mat4(1.0), 
                                 model, 
                                 app.GetAppMaterialPool(), 
                                 app.GetAppTexturePool(), 
@@ -25,25 +29,42 @@ int main()
 
         Reinkan::ModelData vampire;
         Reinkan::ReadAssimpFile("../assets/models/dancing_vampire.dae", 
-                                glm::mat4(0.2), 
+                                glm::mat4(1.0), 
                                 vampire, 
                                 app.GetAppMaterialPool(), 
                                 app.GetAppTexturePool(), 
                                 app.GetAppMaterialPool().size());
 
-        glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.2, 0.0));
-        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.1, 0.0));
+        Reinkan::ModelData sponza;
+        Reinkan::ReadAssimpFile("../assets/models/sponza.obj",
+                                glm::mat4(0.01),
+                                sponza,
+                                app.GetAppMaterialPool(),
+                                app.GetAppTexturePool(),
+                                app.GetAppMaterialPool().size());
+
+        glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, -0.3, 0.0));
+        glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
+        glm::mat4 sponzaTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
 
         app.LoadModel(std::make_shared<Reinkan::ModelData>(model), modelTr);
         app.LoadModel(std::make_shared<Reinkan::ModelData>(vampire), vampireTr);
+        app.LoadModel(std::make_shared<Reinkan::ModelData>(sponza), sponzaTr);
+
+        // Lights
+        app.AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
         app.BindResources();
     }
 
-    app.SetEyePosition(0.0, 1.0, 1.0);
+    ////////////////////////////////////////
+    //          Game Object Control
+    ////////////////////////////////////////
+    app.SetEyePosition(0.0, 5.0, 5.0);
 
-    // Expose object list and their properties for game 
-
+    ////////////////////////////////////////
+    //          Vulkan Main Program
+    ////////////////////////////////////////
     try 
     {
         //app.Run();

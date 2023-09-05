@@ -17,7 +17,7 @@ namespace Reinkan
 
             object.objectId = appObjects.size();
             // only support one material per object
-            object.materialId = modelData.modelDataPtr->materialIndex[0];
+            object.materialId = modelData.modelDataPtr->materialIndex;
 
             // Object Instance Properties
             object.transform = modelData.modelTransform;

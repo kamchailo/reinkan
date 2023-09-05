@@ -41,10 +41,15 @@ namespace Reinkan
 
 		CreateSwapchainFrameBuffers(); // require renderpass
 		
-		// From ComputeParticle
-		CreateComputeParticleSyncObjects();
+		// From ComputeClustered
+		CreateComputeClusteredSyncObjects();
 
-		CreateComputeParticleCommandBuffer();
+		CreateComputeClusteredCommandBuffer();
+
+		// From ComputeParticle
+		//CreateComputeParticleSyncObjects();
+
+		//CreateComputeParticleCommandBuffer();
 
 		// Resources Binding will happen after this point
 	}

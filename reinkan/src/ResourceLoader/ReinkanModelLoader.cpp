@@ -191,11 +191,11 @@ namespace Reinkan
             for (int boneIndex = 0; boneIndex < aimesh->mNumBones; ++boneIndex)
             {
                 aiBone* aibone = aimesh->mBones[boneIndex];
-                //std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
-                for (int vertW = 0; vertW < aibone->mNumWeights; ++vertW)
-                {
+                std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
+                //for (int vertW = 0; vertW < aibone->mNumWeights; ++vertW)
+                //{
                     //std::printf("- - [ASSIMP]:   VertID: %d Weight: %f\n", aibone->mWeights[vertW].mVertexId, aibone->mWeights[vertW].mWeight);
-                }
+                //}
             }
 
             // Loop through all vertices and record the
@@ -226,14 +226,17 @@ namespace Reinkan
                                             // flipping the vertical component of the texture coordinates
             }
 
+            // force mesh to have only 1 material
+            modelData.materialIndex = materialOffset + aimesh->mMaterialIndex;
+            std::printf("meshName: %s\n", aimesh->mName.C_Str());
+            std::printf("matId: %d size: \n", modelData.materialIndex);
+            
             // Loop through all faces, recording indices
             for (unsigned int t = 0; t < aimesh->mNumFaces; ++t) 
             {
                 aiFace* aiface = &aimesh->mFaces[t];
                 for (int i = 2; i < aiface->mNumIndices; i++) {
                     //modelData.materialIndex.push_back(aimesh->mMaterialIndex);
-                    modelData.materialIndex.push_back(materialOffset + aimesh->mMaterialIndex);
-                    //std::printf("matId: %d size: %d\n", modelData.materialIndex[modelData.materialIndex.size() - 1], modelData.materialIndex.size());
                     
                     modelData.indices.push_back(aiface->mIndices[0] + faceOffset);
                     modelData.indices.push_back(aiface->mIndices[i - 1] + faceOffset);

@@ -1,7 +1,6 @@
 #version 450
 
 #extension GL_EXT_nonuniform_qualifier : enable
-
 // #extension GL_EXT_buffer_reference2 : require
 
 struct PushConstant
@@ -77,7 +76,7 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
-    vec3 L = vec3(2.0, 1.0, 1.0);
+    vec3 L = vec3(2.0, 1.0, 0.5);
     float ambientLight = 0.4;
     float intensity = 2.0;
     vec3 V = normalize(viewDir);
@@ -90,8 +89,9 @@ void main()
     outColor = vec4(brdfColor, 1.0);
      
 
-    float depth = length(viewDir) / 10.0;
-    outColor = vec4(vec3(depth), 1.0);
+    // float depth = length(viewDir) / 10.0;
+
+    // outColor = vec4(vec3(depth), 1.0);
     // outColor = vec4(worldPos, 1.0);
 
     // outColor  = vec4(material.diffuse, 1.0);

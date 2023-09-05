@@ -33,8 +33,8 @@ layout(location = 4) out vec2 fragTexCoord;
 void main() 
 {
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
-    mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
     // mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
+    mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
     mat4 normalTransform = pushConstant.modelMatrix;
     // mat4 normalTransform = inverse(pushConstant.modelMatrix);
 

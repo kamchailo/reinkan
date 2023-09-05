@@ -69,13 +69,15 @@ namespace Reinkan
 
             CreateScanlinePipeline(appScanlineDescriptorWrap);
 
-            CreateComputeClusteredPlanes(0.3, 100, 32);
+            CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 100.0);
 
-            CreateComputeParticleBufferWraps();
+            CreateComputeClusteredDescriptorSetWrap();
 
-            CreateComputeParticleDescriptorSetWrap();
+            //CreateComputeParticleBufferWraps();
 
-            CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
+            //CreateComputeParticleDescriptorSetWrap();
+
+            //CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
 
             std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
         }
@@ -84,18 +86,6 @@ namespace Reinkan
         {
             // Move Bind Resource code part which belong to pipeline here
         }
-
-        // To Be Obsolete
-        /*
-        void Run() 
-        {
-            MainLoop();
-
-            
-
-            Cleanup();
-        }
-        */
 
     // Reinkan.cpp
         //void MainLoop();
@@ -248,11 +238,13 @@ namespace Reinkan
     // ReinkanDrawFrame.cpp
         void DrawFrame();
 
+        uint32_t appCurrentFrame = 0;
+
+    // ReinkanRecordScanline.cpp
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
+    // ReinkanRecordCompute.cpp
         void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer);
-
-        uint32_t appCurrentFrame = 0;
 
     ////////////////////////////////////////
     //      Resources Binding
@@ -428,6 +420,8 @@ namespace Reinkan
         float                           appLastFrameTime = 0.0f;
         double                          appLastTime = 0.0f;
 
+        void DestroyComputeParticleResources();
+
     // -------- Clustered Shading -------- //
 
     // ReinkanClusteredPipeline.cpp
@@ -437,13 +431,17 @@ namespace Reinkan
         VkPipeline appClusteredPipeline;
 
     // ReinkanClusteredShading.cpp
+        void CreateComputeClusteredBufferWraps(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ, float nearClippingPlane, float farClippingPlane);
+
+        void CreateComputeClusteredUBO();
+
         void CreateComputeClusteredPlanes(float nearClippingPlane, float farClippingPlane, uint32_t sizeZ);
 
         void CreateComputeClusteredGrids(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ);
 
         void CreateComputeClusteredGlobalLights();
 
-        void CreateComputeClusteredBufferWraps();
+        void CreateComputeClusteredLightBuffers(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ);
 
         void CreateComputeClusteredDescriptorSetWrap();
 
@@ -453,31 +451,40 @@ namespace Reinkan
 
         void UpdateComputeClusteredUBO(uint32_t currentImage);
 
-        DescriptorWrap                  appClusteredDescriptorWrap;
+        DescriptorWrap                  appClusteredGridDescriptorWrap;
+        DescriptorWrap                  appClusteredCullLightDescriptorWrap;
 
         std::vector<BufferWrap>         appClusteredUBO;
         std::vector<void*>              appClusteredUBOMapped;
-
-        // readonly in FrustumCalculation
+        
+        // readonly in clusteredGrid
         BufferWrap                      appClusteredPlanes;
-
-        // out FrustumCalculation       in CollisionDectection
+        
+        // out clusteredGrid                in clusteredCullLight
         std::vector<BufferWrap>         appClusteredGrids;
-
-        // readonly in CollisionDectection  readonly in Scanline
+        
+        // readonly in clusteredCullLight  readonly in Scanline
         BufferWrap                      appClusteredGlobalLights;
         
-        // out CollisionDectection          readonly in Scanline
+        // out clusteredCullLight          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightIndexMap;
         
-        // out CollisionDectection          readonly in Scanline
+        // out clusteredCullLight          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightGrid;
 
+        std::vector<VkCommandBuffer>    appComputeClusteredCommandBuffers;
+        std::vector<VkFence>            appComputeClusteredInFlightFences;
+        std::vector<VkSemaphore>        appComputeClusteredFinishedSemaphores;
 
         // ReinkanLightUtility.cpp
+    public: 
         void AppendLight(const LightObject& lightObject);
 
+    private:
         // User assigned Light
         std::vector<LightObject>        appLightObjects;
+
+    // ReinkanComputeClusteredCleanup.cpp
+        void DestroyComputeClusteredResources();
     };
 }

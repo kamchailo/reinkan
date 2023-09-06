@@ -81,13 +81,21 @@ namespace Reinkan
 
 	void ReinkanApp::ReinkanUpdate()
 	{
-		glfwPollEvents();
-
-		DrawFrame();
-
+		// Calculate Time
 		double currentTime = glfwGetTime();
 		appLastFrameTime = (currentTime - appLastTime) * 1000.0;
 		appLastTime = currentTime;
+		double deltaTime = appLastTime - appLastTime;
+
+		glfwPollEvents();
+
+		// Handle Input
+
+		// Game Logic
+
+
+		DrawFrame();
+
 	}
 }
 

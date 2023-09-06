@@ -32,8 +32,6 @@ namespace Reinkan
 
 		CameraStateFlag cameraStateFlag = CameraStateFlag::None;
 
-		void Move(const glm::vec3& distance);
-
 		void UpdatePerspectiveMatrix(const float aspect);
 
 		void UpdateViewMatrix(const float time);
@@ -41,6 +39,8 @@ namespace Reinkan
 		glm::mat4 GetPerspectiveMatrix(const float aspect) const;
 
 		glm::mat4 GetViewMatrix(const float aspect) const;
+
+		void Move(const glm::vec3& distance);
 
 		void Spin(float spinRad);
 

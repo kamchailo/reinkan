@@ -67,7 +67,7 @@ int main()
     ////////////////////////////////////////
     //          Game Object Control
     ////////////////////////////////////////
-    app.SetEyePosition(0.0, 2.0, 2.0);
+    app.SetEyePosition(0.0, 3.0, 2.0);
 
     ////////////////////////////////////////
     //          Vulkan Main Program

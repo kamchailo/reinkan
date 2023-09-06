@@ -76,7 +76,7 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
-    vec3 L = vec3(2.0, 1.0, 0.5);
+    vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.4;
     float intensity = 2.0;
     vec3 V = normalize(viewDir);

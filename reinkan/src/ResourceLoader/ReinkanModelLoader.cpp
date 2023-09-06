@@ -12,10 +12,10 @@
 
 namespace Reinkan
 {
-    void ReinkanApp::LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform)
+    void ReinkanApp::LoadModel(const ModelData& modelData, glm::mat4 transform)
     {
         ModelDataLoading modelDataLoading;
-        modelDataLoading.modelDataPtr = modelData;
+        modelDataLoading.modelDataPtr = std::make_shared<ModelData>(modelData);
         modelDataLoading.modelTransform = transform;
 
         appModelDataToBeLoaded.push_back(modelDataLoading);

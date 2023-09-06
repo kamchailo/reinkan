@@ -54,7 +54,7 @@ int main()
 
         for (int i = 0; i < modelDatas.size(); ++i)
         {
-            app.LoadModel(std::make_shared<Reinkan::ModelData>(modelDatas[i]), modelTr);
+            app.LoadModel(modelDatas[i], modelTr);
         }
 
 
@@ -67,7 +67,7 @@ int main()
     ////////////////////////////////////////
     //          Game Object Control
     ////////////////////////////////////////
-    app.SetEyePosition(0.0, 5.0, 5.0);
+    app.SetEyePosition(0.0, 2.0, 2.0);
 
     ////////////////////////////////////////
     //          Vulkan Main Program

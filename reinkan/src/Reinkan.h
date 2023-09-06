@@ -100,7 +100,7 @@ namespace Reinkan
         bool appFramebufferResized = false;
 
     // ReinkanModelLoader.cpp
-        void LoadModel(std::shared_ptr<ModelData> modelData, glm::mat4 transform);
+        void LoadModel(const ModelData& modelData, glm::mat4 transform);
 
     // ReinkanCamera.cpp
         void SetEyePosition(float eyeX, float eyeY, float eyeZ);

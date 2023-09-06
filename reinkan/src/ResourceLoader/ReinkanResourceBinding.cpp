@@ -15,7 +15,10 @@ namespace Reinkan
             object.vertexBufferWrap = CreateStagedBufferWrap(modelData.modelDataPtr->vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
             object.indexBufferWrap = CreateStagedBufferWrap(modelData.modelDataPtr->indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
+            object.name = modelData.modelDataPtr->name;
+
             object.objectId = appObjects.size();
+
             // only support one material per object
             object.materialId = modelData.modelDataPtr->materialIndex;
 

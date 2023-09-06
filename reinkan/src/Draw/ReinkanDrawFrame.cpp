@@ -74,7 +74,6 @@ namespace Reinkan
         ////////////////////////////////
         //    Update Value per frame
         ////////////////////////////////
-
         UpdateScanlineUBO(appCurrentFrame);
 
         // Only reset the fence if we are submitting work
@@ -88,7 +87,7 @@ namespace Reinkan
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[appCurrentFrame] };
         VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-        // With Compute
+        // Wait for Compute Shader
         //VkSemaphore waitSemaphores[] = { appComputeParticleFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
         //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 

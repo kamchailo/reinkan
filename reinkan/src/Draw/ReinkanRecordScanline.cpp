@@ -8,7 +8,7 @@ namespace Reinkan
     /*
     * To interface this record command
     * - Interface how the pipeline construct
-    * - Interface hot to let use create descriptor set easily
+    * - Interface how to let user create descriptor set easily
     * - Pass in pipeline and descriptor set
     */
     void ReinkanApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
@@ -39,8 +39,7 @@ namespace Reinkan
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
             {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
-                /*
-                */
+                
                 vkCmdBindDescriptorSets(commandBuffer,
                     VK_PIPELINE_BIND_POINT_GRAPHICS,
                     appScanlinePipelineLayout,
@@ -65,21 +64,19 @@ namespace Reinkan
                 vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
                 for (auto object : appObjects)
                 {
-
                     // Push Constant
                     // Information pushed at each draw call
                     PushConstantScanline pushConstant{};
-                    pushConstant.modelMatrix = object.transform;
-                    //pushConstant.modelMatrix[3][3] = 1.0;
                     pushConstant.materialId = object.materialId;
                     pushConstant.objectId = object.objectId;
+                    pushConstant.modelMatrix = object.transform;
 
                     vkCmdPushConstants(commandBuffer,
-                        appScanlinePipelineLayout,
-                        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                        0,
-                        sizeof(PushConstantScanline),
-                        &pushConstant
+                                       appScanlinePipelineLayout,
+                                       VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                                       0,
+                                       sizeof(PushConstantScanline),
+                                       &pushConstant
                     );
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset

@@ -23,7 +23,7 @@ namespace Reinkan
 
     void ReadAssimpFile(const std::string& path,
                         const glm::mat4 modelTransform, 
-                        ModelData& modelData, 
+                        std::vector<ModelData>& modelDatas, 
                         std::vector<Material>& materialPool,
                         std::vector<std::string>& texturePool,
                         unsigned int materialOffset)
@@ -125,10 +125,9 @@ namespace Reinkan
             {
                 std::string texturePathExtended("../assets/textures/");
                 texturePathExtended += texPath.C_Str();
-                //newmat.diffuseMapId = modelData.textures.size();
                 newmat.diffuseMapId = texturePool.size();
+                
                 // use texturePool appTexturePaths
-                //modelData.textures.push_back(std::string(texPath.C_Str()));
                 texturePool.push_back(std::string(texturePathExtended));
                 std::printf("- - [ASSIMP]: ID: %d \tDiffuse Texture: \t%s\n", newmat.diffuseMapId, texturePathExtended.c_str());
             }
@@ -138,8 +137,8 @@ namespace Reinkan
             {
                 std::string texturePathExtended("../assets/textures/");
                 texturePathExtended += texPath.C_Str();
-                //newmat.normalMapId = modelData.textures.size();
                 newmat.normalMapId = texturePool.size();
+                
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
                 std::printf("- - [ASSIMP]: ID: %d \tNormal Texture: \t%s\n", newmat.normalMapId, texturePathExtended.c_str());
@@ -150,23 +149,21 @@ namespace Reinkan
             {
                 std::string texturePathExtended("../assets/textures/");
                 texturePathExtended += texPath.C_Str();
-                //newmat.normalMapId = modelData.texture
-                //newmat.heightMapId = modelData.textures.size();
                 newmat.heightMapId = texturePool.size();
+                
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
                 std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
             }
 
             // change to materialPool appMaterials
-            //modelData.materials.push_back(newmat);
             materialPool.push_back(newmat);
         }
 
-        RecurseModelNodes(modelData, aiscene, aiscene->mRootNode, modelTr, 0, materialOffset);
+        RecurseModelNodes(modelDatas, aiscene, aiscene->mRootNode, modelTr, 0, materialOffset);
 
 	}
-    void RecurseModelNodes(ModelData& modelData,
+    void RecurseModelNodes(std::vector<ModelData>& modelDatas,
                            const aiScene* aiscene,
                            const aiNode* node,
                            const aiMatrix4x4& parentTr,
@@ -185,7 +182,11 @@ namespace Reinkan
         // Loop through this node's meshes
         for (unsigned int m = 0; m < node->mNumMeshes; ++m) {
             aiMesh* aimesh = aiscene->mMeshes[node->mMeshes[m]];
-            std::printf("- - [ASSIMP]:   %d: vert-%d: face-%d\n", m, aimesh->mNumVertices, aimesh->mNumFaces);
+            std::printf("- - [ASSIMP]:   %d: %s vert-%d: face-%d\n", m, aimesh->mName.C_Str(), aimesh->mNumVertices, aimesh->mNumFaces);
+
+            ModelData modelDataMesh;
+
+            modelDataMesh.name = aimesh->mName.C_Str();
 
             // Load Bone
             for (int boneIndex = 0; boneIndex < aimesh->mNumBones; ++boneIndex)
@@ -201,8 +202,8 @@ namespace Reinkan
             // Loop through all vertices and record the
             // vertex/normal/texture/tangent data with the node's model
             // transformation applied.
-            unsigned int faceOffset = modelData.vertices.size();
-            for (unsigned int t = 0; t < aimesh->mNumVertices; ++t) 
+            unsigned int faceOffset = modelDataMesh.vertices.size();
+            for (unsigned int t = 0; t < aimesh->mNumVertices; ++t)
             {
                 aiVector3D aipnt = childTr * aimesh->mVertices[t];
                 aiVector3D ainrm = aimesh->HasNormals() ? normalTr * aimesh->mNormals[t] : aiVector3D(0, 0, 1);
@@ -213,42 +214,44 @@ namespace Reinkan
                 if (aimesh->HasTangentsAndBitangents())
                 {
                     std::printf("I have Tangent\n");
-;                }
+                    ;
+                }
 
-                modelData.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
+                modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
                                                {ainrm.x, ainrm.y, ainrm.z},
                                                {aitan.x, aitan.y, aitan.z},
-                                               {aitex.x , 1.0 - aitex.y} }); 
-                                            // The OBJ format assumes a coordinate system 
-                                            // where a vertical coordinate of 0 means the bottom of the image, 
-                                            // however we've uploaded our image into Vulkan in a top to bottom orientation 
-                                            // where 0 means the top of the image. Solve this by 
-                                            // flipping the vertical component of the texture coordinates
+                                               {aitex.x , 1.0 - aitex.y} });
+                                                // The OBJ format assumes a coordinate system 
+                                                // where a vertical coordinate of 0 means the bottom of the image, 
+                                                // however we've uploaded our image into Vulkan in a top to bottom orientation 
+                                                // where 0 means the top of the image. Solve this by 
+                                                // flipping the vertical component of the texture coordinates
             }
 
             // force mesh to have only 1 material
-            modelData.materialIndex = materialOffset + aimesh->mMaterialIndex;
+            modelDataMesh.materialIndex = materialOffset + aimesh->mMaterialIndex;
             std::printf("meshName: %s\n", aimesh->mName.C_Str());
-            std::printf("matId: %d size: \n", modelData.materialIndex);
-            
+            std::printf("matId: %d size: \n", modelDataMesh.materialIndex);
+
             // Loop through all faces, recording indices
-            for (unsigned int t = 0; t < aimesh->mNumFaces; ++t) 
+            for (unsigned int t = 0; t < aimesh->mNumFaces; ++t)
             {
                 aiFace* aiface = &aimesh->mFaces[t];
                 for (int i = 2; i < aiface->mNumIndices; i++) {
-                    //modelData.materialIndex.push_back(aimesh->mMaterialIndex);
-                    
-                    modelData.indices.push_back(aiface->mIndices[0] + faceOffset);
-                    modelData.indices.push_back(aiface->mIndices[i - 1] + faceOffset);
-                    modelData.indices.push_back(aiface->mIndices[i] + faceOffset);
+                    modelDataMesh.indices.push_back(aiface->mIndices[0] + faceOffset);
+                    modelDataMesh.indices.push_back(aiface->mIndices[i - 1] + faceOffset);
+                    modelDataMesh.indices.push_back(aiface->mIndices[i] + faceOffset);
                 }
             };
+
+            modelDatas.push_back(modelDataMesh);
         }
+
 
         // Recurse onto this node's children
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            RecurseModelNodes(modelData, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
+            RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
         }
     }
 }

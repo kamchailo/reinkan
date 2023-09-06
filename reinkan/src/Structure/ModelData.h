@@ -15,6 +15,8 @@ namespace Reinkan
 		std::vector<uint32_t> indices;
 		
 		uint32_t materialIndex;
+
+		std::string name;
 	};
 
 	// For future ModelToBeLoaded

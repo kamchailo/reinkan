@@ -16,6 +16,8 @@ namespace Reinkan
    
         BufferWrap      indexBufferWrap;
     
+        std::string     name;
+
         uint32_t        objectId;
 
         uint32_t        materialId;

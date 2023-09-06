@@ -19,7 +19,7 @@ namespace Reinkan
 		alignas(16) glm::mat4 proj;
 	};
 
-	struct PushConstant
+	struct PushConstantScanline
 	{
 		alignas(16) glm::mat4 modelMatrix;
 		alignas(4) uint32_t objectId;
@@ -45,5 +45,43 @@ namespace Reinkan
 	struct ComputeParticleUniformBufferObject
 	{
 		float deltaTime = 1.0f;
+	};
+
+	struct ComputeClusteredUniformBufferObject
+	{
+		alignas(16) glm::mat4 	view;
+		alignas(16) glm::mat4 	proj;
+		alignas(16) glm::mat4 	projInverse;
+		alignas(8) glm::vec2 	screenDimensions;
+		// alignas(4) uint32_t 	tileSizePx;
+	};
+
+	struct ClusterPlane
+	{
+		alignas(4) float	zNear;
+		alignas(4) float	zFar;
+	};
+
+	struct ClusterGrid
+	{
+		alignas(16) glm::vec3	minPosition;
+		alignas(16) glm::vec3	maxPosition;
+	};
+
+	struct LightObject
+	{
+		alignas(16) glm::vec3	position;
+		alignas(16) glm::vec3	color;
+		alignas(4) float 		intensity;
+		alignas(4) float 		radius;
+	};
+
+	// LightGridIndex
+	// uint	value;
+
+	struct LightGrid
+	{
+		alignas(4) uint32_t offset;
+		alignas(4) uint32_t size;
 	};
 }

@@ -85,28 +85,24 @@ namespace Reinkan
         //appComputeParticleDescriptorWrap.Write();
         VkDeviceSize bufferSize = sizeof(ComputeParticleUniformBufferObject);
 
-        appComputePartibleUBO.resize(MAX_FRAMES_IN_FLIGHT);
-        appComputePartibleUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
+        appComputeParticleUBO.resize(MAX_FRAMES_IN_FLIGHT);
+        appComputeParticleUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
         {
-            appComputePartibleUBO[i] = CreateBufferWrap(bufferSize,
+            appComputeParticleUBO[i] = CreateBufferWrap(bufferSize,
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-            vkMapMemory(appDevice, appComputePartibleUBO[i].memory, 0, bufferSize, 0, &appComputePartibleUBOMapped[i]);
+            vkMapMemory(appDevice, appComputeParticleUBO[i].memory, 0, bufferSize, 0, &appComputeParticleUBOMapped[i]);
         }
-
-        appComputeParticleDescriptorWrap.Write(appDevice, 0, appComputePartibleUBO);
-
+        appComputeParticleDescriptorWrap.Write(appDevice, 0, appComputeParticleUBO);
 
         // @@ Need to fix to sliding window instead of swap to support N MAX_FRAMES_IN_FLIGHT
-        std::swap(appComputeParticleStorageBufferWraps[0], appComputeParticleStorageBufferWraps[1]);
-
         /* Sliding
         BufferWrap temp = appComputeParticleStorageBufferWraps[0];
         appComputeParticleStorageBufferWraps.erase(appComputeParticleStorageBufferWraps.begin());
         appComputeParticleStorageBufferWraps.push_back(temp);
         */
-
+        std::swap(appComputeParticleStorageBufferWraps[0], appComputeParticleStorageBufferWraps[1]);
         // write i-1 frame
         appComputeParticleDescriptorWrap.Write(appDevice, 1, appComputeParticleStorageBufferWraps);
         // this is wrong 
@@ -120,7 +116,6 @@ namespace Reinkan
         // we want binding 2
         // Desc[0] = BW[1]        ||     Desc[0] = BW[0]       
         // Desc[1] = BW[0]        ||     Desc[1] = BW[1]
-
     }
 
     void ReinkanApp::CreateComputeParticleSyncObjects()
@@ -166,7 +161,7 @@ namespace Reinkan
         ComputeParticleUniformBufferObject ubo{};
         ubo.deltaTime = appLastFrameTime * 2.0f;
 
-        memcpy(appComputePartibleUBOMapped[currentImage], &ubo, sizeof(ubo));
+        memcpy(appComputeParticleUBOMapped[currentImage], &ubo, sizeof(ubo));
     }
 
     VkVertexInputBindingDescription ReinkanApp::GetParticleBindingDescription()

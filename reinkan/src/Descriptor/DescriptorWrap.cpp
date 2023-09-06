@@ -7,17 +7,8 @@ namespace Reinkan
 {
 	void DescriptorWrap::SetBindings(const VkDevice device, std::vector<VkDescriptorSetLayoutBinding> bindings, const uint32_t maxSets)
 	{
-        //uint32_t maxSets = maxSet;  // 1 is good enough for us.  In general, may want more;
         bindingTable = bindings;
 
-        //typedef struct VkDescriptorSetLayoutCreateInfo {
-        //    VkStructureType                        sType;
-        //    const void*                            pNext;
-        //    VkDescriptorSetLayoutCreateFlags       flags;
-        //    uint32_t                               bindingCount;
-        //    const VkDescriptorSetLayoutBinding*    pBindings;
-        //} VkDescriptorSetLayoutCreateInfo;
-        // Build descSetLayout
         VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
         layoutCreateInfo.sType =  VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         layoutCreateInfo.pNext = nullptr;
@@ -103,18 +94,7 @@ namespace Reinkan
         bufferInfo.buffer = buffer;
         bufferInfo.offset = 0;
         bufferInfo.range = VK_WHOLE_SIZE;
-        //typedef struct VkWriteDescriptorSet {
-        //    VkStructureType                  sType;
-        //    const void*                      pNext;
-        //    VkDescriptorSet                  dstSet;
-        //    uint32_t                         dstBinding;
-        //    uint32_t                         dstArrayElement;
-        //    uint32_t                         descriptorCount;
-        //    VkDescriptorType                 descriptorType;
-        //    const VkDescriptorImageInfo*     pImageInfo;
-        //    const VkDescriptorBufferInfo*    pBufferInfo;
-        //    const VkBufferView*              pTexelBufferView;
-        //} VkWriteDescriptorSet;
+
         VkWriteDescriptorSet writeSet{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
         writeSet.dstSet = descSet;
         writeSet.dstBinding = index;
@@ -144,18 +124,6 @@ namespace Reinkan
 
         for (size_t i = 0; i < maxSets; i++) // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
         {
-            //typedef struct VkWriteDescriptorSet {
-            //    VkStructureType                  sType;
-            //    const void*                      pNext;
-            //    VkDescriptorSet                  dstSet;
-            //    uint32_t                         dstBinding;
-            //    uint32_t                         dstArrayElement;
-            //    uint32_t                         descriptorCount;
-            //    VkDescriptorType                 descriptorType;
-            //    const VkDescriptorImageInfo*     pImageInfo;
-            //    const VkDescriptorBufferInfo*    pBufferInfo;
-            //    const VkBufferView*              pTexelBufferView;
-            //} VkWriteDescriptorSet;
             VkWriteDescriptorSet descriptorWrite;
             descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             descriptorWrite.pNext = nullptr;
@@ -191,18 +159,6 @@ namespace Reinkan
             bufferInfo.offset = 0;
             bufferInfo.range = VK_WHOLE_SIZE;
 
-            //typedef struct VkWriteDescriptorSet {
-            //    VkStructureType                  sType;
-            //    const void*                      pNext;
-            //    VkDescriptorSet                  dstSet;
-            //    uint32_t                         dstBinding;
-            //    uint32_t                         dstArrayElement;
-            //    uint32_t                         descriptorCount;
-            //    VkDescriptorType                 descriptorType;
-            //    const VkDescriptorImageInfo*     pImageInfo;
-            //    const VkDescriptorBufferInfo*    pBufferInfo;
-            //    const VkBufferView*              pTexelBufferView;
-            //} VkWriteDescriptorSet;
             VkWriteDescriptorSet descriptorWrite;
             descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             descriptorWrite.pNext = nullptr;
@@ -231,7 +187,8 @@ namespace Reinkan
 
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkDescriptorImageInfo& textureDesc)
     {
-
+        // Write only one texture
+        // Has no used at this moment
     }
 
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures, const uint32_t maxSets)
@@ -240,7 +197,8 @@ namespace Reinkan
         for (auto& texture : textures)
             des.emplace_back(texture.GetDescriptorImageInfo());
 
-        for (size_t i = 0; i < maxSets; i++) // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
+        // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
+        for (size_t i = 0; i < maxSets; i++) 
         {
             VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
             descriptorWrite.dstSet = this->descriptorSets[i];

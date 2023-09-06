@@ -33,13 +33,19 @@ layout(location = 4) out vec2 fragTexCoord;
 void main() 
 {
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
-    gl_Position =  ubo.proj * ubo.view * pushConstant.modelMatrix * vec4(inPosition, 1.0);
+    // mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
+    mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
+    mat4 normalTransform = pushConstant.modelMatrix;
+    // mat4 normalTransform = inverse(pushConstant.modelMatrix);
+
+    gl_Position =  modelTransform * vec4(inPosition, 1.0);
     
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
     // out
-    worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));;
-    vertexNormal = inVertexNormal;
+    worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
+    // worldPos = gl_Position.rgb / gl_Position.w;
+    vertexNormal = (normalTransform * vec4(inVertexNormal, 1.0)).rgb;
     vertexTangent = inVertexTangent;
     viewDir = vec3(eye - worldPos);
     fragTexCoord = inTexCoord;

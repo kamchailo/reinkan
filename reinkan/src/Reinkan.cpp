@@ -41,41 +41,20 @@ namespace Reinkan
 
 		CreateSwapchainFrameBuffers(); // require renderpass
 		
+		// From ComputeClustered
+		CreateComputeClusteredSyncObjects();
+
+		CreateComputeClusteredCommandBuffer();
+
 		// From ComputeParticle
-		CreateComputeParticleSyncObjects();
+		//CreateComputeParticleSyncObjects();
 
-		CreateComputeParticleCommandBuffer();
+		//CreateComputeParticleCommandBuffer();
 
-		// Below this point can move to resources binding stage 
-		// ---------------------------------------------------
-		// May have to split pipeline to take pipelineLayout after DescriptorSet
-
-			// Descriptors
-		//CreateScanlineDiscriptorSetLayout();
-
-		//CreateScanlinePipeline();
-
-		// VertexBuffer -> Move to Bind Loaded Resources
-
-		//CreateVertexBuffer(vertices);
-
-		//CreateIndexBuffer(indices);
-
-		// Image Loading
-
-		//appTextureImageWrap =  CreateTextureImageWrap("../assets/textures/Vampire_diffuse.png");
-
-		// UniformBuffer
-
-		//CreateScanlineDescriptorPool();
-		
-		//CreateScanlineUniformBuffer(); // UBO before DescriptorSet
-
-		//CreateScanlineDescriptorSets();
-
-
+		// Resources Binding will happen after this point
 	}
 
+	/* obsolete
 	void ReinkanApp::MainLoop()
 	{
 		while (!glfwWindowShouldClose(appWindow)) 
@@ -91,6 +70,24 @@ namespace Reinkan
 
 		vkDeviceWaitIdle(appDevice);
 
+		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
+	}
+	*/
+
+	bool ReinkanApp::ShouldClose()
+	{
+		return glfwWindowShouldClose(appWindow);
+	}
+
+	void ReinkanApp::ReinkanUpdate()
+	{
+		glfwPollEvents();
+
+		DrawFrame();
+
+		double currentTime = glfwGetTime();
+		appLastFrameTime = (currentTime - appLastTime) * 1000.0;
+		appLastTime = currentTime;
 	}
 }
 

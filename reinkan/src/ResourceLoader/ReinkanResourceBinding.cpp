@@ -10,16 +10,20 @@ namespace Reinkan
         for (auto modelData : appModelDataToBeLoaded)
         {
             ObjectData object;
-            object.nbVertices = modelData.first->vertices.size();
-            object.nbIndices = modelData.first->indices.size();
+            object.nbVertices = modelData.modelDataPtr->vertices.size();
+            object.nbIndices = modelData.modelDataPtr->indices.size();
+            object.vertexBufferWrap = CreateStagedBufferWrap(modelData.modelDataPtr->vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+            object.indexBufferWrap = CreateStagedBufferWrap(modelData.modelDataPtr->indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
-            object.transform = modelData.second;
-
-            object.vertexBufferWrap = CreateStagedBufferWrap(modelData.first->vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-            object.indexBufferWrap = CreateStagedBufferWrap(modelData.first->indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+            object.name = modelData.modelDataPtr->name;
 
             object.objectId = appObjects.size();
-            object.materialId =  modelData.first->materialIndex[0];
+
+            // only support one material per object
+            object.materialId = modelData.modelDataPtr->materialIndex;
+
+            // Object Instance Properties
+            object.transform = modelData.modelTransform;
 
             appObjects.push_back(object);
         }
@@ -32,11 +36,10 @@ namespace Reinkan
 
     void ReinkanApp::BindMaterials()
     {
-        if (appMaterials.size() == 0)
+        if (appMaterials.size() > 0)
         {
-            return;
+            appMaterialBufferWrap = CreateStagedBufferWrap(appMaterials, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
         }
-        appMaterialBufferWrap = CreateStagedBufferWrap(appMaterials, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     }
 
     void ReinkanApp::BindTextures()
@@ -64,9 +67,7 @@ namespace Reinkan
         //    const VkSampler* pImmutableSamplers;
         //} VkDescriptorSetLayoutBinding;
         std::vector<VkDescriptorSetLayoutBinding> bindingTable;
-
         uint32_t bindingIndex = 0;
-
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
                                   bindingIndex++,                                                            // binding;
                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                            // descriptorType;
@@ -107,7 +108,7 @@ namespace Reinkan
         appScanlineDescriptorWrap.Write(appDevice, 0, appScanlineUBO);
         
         // Material only once
-        if (appTextureImageWraps.size() > 0)
+        if (appMaterials.size() > 0)
         {
             appScanlineDescriptorWrap.Write(appDevice, 1, appMaterialBufferWrap.buffer, MAX_FRAMES_IN_FLIGHT);
         }

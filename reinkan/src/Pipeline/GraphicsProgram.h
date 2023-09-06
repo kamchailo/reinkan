@@ -20,6 +20,7 @@ namespace Reinkan
 
 		VkPipeline graphicPipeline;
 
+		DescriptorWrap graphicsDescriptorWrap;
 
 	private:
 

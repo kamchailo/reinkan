@@ -11,17 +11,20 @@ namespace Reinkan
 	struct ModelData
 	{
 		std::vector<Vertex> vertices;
+
 		std::vector<uint32_t> indices;
-		// To be moved to material pool
-		std::vector<Material> materials;
-		std::vector<uint32_t> materialIndex;
-		// To be moved to texture pool
-		std::vector<std::string> textures;
+		
+		uint32_t materialIndex;
+
+		std::string name;
 	};
 
+	// For future ModelToBeLoaded
+	// if there are more instance property then modelTransform
 	struct ModelDataLoading
 	{
 		std::shared_ptr<ModelData> modelDataPtr;
+		
 		glm::mat4 modelTransform;
 	};
 }

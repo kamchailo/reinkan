@@ -47,6 +47,9 @@ namespace Reinkan
             throw std::runtime_error("failed to allocate image memory!");
         }
 
+        // Improve by use offset when binding Image Memory
+        // - alloc total size of every texture (totalSize += memRequirements.size)
+        // - bind with offset in the same memory block
         vkBindImageMemory(appDevice, imageWrap.image, imageWrap.memory, 0);
         
         imageWrap.imageView = VK_NULL_HANDLE;

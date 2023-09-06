@@ -1,10 +1,10 @@
 #define PI 3.141592
 
-vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mat)
+vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
 {
-    vec3 Kd = mat.diffuse;
-    vec3 Ks = mat.specular;
-    const float alpha = mat.shininess;
+    vec3 Kd = mataterial.diffuse;
+    vec3 Ks = mataterial.specular;
+    const float alpha = mataterial.shininess;
 
     vec3 H = normalize(L + V);
     float LH = dot(L, H);
@@ -16,12 +16,15 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mat)
     // F factor
     vec3 F = Ks + (vec3(1.0) - Ks) * pow((1 - LH), 5);
 
-    // D factor
+    // D factor GGX
     float mN = dot(H, N);
     float tan_square_theta_m = (1.0 - mN * mN) / mN * mN;
     float alpha_square = alpha * alpha;
     float D = clamp(mN, 0.0, 1.0) * alpha_square
-            / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
+           / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
+    // float D = alpha_square
+        //    / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
+
 
     // G factor with V
     float mV = dot(H, V);

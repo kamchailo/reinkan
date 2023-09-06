@@ -195,13 +195,21 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Camera\ReinkanCamera.cpp" />
+    <ClCompile Include="src\Cleanup\ReinkanComputeClusteredCleanup.cpp" />
+    <ClCompile Include="src\Cleanup\ReinkanComputeParticleCleanup.cpp" />
+    <ClCompile Include="src\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Descriptor\DescriptorWrap.cpp" />
-    <ClCompile Include="src\Initializer\ReinkanCleanup.cpp" />
+    <ClCompile Include="src\Cleanup\ReinkanCleanup.cpp" />
+    <ClCompile Include="src\Draw\ReinkanRecordCompute.cpp" />
+    <ClCompile Include="src\Draw\ReinkanRecordScanline.cpp" />
     <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp" />
+    <ClCompile Include="src\Lights\ReinkanLightUtility.cpp" />
     <ClCompile Include="src\MultiSampling\ReinkanMultiSampling.cpp" />
     <ClCompile Include="src\ParticleSystem\ReinkanParticleSystem.cpp" />
+    <ClCompile Include="src\Pipeline\ReinkanComputeClusteredPipeline.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanComputeParticlePipeline.cpp" />
     <ClCompile Include="src\Pipeline\ReinkanPipelineUtility.cpp" />
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp" />
@@ -234,6 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shaders\SharedStruct.h" />
+    <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Constant\CoreConstant.h" />
     <ClInclude Include="src\Descriptor\DescriptorWrap.h" />
     <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h" />

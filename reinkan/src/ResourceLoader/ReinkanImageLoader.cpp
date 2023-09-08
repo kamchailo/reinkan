@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
     ImageWrap ReinkanApp::CreateTextureImageWrap(std::string path)
 	{

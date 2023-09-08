@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 #include "ReinkanModelLoader.h"
 
 #include <fstream>
@@ -8,9 +8,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Structure/ObjectData.h"
+#include "Graphics/Structure/ObjectData.h"
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
     void ReinkanApp::LoadModel(const ModelData& modelData, glm::mat4 transform)
     {

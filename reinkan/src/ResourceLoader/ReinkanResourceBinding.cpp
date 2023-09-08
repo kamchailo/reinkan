@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 
 #include <vector>
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
-    void Reinkan::ReinkanApp::BindModelData()
+    void ReinkanApp::BindModelData()
     {
         for (auto modelData : appModelDataToBeLoaded)
         {

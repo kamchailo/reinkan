@@ -6,10 +6,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Structure/ModelData.h"
-#include "Structure/ObjectData.h"
+#include "Graphics/Structure/ModelData.h"
+#include "Graphics/Structure/ObjectData.h"
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
     void ReadAssimpFile(const std::string& path,
         const glm::mat4 mat,

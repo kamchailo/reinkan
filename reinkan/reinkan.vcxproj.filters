@@ -21,58 +21,58 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Reinkan.cpp">
+    <ClCompile Include="src\Graphics\ReinkanVulkan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Window\ReinkanWIndow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanInstance.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanInstance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanValidationLayers.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanValidationLayers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanPhysicalDevice.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanPhysicalDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanDevice.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanSurface.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanSurface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cleanup\ReinkanCleanup.cpp">
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Draw\ReinkanSwapchain.cpp">
+    <ClCompile Include="src\Graphics\Draw\ReinkanSwapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pipeline\ReinkanScanlinePipeline.cpp">
+    <ClCompile Include="src\Graphics\Pipeline\ReinkanScanlinePipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderPass\ReinkanScanlineRenderPass.cpp">
+    <ClCompile Include="src\Graphics\RenderPass\ReinkanScanlineRenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderPass\ReinkanFrameBuffers.cpp">
+    <ClCompile Include="src\Graphics\RenderPass\ReinkanFrameBuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanCommandBuffer.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Initializer\ReinkanSyncObjects.cpp">
+    <ClCompile Include="src\Graphics\Initializer\ReinkanSyncObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Draw\ReinkanDrawFrame.cpp">
+    <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MemoryBinding\ReinkanVertexBuffer.cpp">
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MemoryBinding\ReinkanBufferUtility.cpp">
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MemoryBinding\ReinkanScanlineUniformBuffer.cpp">
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanScanlineUniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceLoader\ReinkanImageLoader.cpp">
@@ -81,13 +81,13 @@
     <ClCompile Include="src\ResourceLoader\ReinkanImageUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RenderPass\ReinkanDepthBuffer.cpp">
+    <ClCompile Include="src\Graphics\RenderPass\ReinkanDepthBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceLoader\ReinkanModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Descriptor\DescriptorWrap.cpp">
+    <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceLoader\ReinkanResourceBinding.cpp">
@@ -96,93 +96,114 @@
     <ClCompile Include="src\Camera\ReinkanCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MultiSampling\ReinkanMultiSampling.cpp">
+    <ClCompile Include="src\Graphics\MultiSampling\ReinkanMultiSampling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ParticleSystem\ReinkanParticleSystem.cpp">
+    <ClCompile Include="src\Graphics\ParticleSystem\ReinkanParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pipeline\ReinkanComputeParticlePipeline.cpp">
+    <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeParticlePipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pipeline\ReinkanPipelineUtility.cpp">
+    <ClCompile Include="src\Graphics\Pipeline\ReinkanPipelineUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ClusterdShading\ReinkanClusteredShading.cpp">
+    <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pipeline\ReinkanComputeClusteredPipeline.cpp">
+    <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeClusteredPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lights\ReinkanLightUtility.cpp">
+    <ClCompile Include="src\Graphics\Lights\ReinkanLightUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cleanup\ReinkanComputeClusteredCleanup.cpp">
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeClusteredCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cleanup\ReinkanComputeParticleCleanup.cpp">
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Draw\ReinkanRecordScanline.cpp">
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordScanline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Draw\ReinkanRecordCompute.cpp">
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\ReinkanEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\InputSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\GraphicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Reinkan.h">
+    <ClInclude Include="src\Graphics\ReinkanVulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Constant\CoreConstant.h">
+    <ClInclude Include="src\Graphics\Constant\CoreConstant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structure\InitializationStruct.h">
+    <ClInclude Include="src\Graphics\Structure\InitializationStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structure\ImageWrap.h">
+    <ClInclude Include="src\Graphics\Structure\ImageWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\shaders\SharedStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structure\BufferWrap.h">
+    <ClInclude Include="src\Graphics\Structure\BufferWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structure\ModelData.h">
+    <ClInclude Include="src\Graphics\Structure\ModelData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceLoader\ReinkanModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structure\ObjectData.h">
+    <ClInclude Include="src\Graphics\Structure\ObjectData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h">
+    <ClInclude Include="src\Graphics\Descriptor\ScanlineDescriptorSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Descriptor\DescriptorWrap.h">
+    <ClInclude Include="src\Graphics\Descriptor\DescriptorWrap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pipeline\GraphicsProgram.h">
+    <ClInclude Include="src\Graphics\Pipeline\GraphicsProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ParticleSystem\ParticleSystemConstant.h">
+    <ClInclude Include="src\Graphics\ParticleSystem\ParticleSystemConstant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\InputManager.h">
+    <ClInclude Include="src\Input\InputSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\InputManagerLocator.h">
+    <ClInclude Include="src\Core\Locator\InputSystemLocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\ReinkanEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\InputConstant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\GraphicsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Locator\GraphicsSystemLocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

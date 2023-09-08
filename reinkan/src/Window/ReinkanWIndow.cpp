@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 
-#include "Input/InputManagerLocator.h"
+#include "Core/Locator/InputSystemLocator.h"
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
 	static void FramebufferResizeCallback(GLFWwindow* window, int width, int height)
 	{
@@ -74,6 +74,8 @@ namespace Reinkan
 		glfwSetWindowUserPointer(appWindow, this);
 
 		glfwSetFramebufferSizeCallback(appWindow, FramebufferResizeCallback);
+
+        glfwSetKeyCallback(appWindow, KeyCallback);
 		//glfwSetCursorPosCallback(appWindow, &CursorPosCallback);
         //glfwSetMouseButtonCallback(appWindow, &MouseButtonCallback);
         //glfwSetScrollCallback(appWindow, &ScrollCallback);

@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
     ImageWrap ReinkanApp::CreateImageWrap(uint32_t width,
                                           uint32_t height,

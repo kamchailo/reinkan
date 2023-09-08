@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "Reinkan.h"
+#include "Graphics/ReinkanVulkan.h"
 
-namespace Reinkan
+namespace Reinkan::Graphics
 {
 	void ReinkanApp::SetEyePosition(float eyeX, float eyeY, float eyeZ)
 	{

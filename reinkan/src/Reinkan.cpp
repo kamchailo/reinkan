@@ -90,6 +90,8 @@ namespace Reinkan
 		glfwPollEvents();
 
 		// Handle Input
+		// manual glfw handle input
+
 
 		// Game Logic
 

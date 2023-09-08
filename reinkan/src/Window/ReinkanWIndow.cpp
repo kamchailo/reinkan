@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Reinkan.h"
 
+#include "Input/InputManagerLocator.h"
+
 namespace Reinkan
 {
 	static void FramebufferResizeCallback(GLFWwindow* window, int width, int height)
@@ -8,7 +10,7 @@ namespace Reinkan
 		auto app = reinterpret_cast<ReinkanApp*>(glfwGetWindowUserPointer(window));
 		app->appFramebufferResized = true;
 	}
-    /*
+    
     
     void ScrollCallback(GLFWwindow* window, double x, double y)
     {
@@ -18,8 +20,8 @@ namespace Reinkan
 #endif
 
         int delta = y;
-        if (delta != 0)
-            app->myCamera.wheel(delta > 0 ? 1 : -1);
+        //if (delta != 0)
+            //app->myCamera.wheel(delta > 0 ? 1 : -1);
     }
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -31,7 +33,7 @@ namespace Reinkan
 
         double x, y;
         glfwGetCursorPos(window, &x, &y);
-        app->myCamera.setMousePosition(x, y);
+        //app->myCamera.setMousePosition(x, y);
     }
 
     void CursorPosCallback(GLFWwindow* window, double x, double y)
@@ -41,8 +43,8 @@ namespace Reinkan
             return;
 #endif
 
-        if (app->myCamera.lmb || app->myCamera.rmb || app->myCamera.mmb)
-            app->myCamera.mouseMove(x, y);
+        //if (app->myCamera.lmb || app->myCamera.rmb || app->myCamera.mmb)
+            //app->myCamera.mouseMove(x, y);
     }
 
     void CharCallback(GLFWwindow* window, unsigned int key)
@@ -60,7 +62,7 @@ namespace Reinkan
         if (pressed && key == GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(window, 1);
     }
-    */
+    
 	void ReinkanApp::InitWindow()
 	{
 		glfwInit();

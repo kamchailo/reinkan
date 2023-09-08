@@ -81,39 +81,6 @@ namespace Reinkan
         vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 	}
 
-    // Obsolete for each buffer need to match MAX_FRAME_IN_FLIGHT
-    /*
-    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkBuffer& buffer)
-    {
-        //typedef struct VkDescriptorBufferInfo {
-        //    VkBuffer        buffer;
-        //    VkDeviceSize    offset;
-        //    VkDeviceSize    range;
-        //} VkDescriptorBufferInfo;
-        VkDescriptorBufferInfo bufferInfo{};
-        bufferInfo.buffer = buffer;
-        bufferInfo.offset = 0;
-        bufferInfo.range = VK_WHOLE_SIZE;
-
-        VkWriteDescriptorSet writeSet{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
-        writeSet.dstSet = descSet;
-        writeSet.dstBinding = index;
-        writeSet.dstArrayElement = 0;
-        writeSet.descriptorCount = 1;
-        writeSet.descriptorType = bindingTable[index].descriptorType;
-        writeSet.pBufferInfo = &bufferInfo;
-
-        assert(bindingTable[index].binding == index);
-
-        assert(writeSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
-            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
-            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
-            writeSet.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC);
-
-        vkUpdateDescriptorSets(device, 1, &writeSet, 0, nullptr);
-    }
-    */
-
     // Write 1 buffer for multiple frames
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkBuffer& buffer, const uint32_t maxSets)
     {

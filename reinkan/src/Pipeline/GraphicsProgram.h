@@ -12,9 +12,8 @@ namespace Reinkan
 	public:
 
 		GraphicsProgram(std::string vertexShaderPath,
-			std::string fragmentShaderPath,
-			DescriptorWrap descriptorWrap
-			);
+						std::string fragmentShaderPath,
+						DescriptorWrap descriptorWrap);
 
 		VkPipelineLayout graphicPipelineLayout;
 
@@ -24,8 +23,12 @@ namespace Reinkan
 
 	private:
 
-		void CreateGraphicPipelineLayout();
+		inline static uint32_t graphicProgramTotal;
+
+		uint32_t graphicProgramId;
 
 		void CreateGraphicPipelineLayout();
+
+		void CreateGraphicPipeline(std::string vertexShaderPath, std::string fragmentShaderPath, DescriptorWrap descriptorWrap, VkPipelineLayout layout);
 	};
 }

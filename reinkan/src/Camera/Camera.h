@@ -8,7 +8,7 @@ namespace Reinkan
 	enum class CameraStateFlag 
 	{
 		None = 0x00,
-		ToggleOrbit = 0x01,
+		ToggleOrbit = 0x01, // for spin in first person
 		TogglePan = 0x02
 	};
 
@@ -23,12 +23,6 @@ namespace Reinkan
 				float pFront,
 				float pBack,
 				float pRy);
-
-		glm::vec3 position = glm::vec3(0);
-
-		float spin = 0.0f;
-
-		float tilt = 0.0f;
 
 		CameraStateFlag cameraStateFlag = CameraStateFlag::None;
 
@@ -49,6 +43,12 @@ namespace Reinkan
 		void UpdateCursorPosition(const float x, const float y);
 
 	private:
+		glm::vec3 position = glm::vec3(0);
+
+		float spin = 0.0f;
+
+		float tilt = 0.0f;
+
 		glm::mat4 perspectiveMatrix;
 
 		glm::mat4 viewMatrix;

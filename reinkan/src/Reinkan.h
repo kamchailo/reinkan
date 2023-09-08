@@ -82,7 +82,7 @@ namespace Reinkan
             std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
         }
 
-        void SetupScanlinePipeline()
+        void SetupScanlinePipeline(std::string vertexShaderPath, std::string fragmentShaderPath, DescriptorWrap& scanlineDescriptorWrap)
         {
             // Move Bind Resource code part which belong to pipeline here
         }
@@ -221,9 +221,9 @@ namespace Reinkan
 
         void CreateCommandBuffer();
 
-        VkCommandBuffer BeginTempCommandBuffer(); // should be change to dedicated Command Buffer for Buffer Initialzation
+        VkCommandBuffer BeginTempCommandBuffer(); // should be change to dedicated Command Buffer for Buffer Initialization
 
-        void EndTempCommandBuffer(VkCommandBuffer commandBuffer); // should be change to dedicated Command Buffer for Buffer Initialzation
+        void EndTempCommandBuffer(VkCommandBuffer commandBuffer); // should be change to dedicated Command Buffer for Buffer Initialization
 
         VkCommandPool appCommandPool;
         std::vector<VkCommandBuffer> appCommandBuffers;

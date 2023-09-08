@@ -68,6 +68,12 @@ int main()
     //          Game Object Control
     ////////////////////////////////////////
     app.SetEyePosition(0.0, 3.0, 2.0);
+    
+    // set binding to action
+    // CreateAction 
+    // action call camera
+
+
 
     ////////////////////////////////////////
     //          Vulkan Main Program

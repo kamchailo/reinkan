@@ -9,6 +9,8 @@
 
 namespace Reinkan
 {
+
+
     class DescriptorWrap
     {
     public:
@@ -24,15 +26,17 @@ namespace Reinkan
 
         void Destroy(VkDevice device);
 
-        // Any data can be written into a descriptor set.  Apparently I need only these few types:
-        //void Write(VkDevice& device, uint32_t index, const VkBuffer& buffer);
+        /*
+        * Need to change how to write
+        * Has vector to store all write data instead of vkUpdateDescriptorSets by calling Write
+        * the call vkUpdateDescriptorSets once with that vector
+        */
         void Write(VkDevice& device, uint32_t index, const VkBuffer& buffer, const uint32_t maxSets);
 
         void Write(VkDevice& device, uint32_t index, const std::vector<BufferWrap>& bufferWraps);
 
         void Write(VkDevice& device, uint32_t index, const VkDescriptorImageInfo& textureDesc);
 
-        //void Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures);
         void Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures, const uint32_t maxSets);
 
     };

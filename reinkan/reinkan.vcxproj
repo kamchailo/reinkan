@@ -246,6 +246,8 @@
     <ClInclude Include="src\Constant\CoreConstant.h" />
     <ClInclude Include="src\Descriptor\DescriptorWrap.h" />
     <ClInclude Include="src\Descriptor\ScanlineDescriptorSet.h" />
+    <ClInclude Include="src\Input\InputManager.h" />
+    <ClInclude Include="src\Input\InputManagerLocator.h" />
     <ClInclude Include="src\ParticleSystem\ParticleSystemConstant.h" />
     <ClInclude Include="src\Pipeline\GraphicsProgram.h" />
     <ClInclude Include="src\ResourceLoader\ReinkanModelLoader.h" />

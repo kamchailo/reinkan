@@ -1,6 +1,7 @@
 #pragma once
 
-#include <array>
+#include <unordered_map>
+#include <glm/vec2.hpp>
 
 #include "InputConstant.h"
 
@@ -8,6 +9,8 @@ namespace Reinkan::Input
 {
 
 	typedef uint32_t KeyCode;
+
+	typedef uint32_t MousButtonCode;
 
 	enum KeyState
 	{
@@ -31,18 +34,34 @@ namespace Reinkan::Input
 
 		bool IsKeyHeld(KeyCode keyCode);
 
-		bool IsMouseButtonPressed(KeyCode mouseButton);
+		bool IsMouseButtonPressed(MousButtonCode mouseButton);
 
-		bool IsMouseButtonRelease(KeyCode mouseButton);
+		bool IsMouseButtonRelease(MousButtonCode mouseButton);
 
-		bool IsMouseButtonHeld(KeyCode mouseButton);
+		bool IsMouseButtonHeld(MousButtonCode mouseButton);
+
+		// MouseScroll 
+
+		void KeyCallBack(KeyCode keyCode, KeyState action);
+
+		void MouseButtonCallBack(MousButtonCode mouseButtonCode, KeyState action);
+
+		void SetMousePosition(const double x, const double y);
+
+		glm::vec2 GetMousePosition() const;
+
+		glm::vec2 GetMouseDelta() const;
+
+		void MouseMove(const double x, const double y);
 
 	private:
-		static std::unique_ptr<InputSystem> inputInstance;
+		std::unordered_map<KeyCode, KeyState> KeyStateArray;
 
-		std::array<KeyState, MAX_KEY_NUMBER> KeyStateArray;
+		std::unordered_map<KeyCode, KeyState> mouseButtonStateArray;
 
-		std::array<KeyState, MAX_MOUSE_BUTTON_NUMBER> mouseButtonStateArray;
+		glm::vec2 mousePosition;
+
+		glm::vec2 mouseDelta {glm::vec2(0.0)};
 	};
 
 

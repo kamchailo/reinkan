@@ -18,6 +18,9 @@ namespace Reinkan::Core
 
 		graphicsSystem->Init(800, 600);
 		inputSystem->Init();
+
+		defaultCamera = std::make_unique<Camera::Camera>();
+		graphicsSystem->GetVulkanApp()->SetMainCamera(defaultCamera.get());
 	}
 
 	void ReinkanEngine::Update()
@@ -31,7 +34,6 @@ namespace Reinkan::Core
 				graphicsSystem->Update();
 
 			}
-
 		}
 		catch (const std::exception& e)
 		{

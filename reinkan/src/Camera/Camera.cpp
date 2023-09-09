@@ -5,14 +5,15 @@
 #include <glm/gtx/transform.hpp>
 
 
-namespace Reinkan
+namespace Reinkan::Camera
 {
 	Camera::Camera() : position(glm::vec3(0.0,2.0,2.0)),
 					    spin(0.0f),
 					    tilt(0.0f),
 					    pFront(0.1f),
 					    pBack(100.0f),
-					    rY(0.57)
+					    rY(0.57),
+						speed(0.7)
 	{
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
@@ -23,14 +24,16 @@ namespace Reinkan
 		float tilt,
 		float pFront,
 		float pBack,
-		float pRy)
+		float pRy,
+		float speed)
 		:
 		position(position),
 		spin(spin),
 		tilt(tilt),
 		pFront(pFront),
 		pBack(pBack),
-		rY(pRy)
+		rY(pRy),
+		speed(speed)
 	{
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
@@ -101,6 +104,31 @@ namespace Reinkan
 	{
 		cursorPosX = x;
 		cursorPosY = y;
+	}
+
+	float Camera::GetSpeed() const
+	{
+		return speed;
+	}
+
+	void Camera::SetSpin(float spin)
+	{
+		this->spin = spin;
+	}
+
+	void Camera::SetTilt(float tilt)
+	{
+		this->tilt = tilt;
+	}
+
+	float Camera::GetSpin() const
+	{
+		return spin;
+	}
+
+	float Camera::GetTilt() const
+	{
+		return tilt;
 	}
 
 }

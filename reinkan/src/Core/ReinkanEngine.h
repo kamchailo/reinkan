@@ -17,9 +17,11 @@ namespace Reinkan::Core
 		void Destroy();
 
 	private:
-		std::shared_ptr<Reinkan::Graphics::GraphicsSystem> graphicsSystem;
+		std::shared_ptr<Graphics::GraphicsSystem> graphicsSystem;
 
-		std::shared_ptr<Reinkan::Input::InputSystem> inputSystem;
+		std::shared_ptr<Input::InputSystem> inputSystem;
+
+		std::unique_ptr<Camera::Camera> defaultCamera;
 
 	};
 }

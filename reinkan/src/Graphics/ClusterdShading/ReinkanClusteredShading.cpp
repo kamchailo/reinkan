@@ -113,13 +113,79 @@ namespace Reinkan::Graphics
     void ReinkanApp::CreateComputeClusteredDescriptorSetWrap()
     {   
         //DescriptorWrap                  appClusteredGridDescriptorWrap;
+        std::vector<VkDescriptorSetLayoutBinding> bindingTableClusteredGrid;
+
+        uint32_t bindingTableClusteredGridIndex = 0;
+        // ComputeClusteredUniformBufferObject
+        bindingTableClusteredGrid.emplace_back(VkDescriptorSetLayoutBinding{
+                                               bindingTableClusteredGridIndex++,    // binding;
+                                               VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,   // descriptorType;
+                                               1,                                   // descriptorCount; 
+                                               VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // ClusterPlaneBlock
+        bindingTableClusteredGrid.emplace_back(VkDescriptorSetLayoutBinding{
+                                               bindingTableClusteredGridIndex++,    // binding;
+                                               VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                               1,                                   // descriptorCount; 
+                                               VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // ClusterGridBlock
+        bindingTableClusteredGrid.emplace_back(VkDescriptorSetLayoutBinding{
+                                               bindingTableClusteredGridIndex++,    // binding;
+                                               VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                               1,                                   // descriptorCount; 
+                                               VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
         
-        
-        
-        
+        appClusteredGridDescriptorWrap.SetBindings(appDevice, bindingTableClusteredGrid, MAX_FRAMES_IN_FLIGHT);
+
+        appClusteredGridDescriptorWrap.Write(appDevice, 0, appClusteredUBO);
+
+        appClusteredGridDescriptorWrap.Write(appDevice, 1, appClusteredPlanes.buffer, MAX_FRAMES_IN_FLIGHT);
+
+        appClusteredGridDescriptorWrap.Write(appDevice, 2, appClusteredGrids);
+
         //DescriptorWrap                  appClusteredCullLightDescriptorWrap;
+        std::vector<VkDescriptorSetLayoutBinding> bindingTableCullLight;
 
+        uint32_t bindingTableCullLightIndex = 0;
+        // ComputeClusteredUniformBufferObject
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
 
+        // GlobalLightSSBO
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // LightIndexSSBO
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // LightGridSSBO
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        appClusteredCullLightDescriptorWrap.SetBindings(appDevice, bindingTableCullLight, MAX_FRAMES_IN_FLIGHT);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 0, appClusteredUBO);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 1, appClusteredGlobalLights.buffer, MAX_FRAMES_IN_FLIGHT);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 2, appClusteredLightIndexMap);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 3, appClusteredLightGrid);
 
     }
 

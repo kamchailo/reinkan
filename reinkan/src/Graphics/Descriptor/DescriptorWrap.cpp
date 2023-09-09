@@ -109,10 +109,10 @@ namespace Reinkan::Graphics
                 descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC);
 
             vkUpdateDescriptorSets(device,
-                1,
-                &descriptorWrite,
-                0,
-                nullptr);
+                                   1,
+                                   &descriptorWrite,
+                                   0,
+                                   nullptr);
         }
     }
 

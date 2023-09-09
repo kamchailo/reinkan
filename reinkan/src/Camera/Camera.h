@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 
 
-namespace Reinkan
+namespace Reinkan::Camera
 {
 	enum class CameraStateFlag 
 	{
@@ -22,7 +22,8 @@ namespace Reinkan
 				float tilt,
 				float pFront,
 				float pBack,
-				float pRy);
+				float pRy,
+				float speed);
 
 		CameraStateFlag cameraStateFlag = CameraStateFlag::None;
 
@@ -41,6 +42,16 @@ namespace Reinkan
 		void Tilt(float tiltRad);
 
 		void UpdateCursorPosition(const float x, const float y);
+
+		float GetSpeed() const;
+
+		void SetSpin(float spin);
+
+		void SetTilt(float tilt);
+
+		float GetSpin() const;
+
+		float GetTilt() const;
 
 	private:
 		glm::vec3 position = glm::vec3(0);
@@ -62,5 +73,7 @@ namespace Reinkan
 		float pBack = 100.0f;
 
 		float rY = 0.57f;
+
+		float speed;
 	};
 }

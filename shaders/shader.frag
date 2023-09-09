@@ -76,13 +76,12 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
+
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.4;
     float intensity = 2.0;
     vec3 V = normalize(viewDir);
     // vec3 worldPosVisible = worldPos * 10
-
-
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
 

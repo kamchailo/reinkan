@@ -19,61 +19,56 @@ namespace Reinkan::Graphics
         ////////////////////////////////////////
         //          Load & Bind Resources
         ////////////////////////////////////////
-            {   // Indent to free model data after load
+        {   // Indent to free model data after load
 
-                std::vector<ModelData> modelDatas;
+            std::vector<ModelData> modelDatas;
 
-                //Reinkan::ModelData model;
-                ReadAssimpFile("../assets/models/simpleshape.obj",
-                    glm::mat4(1.0),
-                    modelDatas,
-                    vulkanApp->GetAppMaterialPool(),
-                    vulkanApp->GetAppTexturePool(),
-                    vulkanApp->GetAppMaterialPool().size());
+            //Reinkan::ModelData model;
+            ReadAssimpFile("../assets/models/simpleshape.obj",
+                glm::mat4(1.0),
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
 
-                //ModelData vampire;
-                ReadAssimpFile("../assets/models/dancing_vampire.dae",
-                    glm::mat4(1.0),
-                    modelDatas,
-                    vulkanApp->GetAppMaterialPool(),
-                    vulkanApp->GetAppTexturePool(),
-                    vulkanApp->GetAppMaterialPool().size());
+            //ModelData vampire;
+            ReadAssimpFile("../assets/models/dancing_vampire.dae",
+                glm::mat4(1.0),
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
 
-                //ModelData sponza;
-                ReadAssimpFile("../assets/models/sponza.obj",
-                    glm::mat4(0.01),
-                    modelDatas,
-                    vulkanApp->GetAppMaterialPool(),
-                    vulkanApp->GetAppTexturePool(),
-                    vulkanApp->GetAppMaterialPool().size());
+            //ModelData sponza;
+            ReadAssimpFile("../assets/models/sponza.obj",
+                glm::mat4(0.01),
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
 
-                glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
-                //glm::mat4 vampireTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
-                //glm::mat4 sponzaTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
-                //vulkanApp->LoadModel(std::make_shared<Reinkan::ModelData>(model), modelTr);
-                //vulkanApp->LoadModel(std::make_shared<Reinkan::ModelData>(vampire), vampireTr);
-                //vulkanApp->LoadModel(std::make_shared<Reinkan::ModelData>(sponza), sponzaTr);
+            glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
 
-                for (int i = 0; i < modelDatas.size(); ++i)
-                {
-                    vulkanApp->LoadModel(modelDatas[i], modelTr);
-                }
-
-
-                // Lights
-                vulkanApp->AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
-
-                vulkanApp->BindResources();
+            for (int i = 0; i < modelDatas.size(); ++i)
+            {
+                vulkanApp->LoadModel(modelDatas[i], modelTr);
             }
 
-            ////////////////////////////////////////
-            //          Game Object Control
-            ////////////////////////////////////////
-            vulkanApp->SetEyePosition(0.0, 3.0, 2.0);
 
-            // set binding to action
-            // CreateAction 
-            // action call camera
+            // Lights
+            vulkanApp->AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
+
+            vulkanApp->BindResources();
+        }
+
+        ////////////////////////////////////////
+        //          Game Object Control
+        ////////////////////////////////////////
+        vulkanApp->SetEyePosition(0.0, 3.0, 2.0);
+
+        // set binding to action
+        // CreateAction 
+        // action call camera
 
 	}
 
@@ -90,9 +85,9 @@ namespace Reinkan::Graphics
         vulkanApp->Cleanup();
 	}
 
-    std::shared_ptr<ReinkanApp> GraphicsSystem::GetVulkanApp() const
+    ReinkanApp* GraphicsSystem::GetVulkanApp() const
     {
-        return vulkanApp;
+        return vulkanApp.get();
     }
 }
 

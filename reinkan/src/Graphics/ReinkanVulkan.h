@@ -21,8 +21,8 @@
 #include "Graphics/Structure/ModelData.h"
 #include "Graphics/Structure/ObjectData.h"
 #include "Graphics/Descriptor/DescriptorWrap.h"
+#include "Camera/Camera.h"
 
-//#include "MemoryBinding/ReinkanVertexBuffer.h"
 #include "../shaders/SharedStruct.h"
 
 namespace Reinkan::Graphics
@@ -104,6 +104,14 @@ namespace Reinkan::Graphics
 
     // ReinkanCamera.cpp
         void SetEyePosition(float eyeX, float eyeY, float eyeZ);
+
+    // ReinkanLightUtility.cpp
+        void AppendLight(const LightObject& lightObject);
+
+    // ReinkanCamera.cpp
+        void SetMainCamera(Camera::Camera* camera);
+
+        void UpdateCamera(double deltaTime);
 
     private:
     // Reinkan.cpp
@@ -475,16 +483,13 @@ namespace Reinkan::Graphics
         std::vector<VkCommandBuffer>    appComputeClusteredCommandBuffers;
         std::vector<VkFence>            appComputeClusteredInFlightFences;
         std::vector<VkSemaphore>        appComputeClusteredFinishedSemaphores;
-
-        // ReinkanLightUtility.cpp
-    public: 
-        void AppendLight(const LightObject& lightObject);
-
-    private:
-        // User assigned Light
-        std::vector<LightObject>        appLightObjects;
-
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();
+
+    // ReinkanLightUtility.cpp
+        std::vector<LightObject>        appLightObjects;
+
+    // ReinkanCamera.cpp
+        Camera::Camera*                  appMainCamera;
     };
 }

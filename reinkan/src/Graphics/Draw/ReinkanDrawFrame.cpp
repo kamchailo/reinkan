@@ -66,6 +66,10 @@ namespace Reinkan::Graphics
         {
             appFramebufferResized = false;
             RecreateSwapchain();
+            #ifdef GUI
+            ImGui::EndFrame();
+            #endif  
+
             return;
         }
         else if (result != VK_SUCCESS) 

@@ -63,6 +63,13 @@ namespace Reinkan::Graphics
 	{
 		glfwPollEvents();
 
+#ifdef GUI
+		ImGui_ImplVulkan_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		DrawGUI();
+#endif
+
 		DrawFrame();
 
 	}

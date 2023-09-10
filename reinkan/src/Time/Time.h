@@ -13,6 +13,10 @@ namespace Reinkan::Time
 
 		double GetDeltaTime() const;
 
+		uint32_t GetFPS() const;
+
+		uint32_t GetStableFPS() const;
+
 	private:
 
 		double GetCurrentTIme() const;
@@ -22,5 +26,13 @@ namespace Reinkan::Time
 		double timeElapse{ 0.0 };
 
 		double deltaTime{ 0.0 };
+
+		uint32_t fps;
+
+		uint32_t timeElapseSecond;
+
+		uint32_t stableFps;
+
+		uint32_t lastTimeElapseSecond;
 	};
 }

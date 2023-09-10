@@ -206,6 +206,7 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeClusteredCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />
+    <ClCompile Include="src\Graphics\DebugUI\ReinkanUI.cpp" />
     <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp" />

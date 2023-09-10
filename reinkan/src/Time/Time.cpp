@@ -15,7 +15,18 @@ namespace Reinkan::Time
 		double lastFrame = timeElapse;
 		timeElapse = GetCurrentTIme() - startTime;
 
+		lastTimeElapseSecond = timeElapseSecond;
+		timeElapseSecond = timeElapse;
+
 		deltaTime = timeElapse - lastFrame;
+
+		fps = 1.0 / deltaTime;
+
+		if (timeElapseSecond > lastTimeElapseSecond)
+		{
+			stableFps = 1.0 / deltaTime;
+		}
+
 	}
 
 	double Time::GetElapseTime() const
@@ -26,6 +37,16 @@ namespace Reinkan::Time
 	double Time::GetDeltaTime() const
 	{
 		return deltaTime;
+	}
+
+	uint32_t Time::GetFPS() const
+	{
+		return fps;
+	}
+
+	uint32_t Time::GetStableFPS() const
+	{
+		return stableFps;
 	}
 
 	double Time::GetCurrentTIme() const

@@ -68,6 +68,7 @@ namespace Reinkan::Graphics
             throw std::runtime_error("failed to create logical device!");
         }
 
+        appGraphicQueueIndex = indices.graphicsAndComputeFamily.value();
         vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appGraphicsQueue);
         vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appComputeQueue);
         vkGetDeviceQueue(appDevice, indices.presentFamily.value(), 0, &appPresentQueue);

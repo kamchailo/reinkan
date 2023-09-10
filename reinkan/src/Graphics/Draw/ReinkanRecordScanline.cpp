@@ -37,7 +37,7 @@ namespace Reinkan::Graphics
             renderPassBeginInfo.pClearValues = clearValues.data();
 
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-            {
+            
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
                 
                 vkCmdBindDescriptorSets(commandBuffer,
@@ -84,8 +84,13 @@ namespace Reinkan::Graphics
                     vkCmdBindIndexBuffer(commandBuffer, object.indexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
 
                     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
+
                 }
-            }
+                #ifdef GUI
+                ImGui::Render();  // Rendering UI
+                ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
+                #endif
+            
             vkCmdEndRenderPass(commandBuffer);
         }
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)

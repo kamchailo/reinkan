@@ -50,6 +50,10 @@ namespace Reinkan::Graphics
 
 		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
 
+		#ifdef GUI
+		DestroyGUI();
+		#endif
+
 		// Destroy Foundation
 		vkDestroyDevice(appDevice, nullptr);
 

@@ -91,6 +91,16 @@ namespace Reinkan::Camera
 	void Camera::Tilt(float tiltRad)
 	{
 		tilt += tiltRad;
+
+		// Limit tilt to natural movement
+		if (tilt < -3.141592 / 2)
+		{
+			tilt = -3.141592 / 2;
+		}
+		else if (tilt > 3.141592 / 2)
+		{
+			tilt = 3.141592 / 2;
+		}
 	}
 
 	void Camera::UpdateCursorPosition(const float x, const float y)

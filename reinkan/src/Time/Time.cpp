@@ -22,6 +22,7 @@ namespace Reinkan::Time
 
 		fps = 1.0 / deltaTime;
 
+		// Change to average FPS
 		if (timeElapseSecond > lastTimeElapseSecond)
 		{
 			stableFps = 1.0 / deltaTime;

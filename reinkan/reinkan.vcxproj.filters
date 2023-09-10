@@ -72,7 +72,7 @@
     <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanScanlineUniformBuffer.cpp">
+    <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceLoader\ReinkanImageLoader.cpp">
@@ -141,6 +141,9 @@
     <ClCompile Include="src\Graphics\GraphicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Time\Time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\ReinkanVulkan.h">
@@ -204,6 +207,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Locator\GraphicsSystemLocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Time\Time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Locator\TimeSystemLocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,6 +17,7 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
+    uint lightNumber;
 } ubo;
 
 layout(location = 0) in vec3 inPosition;
@@ -33,8 +34,8 @@ layout(location = 4) out vec2 fragTexCoord;
 void main() 
 {
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
-    // mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
-    mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
+    mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
+    // mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
     mat4 normalTransform = pushConstant.modelMatrix;
     // mat4 normalTransform = inverse(pushConstant.modelMatrix);
 

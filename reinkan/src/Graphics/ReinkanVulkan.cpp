@@ -54,26 +54,6 @@ namespace Reinkan::Graphics
 		// Resources Binding will happen after this point
 	}
 
-	/* obsolete
-	void ReinkanApp::MainLoop()
-	{
-		while (!glfwWindowShouldClose(appWindow)) 
-		{
-			glfwPollEvents();
-
-			DrawFrame();
-
-			double currentTime = glfwGetTime();
-			appLastFrameTime = (currentTime - appLastTime) * 1000.0;
-			appLastTime = currentTime;
-		}
-
-		vkDeviceWaitIdle(appDevice);
-
-		std::printf("\n=============================== END OF MAIN LOOP ===============================\n\n");
-	}
-	*/
-
 	bool ReinkanApp::ShouldClose()
 	{
 		return glfwWindowShouldClose(appWindow);
@@ -81,20 +61,7 @@ namespace Reinkan::Graphics
 
 	void ReinkanApp::ReinkanUpdate()
 	{
-		// Calculate Time
-		double currentTime = glfwGetTime();
-		appLastFrameTime = (currentTime - appLastTime) * 1000.0;
-		appLastTime = currentTime;
-		double deltaTime = appLastTime - appLastTime;
-
 		glfwPollEvents();
-
-		// Handle Input
-		// manual glfw handle input
-
-
-		// Game Logic
-
 
 		DrawFrame();
 

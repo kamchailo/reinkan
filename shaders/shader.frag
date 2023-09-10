@@ -20,6 +20,7 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
+    uint lightNumber;
 } ubo;
 
 struct Material
@@ -47,6 +48,19 @@ layout(binding = 2) uniform sampler2D[] textureSamplers;
 // vec3 diffuse = textureSamplers[material.diffuseMapId];
 // vec3 normal = textureSamplers[material.normalMapId];
 // vec3 height = textureSamplers[material.heightMapId];
+
+struct LightObject
+{
+    vec3	position;
+    uint    position_padding;
+    vec3	color;
+    uint    color_padding;
+    float	intensity;
+    float   radius;
+};
+layout(std140, binding = 3) readonly buffer GlobalLightSSBO {
+   LightObject globalLights[ ];
+};  
 
 layout(location = 0) in vec3 worldPos;
 layout(location = 1) in vec3 vertexNormal;
@@ -79,14 +93,33 @@ void main()
 
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.4;
-    float intensity = 2.0;
+    float intensity = 0.5;
     vec3 V = normalize(viewDir);
     // vec3 worldPosVisible = worldPos * 10
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
 
+    for(int i = 0; i < ubo.lightNumber; ++i)
+    {
+        LightObject light = globalLights[i];
+        float lightDistance = distance(light.position, worldPos);
+        if(lightDistance >= light.radius)
+        {
+            continue;
+        }
+        L = normalize(light.position - worldPos);
+        float intensity = light.intensity * (light.radius - lightDistance) / light.radius;
+        brdfColor += light.intensity * light.color * EvalBrdf(N, L, V, material);
+    }
+  
     outColor = vec4(brdfColor, 1.0);
-     
+/*
+
+    if(ubo.lightNumber > 0)
+    {
+        outColor = vec4(lightDistance, lightDistance, lightDistance, 1.0);
+    }
+*/    
 
     // float depth = length(viewDir) / 10.0;
 

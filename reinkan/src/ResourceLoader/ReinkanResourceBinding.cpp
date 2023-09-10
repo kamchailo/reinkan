@@ -72,7 +72,7 @@ namespace Reinkan::Graphics
                                   bindingIndex++,                                                            // binding;
                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                            // descriptorType;
                                   1,                                                            // descriptorCount; 
-                                  VK_SHADER_STAGE_VERTEX_BIT });                                // stageFlags;
+                                  VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
         if (appMaterials.size() > 0)
         {
             bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
@@ -89,9 +89,18 @@ namespace Reinkan::Graphics
                                       static_cast<uint32_t>(appTextureImageWraps.size()),           // descriptorCount; // Has to > 0
                                       VK_SHADER_STAGE_FRAGMENT_BIT });                              // stageFlags;
         }
+        // For Forward 100+ Light
+        if (appLightObjects.size() > 0)
+        {
+            bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                      bindingIndex++,                                                            // binding;
+                                      VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                    // descriptorType;
+                                      1,                                                   // descriptorCount; 
+                                      VK_SHADER_STAGE_FRAGMENT_BIT });                              // stageFlags;
+        }
 
         appScanlineDescriptorWrap.SetBindings(appDevice,
-                                              bindingTable,
+                                              bindingTable, 
                                               MAX_FRAMES_IN_FLIGHT);
 
         // UBO [MAX_FRAMES_IN_FLIGHT]
@@ -117,6 +126,12 @@ namespace Reinkan::Graphics
         if (appTextureImageWraps.size() > 0)
         {
             appScanlineDescriptorWrap.Write(appDevice, 2, appTextureImageWraps, MAX_FRAMES_IN_FLIGHT);
+        }
+
+        // Light Objects
+        if (appLightObjects.size() > 0)
+        {
+            appScanlineDescriptorWrap.Write(appDevice, 3, appClusteredGlobalLights.buffer, MAX_FRAMES_IN_FLIGHT);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Reinkan::Input
 
 	bool InputSystem::IsKeyHeld(KeyCode keyCode)
 	{
-		return (KeyStateArray[keyCode] == KeyState::Hold);
+		return (KeyStateArray[keyCode] == KeyState::Hold || KeyStateArray[keyCode] == KeyState::Pressed);
 	}
 
 	bool InputSystem::IsMouseButtonPressed(MousButtonCode mouseButton)
@@ -45,7 +45,7 @@ namespace Reinkan::Input
 
 	bool InputSystem::IsMouseButtonHeld(MousButtonCode mouseButton)
 	{
-		return (mouseButtonStateArray[mouseButton] == KeyState::Hold);
+		return (mouseButtonStateArray[mouseButton] == KeyState::Hold || mouseButtonStateArray[mouseButton] == KeyState::Pressed);
 	}
 
 	void InputSystem::KeyCallBack(KeyCode keyCode, KeyState action)
@@ -72,17 +72,17 @@ namespace Reinkan::Input
 	{
 		if (action == Released)
 		{
-			KeyStateArray[mouseButtonCode] = KeyState::Released;
+			mouseButtonStateArray[mouseButtonCode] = KeyState::Released;
 			return;
 		}
 
-		if (KeyStateArray[mouseButtonCode] == KeyState::Pressed || KeyStateArray[mouseButtonCode] == KeyState::Hold)
+		if (mouseButtonStateArray[mouseButtonCode] == KeyState::Pressed || mouseButtonStateArray[mouseButtonCode] == KeyState::Hold)
 		{
-			KeyStateArray[mouseButtonCode] = KeyState::Hold;
+			mouseButtonStateArray[mouseButtonCode] = KeyState::Hold;
 		}
 		else
 		{
-			KeyStateArray[mouseButtonCode] = KeyState::Pressed;
+			mouseButtonStateArray[mouseButtonCode] = KeyState::Pressed;
 		}
 	}
 
@@ -103,8 +103,10 @@ namespace Reinkan::Input
 
 	void InputSystem::MouseMove(const double x, const double y)
 	{
-		mouseDelta.x = mousePosition.x - x;
+		mouseDelta.x =  mousePosition.x - x;
 		mouseDelta.y = mousePosition.y - y;
+
+		std::printf("mouse Delta x:%f, y:%f\n", mouseDelta.x, mouseDelta.y);
 
 		mousePosition.x = x;
 		mousePosition.y = y;

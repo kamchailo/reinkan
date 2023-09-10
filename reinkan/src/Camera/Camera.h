@@ -1,7 +1,9 @@
 #pragma once
 
-#include "glm/glm.hpp"
+//#include "glm/glm.hpp"
 
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 
 namespace Reinkan::Camera
 {
@@ -20,10 +22,12 @@ namespace Reinkan::Camera
 		Camera(glm::vec3& position,
 				float spin,
 				float tilt,
+				float fieldOfView,
 				float pFront,
 				float pBack,
 				float pRy,
-				float speed);
+				float speed,
+				float rotateSpeed);
 
 		CameraStateFlag cameraStateFlag = CameraStateFlag::None;
 
@@ -31,9 +35,9 @@ namespace Reinkan::Camera
 
 		void UpdateViewMatrix(const float time);
 
-		glm::mat4 GetPerspectiveMatrix(const float aspect) const;
+		glm::mat4 GetPerspectiveMatrix() const;
 
-		glm::mat4 GetViewMatrix(const float aspect) const;
+		glm::mat4 GetViewMatrix() const;
 
 		void Move(const glm::vec3& distance);
 
@@ -44,6 +48,14 @@ namespace Reinkan::Camera
 		void UpdateCursorPosition(const float x, const float y);
 
 		float GetSpeed() const;
+
+		float GetRotateSpeed() const;
+
+		void SetDirection(glm::vec3 direction);
+
+		glm::vec3 GetDirection() const;
+
+		glm::vec3 GetUp() const;
 
 		void SetSpin(float spin);
 
@@ -60,6 +72,10 @@ namespace Reinkan::Camera
 
 		float tilt = 0.0f;
 
+		glm::vec3 cameraDirection = glm::vec3(0.0, 0.0, 1.0);
+
+		glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
+
 		glm::mat4 perspectiveMatrix;
 
 		glm::mat4 viewMatrix;
@@ -68,6 +84,8 @@ namespace Reinkan::Camera
 
 		float cursorPosY = 0.0f;
 
+		float fieldOfView = 45.0f;
+
 		float pFront = 0.1f;
 
 		float pBack = 100.0f;
@@ -75,5 +93,7 @@ namespace Reinkan::Camera
 		float rY = 0.57f;
 
 		float speed;
+
+		float rotateSpeed = 0.2f;
 	};
 }

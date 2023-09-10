@@ -21,10 +21,14 @@ namespace Reinkan::Graphics
             glfwSetWindowShouldClose(window, 1);
         }
 
-        Input::KeyState state = Input::KeyState::Released;
+        Input::KeyState state;
         if (action != GLFW_RELEASE)
         {
             state = Input::KeyState::Pressed;
+        }
+        else
+        {
+            state = Input::KeyState::Released;
         }
 
         Core::InputSystemLocator::GetInputSystem()->KeyCallBack(key, state);
@@ -39,15 +43,20 @@ namespace Reinkan::Graphics
 
         auto inputSystem = Core::InputSystemLocator::GetInputSystem();
 
-        double x;
-        double y;
-        glfwGetCursorPos(window, &x, &y);
-        inputSystem->SetMousePosition(x, y);
+        //std::printf("mouse position x: %f, y: %f action: %d Key: %d\n", x, y, action, button);
 
-        Input::KeyState state = Input::KeyState::Released;
+        Input::KeyState state;
         if (action != GLFW_RELEASE)
         {
+            double x;
+            double y;
+            glfwGetCursorPos(window, &x, &y);
+            inputSystem->SetMousePosition(x, y);
             state = Input::KeyState::Pressed;
+        }
+        else
+        {
+            state = Input::KeyState::Released;
         }
 
         inputSystem->MouseButtonCallBack(button, state);
@@ -64,9 +73,10 @@ namespace Reinkan::Graphics
             //app->myCamera.mouseMove(x, y);
         auto inputSystem = Core::InputSystemLocator::GetInputSystem();
 
-        if (inputSystem->IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE)
         {
             inputSystem->MouseMove(x, y);
+            //std::printf("mouse move x: %f, y: %f\n", x, y);
         }
     }
 

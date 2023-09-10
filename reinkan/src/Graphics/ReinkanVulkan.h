@@ -65,13 +65,13 @@ namespace Reinkan::Graphics
 
             BindTextures();
 
-            CreateScanlineDescriptorWrap();
-
-            CreateScanlinePipeline(appScanlineDescriptorWrap);
-
             CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 100.0);
 
             CreateComputeClusteredDescriptorSetWrap();
+
+            CreateScanlineDescriptorWrap();
+
+            CreateScanlinePipeline(appScanlineDescriptorWrap);
 
             //CreateComputeParticleBufferWraps();
 
@@ -111,7 +111,9 @@ namespace Reinkan::Graphics
     // ReinkanCamera.cpp
         void SetMainCamera(Camera::Camera* camera);
 
-        void UpdateCamera(double deltaTime);
+        void UpdateCamera();
+
+        Camera::Camera* GetMainCamera() const;
 
     private:
     // Reinkan.cpp

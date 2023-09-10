@@ -3,6 +3,7 @@
 
 #include "vulkan/vulkan.h"
 
+#include "Core/Locator/TimeSystemLocator.h"
 #include "Core/Locator/GraphicsSystemLocator.h"
 #include "Core/Locator/InputSystemLocator.h"
 
@@ -10,9 +11,11 @@ namespace Reinkan::Core
 {
 	void ReinkanEngine::Init()
 	{
+		timeSystem = std::make_shared<Time::Time>();
 		graphicsSystem = std::make_shared<Graphics::GraphicsSystem>();
 		inputSystem = std::make_shared<Input::InputSystem>();
 
+		TimeSystemLocator::Provide(timeSystem.get());
 		GraphicsSystemLocator::Provide(graphicsSystem.get());
 		InputSystemLocator::Provide(inputSystem.get());
 
@@ -27,8 +30,12 @@ namespace Reinkan::Core
 	{
 		try
 		{
-			while (!graphicsSystem->GetVulkanApp()->ShouldClose())
+			Graphics::ReinkanApp* vulkanApp = graphicsSystem->GetVulkanApp();
+
+			while (!vulkanApp->ShouldClose())
 			{
+				timeSystem->Update();
+
 				inputSystem->Update();
 
 				graphicsSystem->Update();

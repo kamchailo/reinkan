@@ -7,14 +7,14 @@
 
 namespace Reinkan::Graphics
 {
-	void GraphicsSystem::Init(uint32_t width, uint32_t height)
-	{
-		////////////////////////////////////////
-		//          Vulkan Init
-		////////////////////////////////////////
-		vulkanApp = std::make_shared<ReinkanApp>(width, height);
+    void GraphicsSystem::Init(uint32_t width, uint32_t height)
+    {
+        ////////////////////////////////////////
+        //          Vulkan Init
+        ////////////////////////////////////////
+        vulkanApp = std::make_shared<ReinkanApp>(width, height);
 
-		vulkanApp->Init();
+        vulkanApp->Init();
 
         ////////////////////////////////////////
         //          Load & Bind Resources
@@ -58,6 +58,16 @@ namespace Reinkan::Graphics
             // Lights
             vulkanApp->AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
+            for (int i = -5; i < 5; ++i)
+            {
+                for (int j = -5; j < 5; ++j)
+                {
+                    glm::vec3 color = glm::vec3((i + 5) / 10, 1.0 - ((j + 5) / 10), 0.0);
+                    //color = glm::vec3(1.0, 0.0, 0.0);
+                    vulkanApp->AppendLight({ glm::vec3(i, 0.2, j), color, 5.0, 1.0 });
+                }
+            }
+
             vulkanApp->BindResources();
         }
 
@@ -77,6 +87,8 @@ namespace Reinkan::Graphics
         ////////////////////////////////////////
         //          Vulkan Main Program
         ////////////////////////////////////////
+        vulkanApp->UpdateCamera();
+
         vulkanApp->ReinkanUpdate();
 	}
 	

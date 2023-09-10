@@ -41,14 +41,16 @@ namespace Reinkan::Graphics
         ////////////////////////////////////////
 
         // Skip draw if fence is not ready
+        /*
         if (vkGetFenceStatus(appDevice, inFlightFences[appCurrentFrame]) == VK_NOT_READY)
         {
             std::printf("Skip Frame %d: Ongoing Rendering\n", appCurrentFrame);
             return;
         }
+        */
 
         // can only pass if inFlightFences is [SIGNAL]
-        //vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
+        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(appDevice, 

@@ -17,6 +17,7 @@ namespace Reinkan
 		alignas(16) glm::mat4 view;
 		alignas(16) glm::mat4 viewInverse;
 		alignas(16) glm::mat4 proj;
+		alignas(4) uint32_t lightNumber;
 	};
 
 	struct PushConstantScanline

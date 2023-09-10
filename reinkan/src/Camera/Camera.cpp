@@ -1,86 +1,70 @@
 #include "pch.h"
 #include "Camera.h"
 
-#include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-
 
 namespace Reinkan::Camera
 {
 	Camera::Camera() : position(glm::vec3(0.0,2.0,2.0)),
 					    spin(0.0f),
 					    tilt(0.0f),
+						fieldOfView(45.0),
 					    pFront(0.1f),
-					    pBack(100.0f),
+					    pBack(1000.0f),
 					    rY(0.57),
-						speed(0.7)
+						speed(0.7),
+						rotateSpeed(0.2)
 	{
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
+
+		cameraDirection = glm::normalize(glm::vec3(0.0, 0.0, -1.0));
+		cameraUp = glm::vec3(0.0, 1.0, 0.0);
 	}
 
 	Camera::Camera(glm::vec3& position,
 		float spin,
 		float tilt,
+		float fieldOfView,
 		float pFront,
 		float pBack,
 		float pRy,
-		float speed)
+		float speed,
+		float rotateSpeed)
 		:
 		position(position),
 		spin(spin),
 		tilt(tilt),
+		fieldOfView(fieldOfView),
 		pFront(pFront),
 		pBack(pBack),
 		rY(pRy),
-		speed(speed)
+		speed(speed),
+		rotateSpeed(rotateSpeed)
 	{
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
+
+		cameraDirection = glm::vec3(0.0, 0.0, -1.0);
+		cameraUp = glm::vec3(0.0, 1.0, 0.0);
 	}
 
 	void Camera::UpdatePerspectiveMatrix(const float aspect)
 	{
-		float rX = rY * aspect;
-
-		perspectiveMatrix[0][0] = 1.0 / rX;
-		perspectiveMatrix[1][1] = -1.0 / rY; // Vulkan's Y point down
-		perspectiveMatrix[2][2] = -pBack / (-pBack - pFront);
-		perspectiveMatrix[3][2] = -(pFront * pBack) / (pBack - pFront);
-		perspectiveMatrix[2][3] = -1;
-		perspectiveMatrix[3][3] = 0;
+		perspectiveMatrix = glm::perspective(fieldOfView, aspect, pFront, pBack);
 	}
 
 	void Camera::UpdateViewMatrix(const float deltaTime)
 	{
-		float currSpin;
-		float currTilt;
-		glm::vec3 currEyePos;
-		
-		//modified = true;
-		//float t = (time - startTime) / (endTime - startTime);
-		//t = 2*t-t*t;
-		//deltaTime = (3 - 2 * deltaTime) * deltaTime * deltaTime;
-		//currSpin = (1 - deltaTime) * spin/*startSpin*/ + deltaTime * spin;
-		//currTilt = (1 - deltaTime) * tilt/*startTilt*/ + deltaTime * tilt;
-		//currEyePos = (1 - deltaTime) * position/*startEye*/ + deltaTime * position;
-		
-		//glm::mat4 spinMat = glm::rotate(currSpin * 3.14159f / 180.0f, glm::vec3(0.0, 1.0, 0.0));
-		//glm::mat4 tiltMat = glm::rotate(currTilt * 3.14159f / 180.0f, glm::vec3(1.0, 0.0, 0.0));
-		//glm::mat4 translateMat = glm::translate(-currEyePos);
-		
-		glm::mat4 spinMat = glm::rotate(spin * 3.14159f / 180.0f, glm::vec3(0.0, 1.0, 0.0));
-		glm::mat4 tiltMat = glm::rotate(tilt * 3.14159f / 180.0f, glm::vec3(1.0, 0.0, 0.0));
-		glm::mat4 translateMat = glm::translate(-position);
-		viewMatrix = tiltMat * spinMat * translateMat;
+		viewMatrix = glm::lookAt(position, position + cameraDirection, glm::vec3(0.0, 1.0, 0.0));
 	}
 
-	glm::mat4 Camera::GetPerspectiveMatrix(const float aspect) const
+	glm::mat4 Camera::GetPerspectiveMatrix() const
 	{
 		return perspectiveMatrix;
 	}
 
-	glm::mat4 Camera::GetViewMatrix(const float aspect) const
+	glm::mat4 Camera::GetViewMatrix() const
 	{
 		return viewMatrix;
 	}
@@ -109,6 +93,26 @@ namespace Reinkan::Camera
 	float Camera::GetSpeed() const
 	{
 		return speed;
+	}
+
+	float Camera::GetRotateSpeed() const
+	{
+		return rotateSpeed;
+	}
+
+	void Camera::SetDirection(glm::vec3 direction)
+	{
+		cameraDirection = direction;
+	}
+
+	glm::vec3 Camera::GetDirection() const
+	{
+		return cameraDirection;
+	}
+
+	glm::vec3 Camera::GetUp() const
+	{
+		return cameraUp;
 	}
 
 	void Camera::SetSpin(float spin)

@@ -9,6 +9,7 @@ namespace Reinkan::Graphics
 {
     void ReinkanApp::UpdateScanlineUBO(uint32_t currentImage)
     {
+        /*
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -20,6 +21,17 @@ namespace Reinkan::Graphics
         ubo.viewInverse = glm::inverse(ubo.view);
         ubo.proj = glm::perspective(glm::radians(45.0f), appSwapchainExtent.width / (float)appSwapchainExtent.height, 0.1f, 100.0f);
         ubo.proj[1][1] *= -1;
+        */
+
+        UniformBufferObject ubo{};
+
+        ubo.view = appMainCamera->GetViewMatrix();
+        ubo.viewInverse = glm::inverse(ubo.view);
+        ubo.proj = appMainCamera->GetPerspectiveMatrix();
+        ubo.proj[1][1] *= -1;
+
+
+        ubo.lightNumber = appLightObjects.size();
         
         // CPU to update buffer req: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
         memcpy(appScanlineUBOMapped[currentImage], &ubo, sizeof(ubo));

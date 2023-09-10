@@ -19,7 +19,7 @@ namespace Reinkan::Core
 		GraphicsSystemLocator::Provide(graphicsSystem.get());
 		InputSystemLocator::Provide(inputSystem.get());
 
-		graphicsSystem->Init(800, 600);
+		graphicsSystem->Init(1024, 768);
 		inputSystem->Init();
 
 		defaultCamera = std::make_unique<Camera::Camera>();

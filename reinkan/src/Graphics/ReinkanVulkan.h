@@ -1,5 +1,13 @@
 #pragma once
 
+#define GUI
+
+#ifdef GUI
+#include "backends/imgui_impl_glfw.h"
+#include "imgui.h"
+#include "backends/imgui_impl_vulkan.h"
+#endif
+
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -41,6 +49,10 @@ namespace Reinkan::Graphics
             InitWindow();
 
             InitVulkan();
+
+            #ifdef GUI
+            InitGUI();
+            #endif
 
             std::printf("\n=============================== END OF INIT ===============================\n\n");
         }
@@ -160,9 +172,11 @@ namespace Reinkan::Graphics
     // ReinkanDevice.cpp
         void CreateLogicalDevice();
 
-        VkDevice appDevice;
-        VkQueue appGraphicsQueue;
-        VkQueue appPresentQueue;
+        VkDevice    appDevice;
+        VkQueue     appGraphicsQueue;
+        VkQueue     appPresentQueue;
+
+        uint32_t    appGraphicQueueIndex;
 
     // ReinkanSurface.cpp
         void CreateSurface();
@@ -187,26 +201,26 @@ namespace Reinkan::Graphics
 
         void CleanupSwapchain();
 
-        VkSwapchainKHR          appSwapchain;
-        VkFormat                appSwapchainImageFormat;
-        VkExtent2D              appSwapchainExtent;
-        std::vector<VkImage>    appSwapchainImages;
-        std::vector<VkImageView> appSwapchainImageViews;
+        VkSwapchainKHR              appSwapchain;
+        VkFormat                    appSwapchainImageFormat;
+        VkExtent2D                  appSwapchainExtent;
+        std::vector<VkImage>        appSwapchainImages;
+        std::vector<VkImageView>    appSwapchainImageViews;
 
     // ReinkanMultiSampling.cpp
         VkSampleCountFlagBits GetMaxUsableSampleCount();
 
         void CreateSwapchainColorResources();
 
-        VkSampleCountFlagBits appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
+        VkSampleCountFlagBits       appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
-        ImageWrap appMsaaImageWrap;
+        ImageWrap                   appMsaaImageWrap;
 
     // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
 
-        VkPipelineLayout appScanlinePipelineLayout;
-        VkPipeline appScanlinePipeline;
+        VkPipelineLayout            appScanlinePipelineLayout;
+        VkPipeline                  appScanlinePipeline;
 
     // ReinkanPipelineUtility.cpp
         static std::vector<char> ReadFile(const std::string& filename);
@@ -216,12 +230,12 @@ namespace Reinkan::Graphics
     // ReinkanRenderPass.cpp
         void CreateScanlineRenderPass();
 
-        VkRenderPass appScanlineRenderPass;
+        VkRenderPass                appScanlineRenderPass;
 
     // ReinkanFrameBuffer.cpp
         void CreateSwapchainFrameBuffers();
 
-        std::vector<VkFramebuffer> appSwapchainFramebuffers;
+        std::vector<VkFramebuffer>  appSwapchainFramebuffers;
 
     // ReinkanCommandBuffer.cpp
         void CreateCommandPool();
@@ -232,15 +246,15 @@ namespace Reinkan::Graphics
 
         void EndTempCommandBuffer(VkCommandBuffer commandBuffer); // should be change to dedicated Command Buffer for Buffer Initialization
 
-        VkCommandPool appCommandPool;
+        VkCommandPool                appCommandPool;
         std::vector<VkCommandBuffer> appCommandBuffers;
 
     // ReinkanSyncObjects.cpp
         void CreateSyncObjects();
 
-        std::vector<VkSemaphore> imageAvailableSemaphores;
-        std::vector<VkSemaphore> renderFinishedSemaphores;
-        std::vector<VkFence> inFlightFences;
+        std::vector<VkSemaphore>    imageAvailableSemaphores;
+        std::vector<VkSemaphore>    renderFinishedSemaphores;
+        std::vector<VkFence>        inFlightFences;
 
     // ReinkanDrawFrame.cpp
         void DrawFrame();
@@ -287,9 +301,9 @@ namespace Reinkan::Graphics
 
         //VkDescriptorSetLayout appScanlineDescriptorSetLayout;
         //VkDescriptorPool appScanlineDescriptorPool;
-        std::vector<VkDescriptorSet> appScanlineDescriptorSets;
-        std::vector<BufferWrap> appScanlineUBO;
-        std::vector<void*> appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
+        std::vector<VkDescriptorSet>    appScanlineDescriptorSets;
+        std::vector<BufferWrap>         appScanlineUBO;
+        std::vector<void*>              appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
 
     
     // ReinkanImageLoader.cpp
@@ -367,7 +381,7 @@ namespace Reinkan::Graphics
         std::vector<std::string>    appTexturePaths;
         std::vector<ImageWrap>      appTextureImageWraps;
 
-        DescriptorWrap appScanlineDescriptorWrap;
+        DescriptorWrap              appScanlineDescriptorWrap;
 
     ////////////////////////////////////////
     //          User Control
@@ -376,10 +390,10 @@ namespace Reinkan::Graphics
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;
         std::vector<updateFunction> appUpdates;
-        Camera::Camera* appMainCamera;
+        Camera::Camera*             appMainCamera;
 
     // ReinkanLightUtility.cpp
-        std::vector<LightObject>        appLightObjects;
+        std::vector<LightObject>    appLightObjects;
 
         
     // Expose Object Property from std::vector<ObjectData> appObjects
@@ -387,6 +401,23 @@ namespace Reinkan::Graphics
         // - rotation
         // - scale
         // - push constant
+
+    ////////////////////////////////////////
+    //          Debug UI (ImGui)
+    ////////////////////////////////////////
+
+    // ReinkanUI.cpp
+        #ifdef GUI
+
+        void InitGUI();
+
+        void DrawGUI();
+
+        void DestroyGUI();
+
+        VkDescriptorPool AppImguiDescPool;
+
+        #endif
 
     ////////////////////////////////////////
     //          Compute Shaders
@@ -399,8 +430,8 @@ namespace Reinkan::Graphics
     // ReinkanComputeParticlePipeline.cpp
         void CreateComputeParticlePipeline(DescriptorWrap& descriptorWrap);
 
-        VkPipelineLayout appComputeParticlePipelineLayout;
-        VkPipeline appComputeParticlePipeline;
+        VkPipelineLayout    appComputeParticlePipelineLayout;
+        VkPipeline          appComputeParticlePipeline;
 
     // ReinkanParticleSystem.cpp
         void CreateComputeParticleBufferWraps();
@@ -438,8 +469,8 @@ namespace Reinkan::Graphics
     // ReinkanClusteredPipeline.cpp
         void CreateClusteredPipeline(DescriptorWrap& descriptorWrap);
 
-        VkPipelineLayout appClusteredPipelineLayout;
-        VkPipeline appClusteredPipeline;
+        VkPipelineLayout    appClusteredPipelineLayout;
+        VkPipeline          appClusteredPipeline;
 
     // ReinkanClusteredShading.cpp
         void CreateComputeClusteredBufferWraps(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ, float nearClippingPlane, float farClippingPlane);
@@ -486,6 +517,7 @@ namespace Reinkan::Graphics
         std::vector<VkCommandBuffer>    appComputeClusteredCommandBuffers;
         std::vector<VkFence>            appComputeClusteredInFlightFences;
         std::vector<VkSemaphore>        appComputeClusteredFinishedSemaphores;
+
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();
 

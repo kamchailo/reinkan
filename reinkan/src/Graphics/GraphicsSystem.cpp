@@ -58,13 +58,16 @@ namespace Reinkan::Graphics
             // Lights
             vulkanApp->AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
-            for (int i = -5; i < 5; ++i)
+            uint32_t maxLightNumber = 1000;
+
+            int bound = sqrt(maxLightNumber) / 2.0;
+
+            for (int i = -bound; i < bound; ++i)
             {
-                for (int j = -5; j < 5; ++j)
+                for (int j = -bound; j < bound; ++j)
                 {
-                    glm::vec3 color = glm::vec3((i + 5) / 10, 1.0 - ((j + 5) / 10), 0.0);
-                    //color = glm::vec3(1.0, 0.0, 0.0);
-                    vulkanApp->AppendLight({ glm::vec3(i, 0.2, j), color, 5.0, 1.0 });
+                    glm::vec3 color = glm::vec3(static_cast<float>(i + 5) / 10.0, 1.0 - (static_cast<float>(j + 5) / 10.0), 0.0);
+                    vulkanApp->AppendLight({ glm::vec3(i, 0.5, j), color, 5.0, 1.0 });
                 }
             }
 
@@ -74,7 +77,7 @@ namespace Reinkan::Graphics
         ////////////////////////////////////////
         //          Game Object Control
         ////////////////////////////////////////
-        vulkanApp->SetEyePosition(0.0, 3.0, 2.0);
+        //vulkanApp->SetEyePosition(0.0, 3.0, 2.0);
 
         // set binding to action
         // CreateAction 

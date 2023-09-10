@@ -103,10 +103,8 @@ namespace Reinkan::Input
 
 	void InputSystem::MouseMove(const double x, const double y)
 	{
-		mouseDelta.x =  mousePosition.x - x;
-		mouseDelta.y = mousePosition.y - y;
-
-		std::printf("mouse Delta x:%f, y:%f\n", mouseDelta.x, mouseDelta.y);
+		mouseDelta.x = x - mousePosition.x;
+		mouseDelta.y = y - mousePosition.y;
 
 		mousePosition.x = x;
 		mousePosition.y = y;

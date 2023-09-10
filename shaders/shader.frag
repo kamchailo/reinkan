@@ -36,15 +36,14 @@ struct Material
 };
 layout(binding = 1) buffer MaterialBlock 
 {
+    // Get material by using PushConstant::materialId
+    // Material material = materials[pushConstant.materialId];
     Material materials[];
 };
 
-// Get material by using PushConstant::materialId
-// Material material = materials[pushConstant.materialId];
-
 layout(binding = 2) uniform sampler2D[] textureSamplers;
 // pack all textures together (diffuse, normal, height)
-// Unpack by using Material::textureId to Offset
+// Unpack by using Material::**texture**Id to Offset
 // vec3 diffuse = textureSamplers[material.diffuseMapId];
 // vec3 normal = textureSamplers[material.normalMapId];
 // vec3 height = textureSamplers[material.heightMapId];
@@ -93,7 +92,7 @@ void main()
 
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.4;
-    float intensity = 0.5;
+    float intensity = 0.7;
     vec3 V = normalize(viewDir);
     // vec3 worldPosVisible = worldPos * 10
 

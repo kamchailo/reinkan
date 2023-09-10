@@ -35,6 +35,8 @@ namespace Reinkan::Camera
 
 		void UpdateViewMatrix(const float time);
 
+		void UpdateDirection();
+
 		glm::mat4 GetPerspectiveMatrix() const;
 
 		glm::mat4 GetViewMatrix() const;

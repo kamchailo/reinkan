@@ -6,14 +6,14 @@
 namespace Reinkan::Camera
 {
 	Camera::Camera() : position(glm::vec3(0.0,2.0,2.0)),
-					    spin(0.0f),
+					    spin(1.57f), // PI / 2.0
 					    tilt(0.0f),
 						fieldOfView(45.0),
 					    pFront(0.1f),
 					    pBack(1000.0f),
 					    rY(0.57),
 						speed(0.7),
-						rotateSpeed(0.2)
+						rotateSpeed(0.5)
 	{
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
@@ -57,6 +57,15 @@ namespace Reinkan::Camera
 	void Camera::UpdateViewMatrix(const float deltaTime)
 	{
 		viewMatrix = glm::lookAt(position, position + cameraDirection, glm::vec3(0.0, 1.0, 0.0));
+	}
+
+	void Camera::UpdateDirection()
+	{
+		glm::vec3 direction;
+		direction.x = cos(spin) * -cos(tilt);
+		direction.y = -sin(tilt);
+		direction.z = sin(spin) * -cos(tilt);
+		cameraDirection = glm::normalize(direction);
 	}
 
 	glm::mat4 Camera::GetPerspectiveMatrix() const

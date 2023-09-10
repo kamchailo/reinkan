@@ -103,17 +103,14 @@ namespace Reinkan::Graphics
         void LoadModel(const ModelData& modelData, glm::mat4 transform);
 
     // ReinkanCamera.cpp
-        void SetEyePosition(float eyeX, float eyeY, float eyeZ);
-
-    // ReinkanLightUtility.cpp
-        void AppendLight(const LightObject& lightObject);
-
-    // ReinkanCamera.cpp
         void SetMainCamera(Camera::Camera* camera);
 
         void UpdateCamera();
 
         Camera::Camera* GetMainCamera() const;
+
+    // ReinkanLightUtility.cpp
+        void AppendLight(const LightObject& lightObject);
 
     private:
     // Reinkan.cpp
@@ -378,9 +375,13 @@ namespace Reinkan::Graphics
 
     // ReinkanCamera.cpp
         glm::vec3 appEyePosition;
-
         std::vector<updateFunction> appUpdates;
+        Camera::Camera* appMainCamera;
 
+    // ReinkanLightUtility.cpp
+        std::vector<LightObject>        appLightObjects;
+
+        
     // Expose Object Property from std::vector<ObjectData> appObjects
         // - position
         // - rotation
@@ -488,10 +489,5 @@ namespace Reinkan::Graphics
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();
 
-    // ReinkanLightUtility.cpp
-        std::vector<LightObject>        appLightObjects;
-
-    // ReinkanCamera.cpp
-        Camera::Camera*                  appMainCamera;
     };
 }

@@ -10,11 +10,6 @@
 
 namespace Reinkan::Graphics
 {
-	void ReinkanApp::SetEyePosition(float eyeX, float eyeY, float eyeZ)
-	{
-		appEyePosition = glm::vec3(eyeX, eyeY, eyeZ);
-	}
-
 	void ReinkanApp::SetMainCamera(Camera::Camera* camera)
 	{
 		appMainCamera = camera;
@@ -30,6 +25,8 @@ namespace Reinkan::Graphics
 
 		float speed = appMainCamera->GetSpeed() * deltaTime;
 
+		float rotateSpeed = appMainCamera->GetRotateSpeed() * deltaTime;
+
 		glm::vec3 direction = appMainCamera->GetDirection();
 
 		glm::vec3 upDirection = appMainCamera->GetUp();
@@ -39,7 +36,6 @@ namespace Reinkan::Graphics
 		if (inputSystem->IsKeyHeld(GLFW_KEY_W))
 		{
 			appMainCamera->Move(speed * direction);
-			std::printf("direction x:%f, y:%f, z:%f | speed = %f\n", direction.x, direction.y, direction.z, glm::length(direction));
 		}
 
 		if (inputSystem->IsKeyHeld(GLFW_KEY_S))
@@ -70,16 +66,9 @@ namespace Reinkan::Graphics
 
 		if (inputSystem->IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
 		{
-			// Change back to spin
+			appMainCamera->Spin(rotateSpeed * inputSystem->GetMouseDelta().x);
 
-			glm::vec4 directionVector = glm::vec4(appMainCamera->GetDirection(), 1.0);
-
-			glm::vec4 rotatedDirection = glm::rotate(glm::mat4(1), glm::radians(appMainCamera->GetRotateSpeed() * inputSystem->GetMouseDelta().x), glm::vec3(0.0, 1.0, 0.0)) * directionVector;
-			rotatedDirection = glm::rotate(glm::mat4(1), glm::radians(appMainCamera->GetRotateSpeed() * inputSystem->GetMouseDelta().y), glm::vec3(1.0, 0.0, 0.0)) * rotatedDirection;
-			
-			//glm::vec3 normalizedDirection = glm::normalize(rotatedDirection);
-
-			appMainCamera->SetDirection(glm::vec3(rotatedDirection.x, rotatedDirection.y, rotatedDirection.z));
+			appMainCamera->Tilt(rotateSpeed * inputSystem->GetMouseDelta().y);
 		}
 
 		//appMainCamera->UpdateCursorPosition();
@@ -90,6 +79,7 @@ namespace Reinkan::Graphics
 
 		appMainCamera->UpdateViewMatrix(deltaTime);
 
+		appMainCamera->UpdateDirection();
 	}
 	Camera::Camera* ReinkanApp::GetMainCamera() const
 	{

@@ -154,7 +154,6 @@ namespace Reinkan
             {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
                 /*
-                */
                 vkCmdBindDescriptorSets(commandBuffer,
                                         VK_PIPELINE_BIND_POINT_GRAPHICS,
                                         appScanlinePipelineLayout,
@@ -202,15 +201,30 @@ namespace Reinkan
 
                     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
                 }
+                */
 
-                /*
                 {
                     VkDeviceSize offsets[] = { 0 };
+
+                    VkViewport viewport{};
+                    viewport.x = 0.0f;
+                    viewport.y = 0.0f;
+                    viewport.width = (float)appSwapchainExtent.width;
+                    viewport.height = (float)appSwapchainExtent.height;
+                    viewport.minDepth = 0.0f;
+                    viewport.maxDepth = 1.0f;
+                    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+                    VkRect2D scissor{};
+                    scissor.offset = { 0, 0 };
+                    scissor.extent = appSwapchainExtent;
+                    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appComputeParticleStorageBufferWraps[appCurrentFrame].buffer, offsets);
 
                     vkCmdDraw(commandBuffer, PARTICLE_COUNT, 1, 0, 0);
                 }
+                /*
                 */
 
                 /*

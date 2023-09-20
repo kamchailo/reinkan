@@ -8,11 +8,11 @@ namespace Reinkan
     void ReinkanApp::CreateScanlinePipeline(DescriptorWrap& descriptorWrap)
     {
         
-        auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
-        auto fragShaderCode = ReadFile("../shaders/shader.frag.spv");
+        //auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
+        //auto fragShaderCode = ReadFile("../shaders/shader.frag.spv");
 
-        //auto vertShaderCode = ReadFile("../shaders/particle.vert.spv");
-        //auto fragShaderCode = ReadFile("../shaders/particle.frag.spv");
+        auto vertShaderCode = ReadFile("../shaders/particle.vert.spv");
+        auto fragShaderCode = ReadFile("../shaders/particle.frag.spv");
 
 
         VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
@@ -32,11 +32,11 @@ namespace Reinkan
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
-        auto bindingDescription = GetBindingDescription();
-        auto attributeDescriptions = GetAttributeDescriptions();
+        //auto bindingDescription = GetBindingDescription();
+        //auto attributeDescriptions = GetAttributeDescriptions();
         // With ComputeParticle
-        //auto bindingDescription = GetParticleBindingDescription();
-        //auto attributeDescriptions = GetParticleAttributeDescriptions();
+        auto bindingDescription = GetParticleBindingDescription();
+        auto attributeDescriptions = GetParticleAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -47,8 +47,8 @@ namespace Reinkan
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        //inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+        //inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewportState{};

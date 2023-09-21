@@ -20,11 +20,11 @@ namespace Reinkan
         for (auto& particle : particles) 
         {
             float r = 0.25f * sqrt(rndDist(rndEngine));
-            float theta = rndDist(rndEngine) * 2 * 3.14159265358979323846;
+            float theta = rndDist(rndEngine) * 3.14159265358979323846;
             float x = r * cos(theta) * appSwapchainExtent.height / appSwapchainExtent.width;
             float y = r * sin(theta);
             particle.position = glm::vec2(x, y);
-            particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
+            particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f * theta;
             particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);
         }
 

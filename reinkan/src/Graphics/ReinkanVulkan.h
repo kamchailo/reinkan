@@ -77,19 +77,34 @@ namespace Reinkan::Graphics
 
             BindTextures();
 
-            CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 100.0);
+            // Clustered
+            CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
 
             CreateComputeClusteredDescriptorSetWrap();
 
+            CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
+
+            CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+
+            // Scanline
             CreateScanlineDescriptorWrap();
 
             CreateScanlinePipeline(appScanlineDescriptorWrap);
 
+            //CreateDebugBufferWraps();
+
+            //CreateDebugDescriptorSetWrap();
+
+            //CreateDebugPipeline(appDebugDescriptorWrap, VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+
+            // Particle
             //CreateComputeParticleBufferWraps();
 
             //CreateComputeParticleDescriptorSetWrap();
 
             //CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
+
+            //CreateComputeParticleSyncObjects()
 
             std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
         }
@@ -265,7 +280,14 @@ namespace Reinkan::Graphics
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     // ReinkanRecordCompute.cpp
-        void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer);
+        void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, 
+                                        VkPipeline pipeline, 
+                                        VkPipelineLayout pipelineLayout, 
+                                        DescriptorWrap descriptorWrap, 
+                                        uint32_t dispatchCountX, 
+                                        uint32_t dispatchCountY, 
+                                        uint32_t dispatchCountZ,
+                                        bool isMemBarrier);
 
     ////////////////////////////////////////
     //      Resources Binding
@@ -403,6 +425,32 @@ namespace Reinkan::Graphics
         // - push constant
 
     ////////////////////////////////////////
+    //          Debug Pass
+    ////////////////////////////////////////
+
+    // ReinkanDebugPipeline.cpp
+        void CreateDebugPipeline(DescriptorWrap& descriptorWrap, VkPrimitiveTopology primitive);
+
+        VkPipelineLayout            appDebugPipelineLayout;
+        VkPipeline                  appDebugPipeline;
+
+    // ReinkanDebug.cpp
+        //static VkVertexInputBindingDescription GetDebugBindingDescription();
+
+        //static std::array<VkVertexInputAttributeDescription, 1> GetDebugAttributeDescriptions();
+
+        void CreateDebugBufferWraps();
+
+        void CreateDebugDescriptorSetWrap();
+
+        DescriptorWrap                  appDebugDescriptorWrap;
+
+        std::vector<BufferWrap>         appDebugUBO;
+        std::vector<void*>              appDebugUBOMapped;
+
+        std::vector<BufferWrap>         appDebugStorageBufferWraps;
+
+    ////////////////////////////////////////
     //          Debug UI (ImGui)
     ////////////////////////////////////////
 
@@ -424,6 +472,7 @@ namespace Reinkan::Graphics
     ////////////////////////////////////////
         
         VkQueue appComputeQueue;        // Create in CreateDevice();
+        uint32_t appComputeQueueIndex;
 
     // -------- Particle System -------- //
 
@@ -467,11 +516,16 @@ namespace Reinkan::Graphics
     // -------- Clustered Shading -------- //
 
     // ReinkanClusteredPipeline.cpp
-        void CreateClusteredPipeline(DescriptorWrap& descriptorWrap);
+        void CreateClusteredGridPipeline(DescriptorWrap& descriptorWrap);
 
-        VkPipelineLayout    appClusteredPipelineLayout;
-        VkPipeline          appClusteredPipeline;
+        VkPipelineLayout    appClusteredGridPipelineLayout;
+        VkPipeline          appClusteredGridPipeline;
 
+        void CreateClusteredCullLightPipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout    appClusteredCullLightPipelineLayout;
+        VkPipeline          appClusteredCullLightPipeline;
+    
     // ReinkanClusteredShading.cpp
         void CreateComputeClusteredBufferWraps(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ, float nearClippingPlane, float farClippingPlane);
 
@@ -491,7 +545,11 @@ namespace Reinkan::Graphics
 
         void CreateComputeClusteredCommandBuffer();
 
+        void CreateComputeClusteredGlobalIndexCount();
+
         void UpdateComputeClusteredUBO(uint32_t currentImage);
+
+        void UpdateClusteredGrids();
 
         DescriptorWrap                  appClusteredGridDescriptorWrap;
         DescriptorWrap                  appClusteredCullLightDescriptorWrap;
@@ -503,20 +561,33 @@ namespace Reinkan::Graphics
         BufferWrap                      appClusteredPlanes;
         
         // out clusteredGrid                in clusteredCullLight
-        std::vector<BufferWrap>         appClusteredGrids;
+        BufferWrap                      appClusteredGrids;
         
         // readonly in clusteredCullLight  readonly in Scanline
         BufferWrap                      appClusteredGlobalLights;
         
+        // in clusteredCullLight        Temp Buffer
+        std::vector<BufferWrap>         appClusteredGlobalIndexCount;
+
         // out clusteredCullLight          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightIndexMap;
         
         // out clusteredCullLight          readonly in Scanline
         std::vector<BufferWrap>         appClusteredLightGrid;
+        // in clusteredCullLight            out clusteredCullLight 
+        BufferWrap                      appClusteredGlobalLights_DEBUG;
 
         std::vector<VkCommandBuffer>    appComputeClusteredCommandBuffers;
         std::vector<VkFence>            appComputeClusteredInFlightFences;
         std::vector<VkSemaphore>        appComputeClusteredFinishedSemaphores;
+
+        // ClusteredShader Specification
+        uint32_t appClusteredSizeX;
+        uint32_t appClusteredSizeY;
+        uint32_t appClusteredSizeZ;
+
+        // To Up date ClusterGrids
+        bool appIsClusteredGridReady = false;
 
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();

@@ -13,11 +13,18 @@ namespace Reinkan::Graphics
 
         CreateComputeClusteredGrids(sizeX, sizeY, sizeZ);
 
+        appClusteredSizeX = sizeX;
+        appClusteredSizeY = sizeY;
+        appClusteredSizeZ = sizeZ;
+
         if (appLightObjects.size() == 0) { return; }
 
         CreateComputeClusteredGlobalLights();
 
         CreateComputeClusteredLightBuffers(sizeX, sizeY, sizeZ);
+
+        CreateComputeClusteredGlobalIndexCount();
+
     }
 
     void ReinkanApp::CreateComputeClusteredUBO()
@@ -68,14 +75,9 @@ namespace Reinkan::Graphics
         //std::vector<BufferWrap>         appClusteredGrids;
         uint32_t bufferSize = sizeof(ClusterGrid) * sizeX * sizeY * sizeZ;
 
-        appClusteredGrids.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-        {
-            appClusteredGrids[i] = CreateBufferWrap(bufferSize,
-                                                    VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-                                                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-        }
+        appClusteredGrids = CreateBufferWrap(bufferSize,
+                                            VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     }
 
     void ReinkanApp::CreateComputeClusteredGlobalLights()
@@ -83,17 +85,18 @@ namespace Reinkan::Graphics
         // readonly in clusteredCullLight  readonly in Scanline
         //BufferWrap                      appClusteredGlobalLights;
         appClusteredGlobalLights = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        appClusteredGlobalLights_DEBUG = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     }
 
     void ReinkanApp::CreateComputeClusteredLightBuffers(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ)
     {
         // out clusteredCullLight          readonly in Scanline
         //std::vector<BufferWrap>         appClusteredLightIndexMap;
-        uint32_t maxBufferSize = appLightObjects.size() * sizeX * sizeY * sizeZ; // N lights * M Grids
+        uint32_t maxBufferSize = 2 * sizeof(uint32_t) * appLightObjects.size() * sizeX * sizeY * sizeZ; // N lights * M Grids
 
         // out clusteredCullLight          readonly in Scanline
         //std::vector<BufferWrap>         appClusteredLightGrid;
-        uint32_t bufferSize = sizeX * sizeY * sizeZ;
+        uint32_t bufferSize = 2 * sizeof(LightGrid) * sizeX * sizeY * sizeZ;
 
         appClusteredLightIndexMap.resize(MAX_FRAMES_IN_FLIGHT);
         appClusteredLightGrid.resize(MAX_FRAMES_IN_FLIGHT);
@@ -143,7 +146,7 @@ namespace Reinkan::Graphics
 
         appClusteredGridDescriptorWrap.Write(appDevice, 1, appClusteredPlanes.buffer, MAX_FRAMES_IN_FLIGHT);
 
-        appClusteredGridDescriptorWrap.Write(appDevice, 2, appClusteredGrids);
+        appClusteredGridDescriptorWrap.Write(appDevice, 2, appClusteredGrids.buffer, MAX_FRAMES_IN_FLIGHT);
 
         //DescriptorWrap                  appClusteredCullLightDescriptorWrap;
         std::vector<VkDescriptorSetLayoutBinding> bindingTableCullLight;
@@ -155,6 +158,13 @@ namespace Reinkan::Graphics
                                            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,   // descriptorType;
                                            1,                                   // descriptorCount; 
                                            VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // ClusterGridBlock
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                               bindingTableCullLightIndex++,    // binding;
+                                               VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                               1,                                   // descriptorCount; 
+                                               VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
 
         // GlobalLightSSBO
         bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
@@ -177,16 +187,35 @@ namespace Reinkan::Graphics
                                            1,                                   // descriptorCount; 
                                            VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
 
+        // GlobalIndexCountSSBO
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
+        // GlobalLight_DEBUG_SSBO
+        bindingTableCullLight.emplace_back(VkDescriptorSetLayoutBinding{
+                                           bindingTableCullLightIndex++,        // binding;
+                                           VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,   // descriptorType;
+                                           1,                                   // descriptorCount; 
+                                           VK_SHADER_STAGE_COMPUTE_BIT });      // stageFlags;
+
         appClusteredCullLightDescriptorWrap.SetBindings(appDevice, bindingTableCullLight, MAX_FRAMES_IN_FLIGHT);
 
         appClusteredCullLightDescriptorWrap.Write(appDevice, 0, appClusteredUBO);
 
-        appClusteredCullLightDescriptorWrap.Write(appDevice, 1, appClusteredGlobalLights.buffer, MAX_FRAMES_IN_FLIGHT);
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 1, appClusteredGrids.buffer, MAX_FRAMES_IN_FLIGHT);
 
-        appClusteredCullLightDescriptorWrap.Write(appDevice, 2, appClusteredLightIndexMap);
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 2, appClusteredGlobalLights.buffer, MAX_FRAMES_IN_FLIGHT);
 
-        appClusteredCullLightDescriptorWrap.Write(appDevice, 3, appClusteredLightGrid);
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 3, appClusteredLightIndexMap);
 
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 4, appClusteredLightGrid);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 5, appClusteredGlobalIndexCount);
+
+        appClusteredCullLightDescriptorWrap.Write(appDevice, 6, appClusteredGlobalLights_DEBUG.buffer, MAX_FRAMES_IN_FLIGHT);
     }
 
     void ReinkanApp::CreateComputeClusteredSyncObjects()
@@ -227,15 +256,74 @@ namespace Reinkan::Graphics
         }
     }
 
+    void ReinkanApp::CreateComputeClusteredGlobalIndexCount()
+    {
+        appClusteredGlobalIndexCount.resize(MAX_FRAMES_IN_FLIGHT);
+
+        uint32_t bufferSize = sizeof(uint32_t);
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appClusteredGlobalIndexCount[i] = CreateBufferWrap(bufferSize,
+                                                               VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        }
+    }
+
     void ReinkanApp::UpdateComputeClusteredUBO(uint32_t currentImage)
     {
         ComputeClusteredUniformBufferObject ubo{};
         // update project and view
-        ubo.view = glm::mat4();
-        ubo.proj = glm::mat4();
-        ubo.projInverse = glm::mat4();
+        ubo.view = appMainCamera->GetViewMatrix();;
+        ubo.proj = appMainCamera->GetPerspectiveMatrix();
+        ubo.projInverse = glm::inverse(ubo.proj);
+        ubo.screenDimensions = glm::vec2(appSwapchainExtent.width, appSwapchainExtent.height);
 
         memcpy(appClusteredUBOMapped[currentImage], &ubo, sizeof(ubo));
+    }
+
+    void ReinkanApp::UpdateClusteredGrids()
+    {
+        auto commandBuffer = BeginTempCommandBuffer();
+
+        UpdateComputeClusteredUBO(appCurrentFrame);
+
+        {
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, appClusteredGridPipeline);
+
+            
+            vkCmdBindDescriptorSets(commandBuffer,
+                                    VK_PIPELINE_BIND_POINT_COMPUTE,
+                                    appClusteredGridPipelineLayout,
+                                    0,
+                                    1,
+                                    &appClusteredGridDescriptorWrap.descriptorSets[0],
+                                    0,
+                                    nullptr);
+
+            vkCmdDispatch(commandBuffer, appClusteredSizeX, appClusteredSizeY, appClusteredSizeZ);
+
+            VkMemoryBarrier  clusteredGridBarrier = {};
+            clusteredGridBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            clusteredGridBarrier.pNext = nullptr;
+            clusteredGridBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            clusteredGridBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+            vkCmdPipelineBarrier(commandBuffer,
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                VK_DEPENDENCY_DEVICE_GROUP_BIT,
+                1,
+                &clusteredGridBarrier,
+                0,
+                nullptr,
+                0,
+                nullptr);
+            
+        }
+
+        
+        
+        EndTempCommandBuffer(commandBuffer);
     }
 
 }

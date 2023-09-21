@@ -37,7 +37,7 @@ namespace Reinkan::Graphics
             renderPassBeginInfo.pClearValues = clearValues.data();
 
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-            
+            {
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
                 
                 vkCmdBindDescriptorSets(commandBuffer,
@@ -86,11 +86,31 @@ namespace Reinkan::Graphics
                     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
 
                 }
+
+                // Debug Draw
+                /*
+                {
+                    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appDebugPipeline);
+                    vkCmdBindDescriptorSets(commandBuffer,
+                                            VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                            appDebugPipelineLayout,
+                                            0,
+                                            1,
+                                            &appDebugDescriptorWrap.descriptorSets[appCurrentFrame],
+                                            0,
+                                            nullptr);
+
+                    VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
+                    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
+                    vkCmdDraw(commandBuffer, 16*9*32, 1, 0, 0);
+                }
+                */
+
                 #ifdef GUI
                 ImGui::Render();  // Rendering UI
                 ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
                 #endif
-            
+            }
             vkCmdEndRenderPass(commandBuffer);
         }
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)

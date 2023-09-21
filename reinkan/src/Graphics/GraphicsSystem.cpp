@@ -24,6 +24,7 @@ namespace Reinkan::Graphics
             std::vector<ModelData> modelDatas;
 
             //Reinkan::ModelData model;
+            /*
             ReadAssimpFile("../assets/models/simpleshape.obj",
                 glm::mat4(1.0),
                 modelDatas,
@@ -38,6 +39,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            */
 
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
@@ -48,7 +50,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool().size());
 
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
-
+             
             for (int i = 0; i < modelDatas.size(); ++i)
             {
                 vulkanApp->LoadModel(modelDatas[i], modelTr);
@@ -56,7 +58,10 @@ namespace Reinkan::Graphics
 
 
             // Lights
-            vulkanApp->AppendLight({ glm::vec3(2.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
+            //vulkanApp->AppendLight({ glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
+
+            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 2.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
             uint32_t maxLightNumber = 1000;
 
@@ -70,6 +75,9 @@ namespace Reinkan::Graphics
                     vulkanApp->AppendLight({ glm::vec3(i, 0.5, j), color, 5.0, 1.0 });
                 }
             }
+            
+            /*
+            */
 
             vulkanApp->BindResources();
         }

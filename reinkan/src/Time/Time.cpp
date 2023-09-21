@@ -27,7 +27,6 @@ namespace Reinkan::Time
 		{
 			stableFps = 1.0 / deltaTime;
 		}
-
 	}
 
 	double Time::GetElapseTime() const

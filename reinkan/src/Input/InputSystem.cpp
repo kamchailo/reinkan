@@ -11,7 +11,9 @@ namespace Reinkan::Input
 
 	void InputSystem::Update()
 	{
-
+		// Dampen Mouse Delta over time
+		mouseDelta.x -= mouseDelta.x / 2.0f;
+		mouseDelta.y -= mouseDelta.y / 2.0f;
 	}
 
 	void InputSystem::Destroy()
@@ -50,7 +52,7 @@ namespace Reinkan::Input
 
 	void InputSystem::KeyCallBack(KeyCode keyCode, KeyState action)
 	{
-		// Lookup key in case we use engine custome keyCode
+		// Lookup key in case we use engine custom keyCode
 		// KeyCode keyCode = GetKeyCode(key);
 		if (action == Released)
 		{

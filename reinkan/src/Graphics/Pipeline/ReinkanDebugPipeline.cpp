@@ -5,15 +5,11 @@
 
 namespace Reinkan::Graphics
 {
-    void ReinkanApp::CreateScanlinePipeline(DescriptorWrap& descriptorWrap)
+    void ReinkanApp::CreateDebugPipeline(DescriptorWrap& descriptorWrap, VkPrimitiveTopology primitive)
     {
-        
-        auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
-        auto fragShaderCode = ReadFile("../shaders/shader.frag.spv");
 
-        //auto vertShaderCode = ReadFile("../shaders/particle.vert.spv");
-        //auto fragShaderCode = ReadFile("../shaders/particle.frag.spv");
-
+        auto vertShaderCode = ReadFile("../shaders/debug.vert.spv");
+        auto fragShaderCode = ReadFile("../shaders/debug.frag.spv");
 
         VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
@@ -32,11 +28,12 @@ namespace Reinkan::Graphics
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
+        // With Debug Vertex
+        //auto bindingDescription = GetDebugBindingDescription();
+        //auto attributeDescriptions = GetDebugAttributeDescriptions();
+
         auto bindingDescription = GetBindingDescription();
         auto attributeDescriptions = GetAttributeDescriptions();
-        // With ComputeParticle
-        //auto bindingDescription = GetParticleBindingDescription();
-        //auto attributeDescriptions = GetParticleAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -47,8 +44,7 @@ namespace Reinkan::Graphics
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        //inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+        inputAssembly.topology = primitive;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewportState{};
@@ -99,7 +95,7 @@ namespace Reinkan::Graphics
         colorBlending.blendConstants[2] = 0.0f;
         colorBlending.blendConstants[3] = 0.0f;
 
-        std::vector<VkDynamicState> dynamicStates = 
+        std::vector<VkDynamicState> dynamicStates =
         {
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_SCISSOR
@@ -110,17 +106,15 @@ namespace Reinkan::Graphics
         dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
         dynamicState.pDynamicStates = dynamicStates.data();
 
-        VkPushConstantRange pushConstantRanges = {
-        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantScanline) };
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 1;
         pipelineLayoutInfo.pSetLayouts = &descriptorWrap.descriptorSetLayout;
-        pipelineLayoutInfo.pushConstantRangeCount = 1;
-        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRanges;
+        pipelineLayoutInfo.pushConstantRangeCount = 0;
+        pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-        if (vkCreatePipelineLayout(appDevice, &pipelineLayoutInfo, nullptr, &appScanlinePipelineLayout) != VK_SUCCESS) 
+        if (vkCreatePipelineLayout(appDevice, &pipelineLayoutInfo, nullptr, &appDebugPipelineLayout) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create pipeline layout!");
         }
@@ -137,12 +131,12 @@ namespace Reinkan::Graphics
         pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = appScanlinePipelineLayout;
+        pipelineInfo.layout = appDebugPipelineLayout;
         pipelineInfo.renderPass = appScanlineRenderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(appDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &appScanlinePipeline) != VK_SUCCESS) 
+        if (vkCreateGraphicsPipelines(appDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &appDebugPipeline) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create graphics pipeline!");
         }

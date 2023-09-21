@@ -69,6 +69,7 @@ namespace Reinkan::Graphics
         }
 
         appGraphicQueueIndex = indices.graphicsAndComputeFamily.value();
+        appComputeQueueIndex = indices.graphicsAndComputeFamily.value();
         vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appGraphicsQueue);
         vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appComputeQueue);
         vkGetDeviceQueue(appDevice, indices.presentFamily.value(), 0, &appPresentQueue);

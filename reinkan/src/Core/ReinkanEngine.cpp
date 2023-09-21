@@ -9,7 +9,7 @@
 
 namespace Reinkan::Core
 {
-	void ReinkanEngine::Init()
+	void ReinkanEngine::Init(uint32_t width, uint32_t height)
 	{
 		timeSystem = std::make_shared<Time::Time>();
 		graphicsSystem = std::make_shared<Graphics::GraphicsSystem>();
@@ -19,7 +19,7 @@ namespace Reinkan::Core
 		GraphicsSystemLocator::Provide(graphicsSystem.get());
 		InputSystemLocator::Provide(inputSystem.get());
 
-		graphicsSystem->Init(1024, 768);
+		graphicsSystem->Init(width, height);
 		inputSystem->Init();
 
 		defaultCamera = std::make_unique<Camera::Camera>();

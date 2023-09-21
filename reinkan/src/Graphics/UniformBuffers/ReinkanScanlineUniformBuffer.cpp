@@ -14,8 +14,8 @@ namespace Reinkan::Graphics
         ubo.view = appMainCamera->GetViewMatrix();
         ubo.viewInverse = glm::inverse(ubo.view);
         ubo.proj = appMainCamera->GetPerspectiveMatrix();
-        ubo.proj[1][1] *= -1;
 
+        ubo.screenExtent = glm::vec2(appSwapchainExtent.width, appSwapchainExtent.height);
 
         ubo.lightNumber = appLightObjects.size();
         

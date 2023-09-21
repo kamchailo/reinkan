@@ -21,6 +21,7 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 viewInverse;
     mat4 proj;
     uint lightNumber;
+    vec2 screenExtent;
 } ubo;
 
 struct Material
@@ -61,6 +62,44 @@ layout(std140, binding = 3) readonly buffer GlobalLightSSBO {
    LightObject globalLights[ ];
 };  
 
+struct ClusterGrid
+{
+    vec3	minPosition;
+    uint    minPos_padding;
+    vec3	maxPosition;
+    uint    maxPos_padding;
+};
+layout(std140, binding = 4) readonly buffer ClusterGridBlock 
+{
+    ClusterGrid clusterGrids[];
+};
+
+struct ClusterPlane
+{
+    float	zNear;
+    uint    zNear_padding;
+    float	zFar;
+    uint    zFar_padding;
+};
+layout(std140, binding = 5) readonly buffer ClusterPlaneBlock 
+{
+    ClusterPlane clusterPlanes[];
+};
+
+// LightIndex
+layout(std140, binding = 6) readonly buffer LightIndexSSBO {
+   uint lightIndexList[ ];
+};
+
+struct LightGrid
+{
+    uint offset;
+    uint size;
+};
+layout(std140, binding = 7) readonly buffer LightGridSSBO {
+   LightGrid lightGrids[ ];
+};
+
 layout(location = 0) in vec3 worldPos;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec3 vertexTangent;
@@ -71,6 +110,10 @@ layout(location = 0) out vec4 outColor;
 
 // include BRDF calculation
 #include "brdf.glsl"
+
+uint tileNumberX = 16;
+uint tileNumberY = 9;
+uint tileNumberZ = 32;
 
 void main() 
 {
@@ -85,45 +128,58 @@ void main()
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
     if(material.normalMapId <= 200)
     {
-        // Need to calculate vertexNormal while loading model
         // N = normalize(normalMap * 2.0 - 1.0);
     }
-
 
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.4;
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
-    // vec3 worldPosVisible = worldPos * 10
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
 
-    for(int i = 0; i < ubo.lightNumber; ++i)
+    // Determine which Grid for this fragment
+    float z = length(viewDir);
+    float zNear = clusterPlanes[0].zNear;
+    float zFar = clusterPlanes[31].zFar;
+    float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
+    float aTerm = tileNumberZ / log(zFar/ zNear);
+    uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
+    float scale = 2.0;
+    float bias = 1.0;
+    uint zTile = uint(max(log2(linear) * scale + bias, 0.0));
+    uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
+    uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
+    uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, 
+                            gl_FragCoord.y /tileSizeY ), slice);
+                            
+    uint tileIndex = tiles.x +
+                     tileNumberX * tiles.y +
+                     (tileNumberX * tileNumberY) * tiles.z;
+
+    LightGrid lightGrid = lightGrids[tileIndex];
+    uint offset = lightGrid.offset;
+    for(int i =0; i < lightGrid.size; ++i)
     {
-        LightObject light = globalLights[i];
+        uint lightIndex = lightIndexList[offset + i];
+        LightObject light = globalLights[lightIndex];
+
         float lightDistance = distance(light.position, worldPos);
         if(lightDistance >= light.radius)
         {
             continue;
         }
         L = normalize(light.position - worldPos);
-        float intensity = light.intensity * (light.radius - lightDistance) / light.radius;
-        brdfColor += light.intensity * light.color * EvalBrdf(N, L, V, material);
+        float intensity = light.intensity * (1 - lightDistance / light.radius);
+        brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        // brdfColor += intensity * 0.2 * light.color;
     }
-  
-    outColor = vec4(brdfColor, 1.0);
-/*
 
-    if(ubo.lightNumber > 0)
+    /*
+    if(lightGrid.size >0)
     {
-        outColor = vec4(lightDistance, lightDistance, lightDistance, 1.0);
+        brdfColor += vec3(float(lightGrid.size)/ 10);
     }
-*/    
-
-    // float depth = length(viewDir) / 10.0;
-
-    // outColor = vec4(vec3(depth), 1.0);
-    // outColor = vec4(worldPos, 1.0);
-
-    // outColor  = vec4(material.diffuse, 1.0);
+    */  
+    outColor = vec4(brdfColor, 1.0);
 }

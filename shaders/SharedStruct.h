@@ -18,6 +18,7 @@ namespace Reinkan
 		alignas(16) glm::mat4 viewInverse;
 		alignas(16) glm::mat4 proj;
 		alignas(4) uint32_t lightNumber;
+		alignas(8) glm::vec2 screenExtent;
 	};
 
 	struct PushConstantScanline
@@ -59,8 +60,8 @@ namespace Reinkan
 
 	struct ClusterPlane
 	{
-		alignas(4) float	zNear;
-		alignas(4) float	zFar;
+		alignas(8) float	zNear;
+		alignas(8) float	zFar;
 	};
 
 	struct ClusterGrid

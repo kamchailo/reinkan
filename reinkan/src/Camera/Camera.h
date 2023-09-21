@@ -67,6 +67,10 @@ namespace Reinkan::Camera
 
 		float GetTilt() const;
 
+		float GetNearPlane() const;
+
+		float GetFarPlane() const;
+
 	private:
 		glm::vec3 position = glm::vec3(0);
 

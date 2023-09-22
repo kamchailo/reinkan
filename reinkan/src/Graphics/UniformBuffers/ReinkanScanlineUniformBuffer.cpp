@@ -17,8 +17,6 @@ namespace Reinkan::Graphics
 
         ubo.screenExtent = glm::vec2(appSwapchainExtent.width, appSwapchainExtent.height);
 
-        ubo.lightNumber = appLightObjects.size();
-        
         // CPU to update buffer req: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
         memcpy(appScanlineUBOMapped[currentImage], &ubo, sizeof(ubo));
 

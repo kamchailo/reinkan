@@ -41,6 +41,16 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool().size());
             */
 
+            glm::mat4 planeTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0));
+
+            //ModelData vampire;
+            ReadAssimpFile("../assets/models/plane.obj",
+                planeTr,
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
                 glm::mat4(0.01),

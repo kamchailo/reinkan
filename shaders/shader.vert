@@ -17,7 +17,6 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
-    uint lightNumber;
     vec2 screenExtent;
 } ubo;
 

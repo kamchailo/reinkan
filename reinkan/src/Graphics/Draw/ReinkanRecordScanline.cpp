@@ -70,6 +70,7 @@ namespace Reinkan::Graphics
                     pushConstant.materialId = object.materialId;
                     pushConstant.objectId = object.objectId;
                     pushConstant.modelMatrix = object.transform;
+                    pushConstant.debugFlag = appDebugFlag;
 
                     vkCmdPushConstants(commandBuffer,
                                        appScanlinePipelineLayout,

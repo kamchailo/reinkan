@@ -463,9 +463,13 @@ namespace Reinkan::Graphics
 
         void DestroyGUI();
 
-        VkDescriptorPool AppImguiDescPool;
+        VkDescriptorPool appImguiDescPool;
 
         #endif
+
+        uint32_t appDebugFlag{ 0x0 };
+
+        bool appImguiBool1{ false };
 
     ////////////////////////////////////////
     //          Compute Shaders

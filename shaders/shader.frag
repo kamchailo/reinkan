@@ -8,6 +8,7 @@ struct PushConstant
     mat4 modelMatrix;
 	int objectId;
     int materialId;
+    uint debugFlag;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -159,7 +160,7 @@ void main()
     }
 
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
-    float ambientLight = 0.4;
+    float ambientLight = 0.6;
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
 
@@ -168,7 +169,7 @@ void main()
     // Determine which Grid for this fragment
     float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
-    float zFar = clusterPlanes[31].zFar;
+    float zFar = clusterPlanes[tileNumberZ - 1].zFar;
     float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
     float aTerm = tileNumberZ / log(zFar/ zNear);
     uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
@@ -186,7 +187,8 @@ void main()
 
     LightGrid lightGrid = lightGrids[tileIndex];
     uint offset = lightGrid.offset;
-    for(int i =0; i < lightGrid.size; ++i)
+    // Loop through all light assigned in the grid
+    for(int i = 0; i < lightGrid.size; ++i)
     {
         uint lightIndex = lightIndexList[offset + i];
         LightObject light = globalLights[lightIndex];
@@ -202,11 +204,10 @@ void main()
         // brdfColor += intensity * 0.2 * light.color;
     }
 
-    /*
-    if(lightGrid.size >0)
+    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) == 1)
     {
-        brdfColor += vec3(float(lightGrid.size)/ 10);
+        brdfColor += vec3(float(lightGrid.size)/ 50);
     }
-    */  
+
     outColor = vec4(brdfColor, 1.0);
 }

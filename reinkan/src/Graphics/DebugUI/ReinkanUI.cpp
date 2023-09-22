@@ -46,7 +46,7 @@ namespace Reinkan::Graphics
         poolInfo.maxSets = 200;
         poolInfo.poolSizeCount = std::size(poolSize);
         poolInfo.pPoolSizes = poolSize.data();
-        vkCreateDescriptorPool(appDevice, &poolInfo, nullptr, &AppImguiDescPool);
+        vkCreateDescriptorPool(appDevice, &poolInfo, nullptr, &appImguiDescPool);
 
 
 
@@ -58,7 +58,7 @@ namespace Reinkan::Graphics
         init_info.QueueFamily = appGraphicQueueIndex;
         init_info.Queue = appGraphicsQueue;
         init_info.PipelineCache = VK_NULL_HANDLE;
-        init_info.DescriptorPool = AppImguiDescPool;
+        init_info.DescriptorPool = appImguiDescPool;
         //init_info.Subpass = subpassID;
         init_info.MinImageCount = 2;
         init_info.ImageCount = MAX_FRAMES_IN_FLIGHT;
@@ -93,7 +93,21 @@ namespace Reinkan::Graphics
 
         ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
+        ImGui::Text("Show Cluster"); ImGui::SameLine();
+
+        ImGui::Checkbox("Show Cluster: ", &appImguiBool1);
+
         ImGui::End();
+
+        // Update appDebugFlag
+        if (appImguiBool1)
+        {
+            appDebugFlag = appDebugFlag | 0x1;
+        }
+        else
+        {
+            appDebugFlag &= appDebugFlag - 0x1;
+        }
     }
 
     void ReinkanApp::DestroyGUI()
@@ -103,7 +117,7 @@ namespace Reinkan::Graphics
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
 
-        vkDestroyDescriptorPool(appDevice, AppImguiDescPool, nullptr);
+        vkDestroyDescriptorPool(appDevice, appImguiDescPool, nullptr);
     }
 #endif
 }

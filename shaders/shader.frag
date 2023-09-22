@@ -102,13 +102,15 @@ layout(std140, binding = 7) readonly buffer LightGridSSBO {
 layout(location = 0) in vec3 worldPos;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec3 vertexTangent;
-layout(location = 3) in vec3 viewDir;
-layout(location = 4) in vec2 fragTexCoord;
+layout(location = 3) in vec3 vertexBitangent;
+layout(location = 4) in vec3 viewDir;
+layout(location = 5) in vec2 inFragTexCoord;
 
 layout(location = 0) out vec4 outColor;
 
 // include BRDF calculation
 #include "brdf.glsl"
+#include "parallax.glsl"
 
 uint tileNumberX = 16;
 uint tileNumberY = 9;
@@ -118,6 +120,32 @@ void main()
 {
     Material material = materials[pushConstant.materialId];
     
+    vec2 fragTexCoord = inFragTexCoord;
+
+    if(material.heightMapId != -1)
+    {
+        mat3 TBN = transpose(mat3(vertexTangent, 
+                                 vertexBitangent,
+                                 vertexNormal));
+
+        vec3 viewPos = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
+
+        vec3 TangentViewPos  = TBN * viewPos;
+        vec3 TangentFragPos  = TBN * worldPos;
+
+        vec3 viewD = normalize(TangentViewPos - TangentFragPos);
+
+        float height =  1.0 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
+
+        // fragTexCoord = ParallaxMapping(fragTexCoord, viewD, height);
+        fragTexCoord = HighParallaxMapping(fragTexCoord, viewD, textureSamplers[material.heightMapId]);
+
+        if(fragTexCoord.x > 1.0 || fragTexCoord.y > 1.0 || fragTexCoord.x < 0.0 || fragTexCoord.y < 0.0)
+        {
+            discard;
+        }
+    }
+
     vec3 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb;
 
     // overrride material

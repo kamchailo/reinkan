@@ -215,10 +215,12 @@ namespace Reinkan::Graphics
                 aiVector3D ainrm = aimesh->HasNormals() ? normalTr * aimesh->mNormals[t] : aiVector3D(0, 0, 1);
                 aiVector3D aitex = aimesh->HasTextureCoords(0) ? aimesh->mTextureCoords[0][t] : aiVector3D(0, 0, 0);
                 aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
+                aiVector3D aibit = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mBitangents[t] : aiVector3D(1, 0, 0);
 
                 modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
                                                {ainrm.x, ainrm.y, ainrm.z},
                                                {aitan.x, aitan.y, aitan.z},
+                                               {aibit.x, aibit.y, aibit.z},
                                                {aitex.x , 1.0 - aitex.y} });
                                                 // The OBJ format assumes a coordinate system 
                                                 // where a vertical coordinate of 0 means the bottom of the image, 

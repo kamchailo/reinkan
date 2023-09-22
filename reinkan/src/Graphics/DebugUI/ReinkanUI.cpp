@@ -91,6 +91,8 @@ namespace Reinkan::Graphics
         
         ImGui::Text("FPS: %d", Core::TimeSystemLocator::GetTime()->GetStableFPS());
 
+        ImGui::Text("Num of Lights: %d", appLightObjects.size());
+
         ImGui::End();
     }
 

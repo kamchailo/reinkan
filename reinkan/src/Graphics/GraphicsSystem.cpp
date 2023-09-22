@@ -60,10 +60,10 @@ namespace Reinkan::Graphics
             // Lights
             //vulkanApp->AppendLight({ glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
-            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 2.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 10.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 2.0), glm::vec3(1.0,0.0,0.0), 10.0, 1.0 });
 
-            uint32_t maxLightNumber = 1000;
+            uint32_t maxLightNumber = 5000;
 
             int bound = sqrt(maxLightNumber) / 2.0;
 

@@ -26,38 +26,6 @@ namespace Reinkan::Graphics
         }
 
         ////////////////////////////////////////
-        //          Acquiring Image 
-        ////////////////////////////////////////
-
-        // can only pass if inFlightFences is [SIGNAL]
-        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
-        uint32_t imageIndex;
-        VkResult result = vkAcquireNextImageKHR(appDevice,
-            appSwapchain,
-            UINT64_MAX,
-            imageAvailableSemaphores[appCurrentFrame],
-            VK_NULL_HANDLE,
-            &imageIndex);
-        // After finish on GPU
-        // > > > > > > > [SIGNAL] imageAvailableSemaphores[appCurrentFrame]
-
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
-        {
-            appFramebufferResized = false;
-            RecreateSwapchain();
-            appIsClusteredGridReady = false; 
-#ifdef GUI
-            ImGui::EndFrame();
-#endif  
-
-            return;
-        }
-        else if (result != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to acquire swap chain image!");
-        }
-
-        ////////////////////////////////////////
         //          Compute Dispatch
         ////////////////////////////////////////
 
@@ -87,7 +55,6 @@ namespace Reinkan::Graphics
                                     appClusteredCullLightDescriptorWrap,
                                     //appClusteredSizeX, appClusteredSizeY, appClusteredSizeZ, false);
                                     1, 1, 16, false);
-
         /*
         */
 
@@ -96,6 +63,7 @@ namespace Reinkan::Graphics
         //submitComputeInfo.waitSemaphoreCount = 0;
         //submitComputeInfo.pWaitSemaphores = {};
         submitComputeInfo.signalSemaphoreCount = 1;
+        //uint32_t nextFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
         submitComputeInfo.pSignalSemaphores = &appComputeClusteredFinishedSemaphores[appCurrentFrame];
 
         if (vkQueueSubmit(appComputeQueue, 1, &submitComputeInfo, appComputeClusteredInFlightFences[appCurrentFrame]) != VK_SUCCESS)
@@ -103,6 +71,38 @@ namespace Reinkan::Graphics
             throw std::runtime_error("failed to submit compute command buffer!");
         };
 
+
+        ////////////////////////////////////////
+        //          Acquiring Image 
+        ////////////////////////////////////////
+
+        // can only pass if inFlightFences is [SIGNAL]
+        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
+        uint32_t imageIndex;
+        VkResult result = vkAcquireNextImageKHR(appDevice,
+            appSwapchain,
+            UINT64_MAX,
+            imageAvailableSemaphores[appCurrentFrame],
+            VK_NULL_HANDLE,
+            &imageIndex);
+        // After finish on GPU
+        // > > > > > > > [SIGNAL] imageAvailableSemaphores[appCurrentFrame]
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+        {
+            appFramebufferResized = false;
+            RecreateSwapchain();
+            appIsClusteredGridReady = false;
+#ifdef GUI
+            ImGui::EndFrame();
+#endif  
+
+            return;
+        }
+        else if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
 
         ////////////////////////////////////////
         //          Graphics Draw
@@ -124,8 +124,8 @@ namespace Reinkan::Graphics
         VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
         VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-        //VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[appCurrentFrame] };
+        //VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
         //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         VkSubmitInfo submitInfo{};

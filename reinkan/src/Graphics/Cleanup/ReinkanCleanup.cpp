@@ -48,6 +48,8 @@ namespace Reinkan::Graphics
 			}
 		} // End Scanline Resources
 
+		// Compute Command Pool
+		vkDestroyCommandPool(appDevice, appComputeCommandPool, nullptr);
 		vkDestroyCommandPool(appDevice, appCommandPool, nullptr);
 
 		#ifdef GUI

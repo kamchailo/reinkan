@@ -264,6 +264,8 @@ namespace Reinkan::Graphics
         VkCommandPool                appCommandPool;
         std::vector<VkCommandBuffer> appCommandBuffers;
 
+        VkCommandPool appComputeCommandPool;
+
     // ReinkanSyncObjects.cpp
         void CreateSyncObjects();
 

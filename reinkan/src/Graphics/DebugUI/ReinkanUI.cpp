@@ -93,8 +93,6 @@ namespace Reinkan::Graphics
 
         ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Text("Show Cluster"); ImGui::SameLine();
-
         ImGui::Checkbox("Show Cluster: ", &appImguiBool1);
 
         ImGui::End();

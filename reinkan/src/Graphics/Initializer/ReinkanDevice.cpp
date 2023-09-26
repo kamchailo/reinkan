@@ -31,7 +31,7 @@ namespace Reinkan::Graphics
         VkDeviceCreateInfo deviceCreateInfo{};
         deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         
-        // @@ Enable fratures 11 shaderDrawParameters
+        // TODO: Enable fratures 11 shaderDrawParameters
         /*
         VkPhysicalDeviceVulkan11Features features11 = {};
 
@@ -68,10 +68,20 @@ namespace Reinkan::Graphics
             throw std::runtime_error("failed to create logical device!");
         }
 
+        // Try to assign dedicated queue for compute pipeline
+        if (indices.computeOnlyFamily.has_value())
+        {
+            appComputeQueueIndex = indices.computeOnlyFamily.value();
+            vkGetDeviceQueue(appDevice, indices.computeOnlyFamily.value(), 0, &appComputeQueue);
+        }
+        else
+        {
+            appComputeQueueIndex = indices.graphicsAndComputeFamily.value();
+            vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appComputeQueue);
+        }
+
         appGraphicQueueIndex = indices.graphicsAndComputeFamily.value();
-        appComputeQueueIndex = indices.graphicsAndComputeFamily.value();
         vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appGraphicsQueue);
-        vkGetDeviceQueue(appDevice, indices.graphicsAndComputeFamily.value(), 0, &appComputeQueue);
         vkGetDeviceQueue(appDevice, indices.presentFamily.value(), 0, &appPresentQueue);
     }
 }

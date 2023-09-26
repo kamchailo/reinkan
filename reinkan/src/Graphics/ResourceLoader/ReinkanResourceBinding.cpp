@@ -163,8 +163,12 @@ namespace Reinkan::Graphics
 
         appScanlineDescriptorWrap.Write(appDevice, 5, appClusteredPlanes.buffer, MAX_FRAMES_IN_FLIGHT);
 
+        std::swap(appClusteredLightIndexMap[0], appClusteredLightIndexMap[1]);
         appScanlineDescriptorWrap.Write(appDevice, 6, appClusteredLightIndexMap);
+        std::swap(appClusteredLightIndexMap[0], appClusteredLightIndexMap[1]);
 
+        std::swap(appClusteredLightGrid[0], appClusteredLightGrid[1]);
         appScanlineDescriptorWrap.Write(appDevice, 7, appClusteredLightGrid);
+        std::swap(appClusteredLightGrid[0], appClusteredLightGrid[1]);
     }
 }

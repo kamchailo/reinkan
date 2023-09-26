@@ -7,11 +7,14 @@ namespace Reinkan::Graphics
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> graphicsAndComputeFamily;
+        std::optional<uint32_t> computeOnlyFamily;
         std::optional<uint32_t> presentFamily;
 
         bool IsComplete() 
         {
-            return graphicsAndComputeFamily.has_value() && presentFamily.has_value();
+            return graphicsAndComputeFamily.has_value() 
+                && presentFamily.has_value() 
+                && computeOnlyFamily.has_value();
         }
     };
 

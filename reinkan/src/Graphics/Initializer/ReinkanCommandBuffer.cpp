@@ -16,6 +16,20 @@ namespace Reinkan::Graphics
         {
             throw std::runtime_error("failed to create command pool!");
         }
+
+        // Create Optional Command Pool for Compute Shader
+        if (queueFamilyIndices.computeOnlyFamily.has_value())
+        {
+            VkCommandPoolCreateInfo computePoolInfo{};
+            computePoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+            computePoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+            computePoolInfo.queueFamilyIndex = queueFamilyIndices.computeOnlyFamily.value();
+
+            if (vkCreateCommandPool(appDevice, &computePoolInfo, nullptr, &appComputeCommandPool) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create command pool!");
+            }
+        }
     }
 
     void ReinkanApp::CreateCommandBuffer() 

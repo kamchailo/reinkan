@@ -118,6 +118,13 @@ namespace Reinkan::Graphics
         int i = 0;
         for (const auto& queueFamily : queueFamilies) 
         {
+            // Dedicated compute queue
+            if (!(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
+            {
+                indices.computeOnlyFamily = i;
+            }
+
             if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
                 && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
             {

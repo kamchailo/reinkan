@@ -244,9 +244,20 @@ namespace Reinkan::Graphics
     {
         appComputeClusteredCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
+        QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(appPhysicalDevice);
+
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = appCommandPool;
+
+        if (queueFamilyIndices.computeOnlyFamily.has_value())
+        {
+            allocInfo.commandPool = appComputeCommandPool;
+        }
+        else
+        {
+            allocInfo.commandPool = appCommandPool;
+        }
+
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)appComputeClusteredCommandBuffers.size();
 
@@ -321,8 +332,6 @@ namespace Reinkan::Graphics
             
         }
 
-        
-        
         EndTempCommandBuffer(commandBuffer);
     }
 

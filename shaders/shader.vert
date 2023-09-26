@@ -5,6 +5,7 @@ struct PushConstant
     mat4 modelMatrix;
 	int objectId;
     int materialId;
+    uint debugFlag;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {

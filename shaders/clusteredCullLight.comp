@@ -68,7 +68,7 @@ float sqDistPointAABB(vec3 point, uint tile);
 
 void main()
 {
-    // TODO: bug positive that globalIndexCount 
+    // TODO: bug that globalIndexCount 
     // did not get reset between work group
     // Due to amount of work in each workgroup which help
     // other workgroup not to interleave and overwrite the same offset.    
@@ -83,12 +83,11 @@ void main()
 
     for(int lightIndex = 0; lightIndex < lightCount; ++lightIndex)
     {
-        if( testSphereAABB(lightIndex, tileIndex) )
+        // Maximum light per cluster = 99
+        if( testSphereAABB(lightIndex, tileIndex) && visibleLightCount < 100)
         {
             visibleLightIndices[visibleLightCount] = lightIndex;
             visibleLightCount += 1;
-            // Maximum light per cluster = 99
-            visibleLightCount = min(visibleLightCount, 99);
         }
     }
 

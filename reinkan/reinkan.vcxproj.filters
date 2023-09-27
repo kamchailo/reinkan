@@ -66,10 +66,10 @@
     <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp">
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp">
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp">
@@ -174,10 +174,10 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp">
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

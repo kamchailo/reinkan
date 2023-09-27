@@ -15,16 +15,16 @@
   </asset>
   <library_images>
     <image id="file7-image" name="file7">
-      <init_from>....textures/Ch24_1001_Diffuse.png</init_from>
+      <init_from>Ch24_1001_Diffuse.png</init_from>
     </image>
     <image id="file5-image" name="file5">
-      <init_from>....textures/Ch24_1001_Specular.png</init_from>
+      <init_from>Ch24_1001_Specular.png</init_from>
     </image>
     <image id="file4-image" name="file4">
-      <init_from>....textures/Ch24_1001_Normal.png</init_from>
+      <init_from>Ch24_1001_Normal.png</init_from>
     </image>
     <image id="file6-image" name="file6">
-      <init_from>....textures/Ch24_1001_Glossiness.png</init_from>
+      <init_from>Ch24_1001_Glossiness.png</init_from>
     </image>
   </library_images>
   <library_materials>

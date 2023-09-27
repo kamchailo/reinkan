@@ -31,6 +31,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            
 
             //ModelData vampire;
             ReadAssimpFile("../assets/models/dancing_vampire.dae",
@@ -39,17 +40,17 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-            */
 
+            
             glm::mat4 planeTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0));
-
-            //ModelData vampire;
+            //ModelData plane;
             ReadAssimpFile("../assets/models/plane.obj",
                 planeTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            */
 
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
@@ -61,6 +62,14 @@ namespace Reinkan::Graphics
 
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
              
+            //ModelData walking;
+            ReadAssimpFile("../assets/models/Walking.dae",
+                glm::mat4(1.0),
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+
             for (int i = 0; i < modelDatas.size(); ++i)
             {
                 vulkanApp->LoadModel(modelDatas[i], modelTr);

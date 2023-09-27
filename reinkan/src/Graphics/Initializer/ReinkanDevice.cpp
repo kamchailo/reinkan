@@ -27,6 +27,9 @@ namespace Reinkan::Graphics
         deviceFeatures.samplerAnisotropy = VK_TRUE;
         // Multisampling shading
         deviceFeatures.sampleRateShading = VK_TRUE;
+        // Polygon Mode
+        deviceFeatures.fillModeNonSolid = VK_TRUE;
+        deviceFeatures.wideLines = VK_TRUE;
 
         VkDeviceCreateInfo deviceCreateInfo{};
         deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

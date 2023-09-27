@@ -6,11 +6,13 @@ namespace Reinkan
 {
 	struct Vertex
 	{
-		glm::vec3 position;
-		glm::vec3 vertexNormal;
-		glm::vec3 vertexTangent;
-		glm::vec3 vertexBitangent;
-		glm::vec2 texCoord;
+		glm::vec3	position;
+		glm::vec3	vertexNormal;
+		glm::vec3	vertexTangent;
+		glm::vec3	vertexBitangent;
+		glm::vec2	texCoord;
+		int32_t		boneId;
+		float		boneWeight;
 	};
 
 	struct UniformBufferObject {
@@ -36,6 +38,12 @@ namespace Reinkan
 		alignas(4) uint32_t heightMapId;
 		alignas(4) float shininess;
 		alignas(4) uint32_t diffuseMapId;
+	};
+
+	struct PushConstantDebug
+	{
+		alignas(16) glm::mat4 modelMatrix;
+		alignas(16) glm::vec3 cameraPosition;
 	};
 
 	struct Particle

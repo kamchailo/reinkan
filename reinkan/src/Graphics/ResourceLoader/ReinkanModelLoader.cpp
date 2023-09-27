@@ -158,7 +158,7 @@ namespace Reinkan::Graphics
                 
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
-                //std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
+                std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
             }
 
             // change to materialPool appMaterials
@@ -198,7 +198,7 @@ namespace Reinkan::Graphics
             for (int boneIndex = 0; boneIndex < aimesh->mNumBones; ++boneIndex)
             {
                 aiBone* aibone = aimesh->mBones[boneIndex];
-                //std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
+                std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
                 //for (int vertW = 0; vertW < aibone->mNumWeights; ++vertW)
                 //{
                     //std::printf("- - [ASSIMP]:   VertID: %d Weight: %f\n", aibone->mWeights[vertW].mVertexId, aibone->mWeights[vertW].mWeight);

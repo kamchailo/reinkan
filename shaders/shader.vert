@@ -21,11 +21,13 @@ layout(binding = 0) uniform UniformBufferObject
     vec2 screenExtent;
 } ubo;
 
-layout(location = 0) in vec3 inPosition;
-layout(location = 1) in vec3 inVertexNormal;
-layout(location = 2) in vec3 inVertexTangent;
-layout(location = 3) in vec3 inVertexBitangent;
-layout(location = 4) in vec2 inTexCoord;
+layout(location = 0) in vec3    inPosition;
+layout(location = 1) in vec3    inVertexNormal;
+layout(location = 2) in vec3    inVertexTangent;
+layout(location = 3) in vec3    inVertexBitangent;
+layout(location = 4) in vec2    inTexCoord;
+layout(location = 5) in int     inBoneId;
+layout(location = 6) in float   inBoneWeight;
 
 layout(location = 0) out vec3 worldPos;
 layout(location = 1) out vec3 vertexNormal;

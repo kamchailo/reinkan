@@ -69,45 +69,7 @@ namespace Reinkan::Graphics
             return appTexturePaths;
         }
 
-        void BindResources()
-        {
-            BindModelData();
-
-            BindMaterials();
-
-            BindTextures();
-
-            // Clustered
-            CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
-
-            CreateComputeClusteredDescriptorSetWrap();
-
-            CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
-
-            CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
-
-            // Scanline
-            CreateScanlineDescriptorWrap();
-
-            CreateScanlinePipeline(appScanlineDescriptorWrap);
-
-            //CreateDebugBufferWraps();
-
-            //CreateDebugDescriptorSetWrap();
-
-            //CreateDebugPipeline(appDebugDescriptorWrap, VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-
-            // Particle
-            //CreateComputeParticleBufferWraps();
-
-            //CreateComputeParticleDescriptorSetWrap();
-
-            //CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
-
-            //CreateComputeParticleSyncObjects()
-
-            std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
-        }
+        void BindResources();
 
         void SetupScanlinePipeline(std::string vertexShaderPath, std::string fragmentShaderPath, DescriptorWrap& scanlineDescriptorWrap)
         {
@@ -318,7 +280,7 @@ namespace Reinkan::Graphics
     // ReinkanVertexBuffer.cpp
         static VkVertexInputBindingDescription GetBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 5> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 7> GetAttributeDescriptions();
 
     // ReinkanScanlineUniformBuffer.cpp
         void UpdateScanlineUBO(uint32_t currentImage);
@@ -431,19 +393,26 @@ namespace Reinkan::Graphics
     ////////////////////////////////////////
 
     // ReinkanDebugPipeline.cpp
-        void CreateDebugPipeline(DescriptorWrap& descriptorWrap, VkPrimitiveTopology primitive);
+        void CreateDebugPipeline(DescriptorWrap& descriptorWrap, 
+                                 VkPrimitiveTopology primitive,
+                                 VkPolygonMode polygonMode,
+                                 float size);
 
         VkPipelineLayout            appDebugPipelineLayout;
         VkPipeline                  appDebugPipeline;
 
     // ReinkanDebug.cpp
-        //static VkVertexInputBindingDescription GetDebugBindingDescription();
+        static VkVertexInputBindingDescription GetDebugBindingDescription();
 
-        //static std::array<VkVertexInputAttributeDescription, 1> GetDebugAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 1> GetDebugAttributeDescriptions();
 
         void CreateDebugBufferWraps();
 
         void CreateDebugDescriptorSetWrap();
+
+        void UpdateDebugUBO(uint32_t currentImage);
+
+        void DestroyDebugResources();
 
         DescriptorWrap                  appDebugDescriptorWrap;
 

@@ -11,6 +11,9 @@ namespace Reinkan::Graphics
 
 		CleanupSwapchain();
 
+		//Debug
+		DestroyDebugResources();
+
 		// ComputeClustered
 		DestroyComputeClusteredResources();
 

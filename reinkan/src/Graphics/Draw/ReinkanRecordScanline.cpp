@@ -89,8 +89,9 @@ namespace Reinkan::Graphics
                 }
 
                 // Debug Draw
-                /*
                 {
+                    UpdateDebugUBO(appCurrentFrame);
+
                     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appDebugPipeline);
                     vkCmdBindDescriptorSets(commandBuffer,
                                             VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -105,6 +106,7 @@ namespace Reinkan::Graphics
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
                     vkCmdDraw(commandBuffer, 16*9*32, 1, 0, 0);
                 }
+                /*
                 */
 
                 #ifdef GUI

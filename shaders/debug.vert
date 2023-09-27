@@ -6,7 +6,6 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
-    uint lightNumber;
     vec2 screenExtent;
 } ubo;
 
@@ -17,15 +16,15 @@ layout(location = 1) out vec3 viewDir;
 
 void main() 
 {
-    // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
-    // mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
     mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
 
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
     
+    // gl_PointSize  = 10.0f;
+
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
     // out
-    worldPos = gl_Position.xyz;
+    worldPos =  (ubo.model * vec4(inPosition, 1.0)).xyz;
     viewDir = vec3(eye - worldPos);
 }

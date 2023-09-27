@@ -205,8 +205,10 @@
     <ClCompile Include="src\Camera\ReinkanCamera.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeClusteredCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Graphics\DebugUI\ReinkanUI.cpp" />
+    <ClCompile Include="src\Graphics\Debug\ReinkanDebug.cpp" />
     <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp" />
@@ -215,6 +217,8 @@
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp" />
     <ClCompile Include="src\Graphics\Lights\ReinkanLightUtility.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Graphics\MultiSampling\ReinkanMultiSampling.cpp" />
     <ClCompile Include="src\Graphics\ParticleSystem\ReinkanParticleSystem.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeClusteredPipeline.cpp" />
@@ -235,9 +239,9 @@
     <ClCompile Include="src\Graphics\Initializer\ReinkanSyncObjects.cpp" />
     <ClCompile Include="src\Graphics\ResourceLoader\ReinkanImageLoader.cpp" />
     <ClCompile Include="src\Graphics\ResourceLoader\ReinkanImageUtility.cpp" />
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp" />
     <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp" />
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Graphics\ReinkanVulkan.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -260,8 +264,9 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Locator\GraphicsSystemLocator.h" />
     <ClInclude Include="src\Core\Locator\TimeSystemLocator.h" />
+    <ClInclude Include="src\Graphics\Animation\Animation.h" />
+    <ClInclude Include="src\Graphics\Animation\Structures\Bone.h" />
     <ClInclude Include="src\Graphics\Constant\CoreConstant.h" />
-    <ClInclude Include="src\Graphics\Debug\ReinkanDebug.cpp" />
     <ClInclude Include="src\Graphics\Descriptor\DescriptorWrap.h" />
     <ClInclude Include="src\Graphics\GraphicsSystem.h" />
     <ClInclude Include="src\Input\InputConstant.h" />
@@ -276,6 +281,8 @@
     <ClInclude Include="src\Graphics\Structure\ImageWrap.h" />
     <ClInclude Include="src\Graphics\Structure\InitializationStruct.h" />
     <ClInclude Include="src\Graphics\ReinkanVulkan.h" />
+    <ClInclude Include="src\Math\Quaternion.h" />
+    <ClInclude Include="src\Math\Vector.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Graphics\Structure\ModelData.h" />
     <ClInclude Include="src\Time\Time.h" />

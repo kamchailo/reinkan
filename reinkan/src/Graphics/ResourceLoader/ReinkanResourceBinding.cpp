@@ -28,6 +28,8 @@ namespace Reinkan::Graphics
             appObjects.push_back(object);
         }
 
+        appModelDataToBeLoaded.clear();
+        
         VkPhysicalDeviceProperties gpuProperty;
         vkGetPhysicalDeviceProperties(appPhysicalDevice, &gpuProperty);
         std::printf("Max Descriptor Set Sampled Images: %d\n", gpuProperty.limits.maxDescriptorSetSampledImages);

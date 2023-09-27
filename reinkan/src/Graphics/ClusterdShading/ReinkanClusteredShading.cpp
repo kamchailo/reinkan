@@ -61,7 +61,6 @@ namespace Reinkan::Graphics
 
             currentZFar = nearClippingPlane * pow(farClippingPlane / nearClippingPlane, static_cast<float>(i+1) / sizeZ);
             clusterPlanes[i].zFar = currentZFar;
-            std::printf("i: %d  near: %f  far: %f size: %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar, clusterPlanes[i].zFar - clusterPlanes[i].zNear);
         }
 
         VkDeviceSize bufferSize = sizeof(ClusterPlane) * sizeZ;
@@ -76,6 +75,7 @@ namespace Reinkan::Graphics
         uint32_t bufferSize = sizeof(ClusterGrid) * sizeX * sizeY * sizeZ;
 
         appClusteredGrids = CreateBufferWrap(bufferSize,
+                                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT |
                                             VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
                                             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     }

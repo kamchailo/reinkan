@@ -54,6 +54,53 @@ namespace Reinkan::Graphics
 		// Resources Binding will happen after this point
 	}
 
+	void ReinkanApp::BindResources()
+	{
+
+		{
+			BindModelData();
+
+			BindMaterials();
+
+			BindTextures();
+
+			// Clustered
+			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
+
+			CreateComputeClusteredDescriptorSetWrap();
+
+			CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
+
+			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+
+			// Scanline
+			CreateScanlineDescriptorWrap();
+
+			CreateScanlinePipeline(appScanlineDescriptorWrap);
+
+			// Debug
+			CreateDebugBufferWraps();
+
+			CreateDebugDescriptorSetWrap();
+
+			CreateDebugPipeline(appDebugDescriptorWrap, 
+								VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+								VK_POLYGON_MODE_LINE,
+								1.0f);
+
+			// Particle
+			//CreateComputeParticleBufferWraps();
+
+			//CreateComputeParticleDescriptorSetWrap();
+
+			//CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
+
+			//CreateComputeParticleSyncObjects()
+
+			std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
+		}
+	}
+
 	bool ReinkanApp::ShouldClose()
 	{
 		return glfwWindowShouldClose(appWindow);

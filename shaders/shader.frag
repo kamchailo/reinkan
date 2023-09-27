@@ -123,7 +123,11 @@ void main()
     
     vec2 fragTexCoord = inFragTexCoord;
 
-    if(material.heightMapId != -1)
+    ////////////////////////////////////////
+    //          Parallax Occlusion
+    ////////////////////////////////////////
+    // if(material.heightMapId != -1)
+    if(false)
     {
         mat3 TBN = transpose(mat3(vertexTangent, 
                                  vertexBitangent,
@@ -137,20 +141,22 @@ void main()
         vec3 viewD = normalize(TangentViewPos - TangentFragPos);
 
         float height =  1.0 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
-
+    
         // fragTexCoord = ParallaxMapping(fragTexCoord, viewD, height);
         fragTexCoord = HighParallaxMapping(fragTexCoord, viewD, textureSamplers[material.heightMapId]);
-
+        
         if(fragTexCoord.x > 1.0 || fragTexCoord.y > 1.0 || fragTexCoord.x < 0.0 || fragTexCoord.y < 0.0)
         {
             discard;
         }
     }
 
-    vec3 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb;
-
-    // overrride material
-    material.diffuse = diffuse;
+    if(material.diffuseMapId != -1)
+    {
+        vec3 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb;
+        // overrride material
+        material.diffuse = diffuse;
+    }
 
     vec3 N = normalize(vertexNormal);
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;

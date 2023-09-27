@@ -66,10 +66,10 @@
     <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp">
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp">
@@ -168,6 +168,18 @@
     <ClCompile Include="src\Graphics\Pipeline\ReinkanDebugPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Debug\ReinkanDebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\ReinkanVulkan.h">
@@ -245,7 +257,16 @@
     <ClInclude Include="src\Graphics\ResourceLoader\ReinkanModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Debug\ReinkanDebug.cpp">
+    <ClInclude Include="src\Math\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Animation\Structures\Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Animation\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

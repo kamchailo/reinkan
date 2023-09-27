@@ -217,6 +217,8 @@
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp" />
     <ClCompile Include="src\Graphics\Lights\ReinkanLightUtility.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Graphics\MultiSampling\ReinkanMultiSampling.cpp" />
     <ClCompile Include="src\Graphics\ParticleSystem\ReinkanParticleSystem.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeClusteredPipeline.cpp" />

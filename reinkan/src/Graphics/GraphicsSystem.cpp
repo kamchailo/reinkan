@@ -60,11 +60,11 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
 
-            glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
              
+            glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(1.0, 0.0, 1.0));
             //ModelData walking;
             ReadAssimpFile("../assets/models/Walking.dae",
-                glm::mat4(1.0),
+                modelTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
@@ -72,7 +72,7 @@ namespace Reinkan::Graphics
 
             for (int i = 0; i < modelDatas.size(); ++i)
             {
-                vulkanApp->LoadModel(modelDatas[i], modelTr);
+                vulkanApp->LoadModel(modelDatas[i], glm::mat4(1.5));
             }
 
 
@@ -82,7 +82,7 @@ namespace Reinkan::Graphics
             vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 10.0, 1.0 });
             vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 2.0), glm::vec3(1.0,0.0,0.0), 10.0, 1.0 });
 
-            uint32_t maxLightNumber = 50;
+            uint32_t maxLightNumber = 5000;
 
             int bound = sqrt(maxLightNumber) / 2.0;
 

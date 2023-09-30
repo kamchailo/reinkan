@@ -171,17 +171,36 @@ void main()
     vec3 V = normalize(viewDir);
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
+    
+    vec3 ndc = vec3(vec2(gl_FragCoord.x /ubo.screenExtent.x,  
+                    gl_FragCoord.y /ubo.screenExtent.y) 
+                    * 2.0 - 1.0, 
+                    gl_FragCoord.z);
+    vec3 middleNDC = vec3(0.0, 0.0, gl_FragCoord.z);
+
+    vec3 div = ndc - middleNDC;
+
+    float middleDot = dot(ndc, middleNDC);
+
+    float deltaZ = gl_FragCoord.z - middleDot;
+
+    float adjustZ = ndc.z + deltaZ;
+
+    // outColor = vec4(div,1.0);
+    outColor = vec4(vec3(deltaZ),1.0);
+
+    return;
 
     // Determine which Grid for this fragment
     float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
-    float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
+    // float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
     float aTerm = tileNumberZ / log(zFar/ zNear);
     uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
-    float scale = 2.0;
-    float bias = 1.0;
-    uint zTile = uint(max(log2(linear) * scale + bias, 0.0));
+    // float scale = 2.0;
+    // float bias = 1.0;
+    // uint zTile = uint(max(log2(linear) * scale + bias, 0.0));
     uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
     uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
     uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, 

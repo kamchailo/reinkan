@@ -95,6 +95,8 @@ namespace Reinkan::Graphics
 
         ImGui::Checkbox("Show Cluster: ", &appImguiBool1);
 
+        ImGui::Checkbox("Draw Cluster: ", &appImguiBool2);
+
         ImGui::End();
 
         // Update appDebugFlag
@@ -104,7 +106,16 @@ namespace Reinkan::Graphics
         }
         else
         {
-            appDebugFlag &= appDebugFlag - 0x1;
+            appDebugFlag &= INT32_MAX - 0x1;
+        }
+
+        if (appImguiBool2)
+        {
+            appDebugFlag = appDebugFlag | 0x2;
+        }
+        else
+        {
+            appDebugFlag &= INT32_MAX - 0x2;
         }
     }
 

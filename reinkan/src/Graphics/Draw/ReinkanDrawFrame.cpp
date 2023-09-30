@@ -25,6 +25,39 @@ namespace Reinkan::Graphics
             appIsClusteredGridReady = true;
         }
 
+
+        ////////////////////////////////////////
+        //          Acquiring Image 
+        ////////////////////////////////////////
+
+        // can only pass if inFlightFences is [SIGNAL]
+        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
+        uint32_t imageIndex;
+        VkResult result = vkAcquireNextImageKHR(appDevice,
+            appSwapchain,
+            UINT64_MAX,
+            imageAvailableSemaphores[appCurrentFrame],
+            VK_NULL_HANDLE,
+            &imageIndex);
+        // After finish on GPU
+        // > > > > > > > [SIGNAL] imageAvailableSemaphores[appCurrentFrame]
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+        {
+            appFramebufferResized = false;
+            RecreateSwapchain();
+            appIsClusteredGridReady = false;
+#ifdef GUI
+            ImGui::EndFrame();
+#endif  
+
+            return;
+        }
+        else if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
+
         ////////////////////////////////////////
         //          Compute Dispatch
         ////////////////////////////////////////
@@ -70,39 +103,6 @@ namespace Reinkan::Graphics
         {
             throw std::runtime_error("failed to submit compute command buffer!");
         };
-
-
-        ////////////////////////////////////////
-        //          Acquiring Image 
-        ////////////////////////////////////////
-
-        // can only pass if inFlightFences is [SIGNAL]
-        vkWaitForFences(appDevice, 1, &inFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
-        uint32_t imageIndex;
-        VkResult result = vkAcquireNextImageKHR(appDevice,
-            appSwapchain,
-            UINT64_MAX,
-            imageAvailableSemaphores[appCurrentFrame],
-            VK_NULL_HANDLE,
-            &imageIndex);
-        // After finish on GPU
-        // > > > > > > > [SIGNAL] imageAvailableSemaphores[appCurrentFrame]
-
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
-        {
-            appFramebufferResized = false;
-            RecreateSwapchain();
-            appIsClusteredGridReady = false;
-#ifdef GUI
-            ImGui::EndFrame();
-#endif  
-
-            return;
-        }
-        else if (result != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to acquire swap chain image!");
-        }
 
         ////////////////////////////////////////
         //          Graphics Draw

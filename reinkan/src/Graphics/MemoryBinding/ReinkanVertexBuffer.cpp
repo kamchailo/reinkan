@@ -45,12 +45,12 @@ namespace Reinkan::Graphics
         attributeDescriptions[5].binding = 0;
         attributeDescriptions[5].location = 5;
         attributeDescriptions[5].format = VK_FORMAT_R32_SINT;
-        attributeDescriptions[5].offset = offsetof(Vertex, boneId);
+        attributeDescriptions[5].offset = offsetof(Vertex, boneIds);
 
         attributeDescriptions[6].binding = 0;
         attributeDescriptions[6].location = 6;
         attributeDescriptions[6].format = VK_FORMAT_R32_SFLOAT;
-        attributeDescriptions[6].offset = offsetof(Vertex, boneWeight);
+        attributeDescriptions[6].offset = offsetof(Vertex, boneWeights);
         
         return attributeDescriptions;
     }

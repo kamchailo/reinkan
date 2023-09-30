@@ -61,7 +61,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool().size());
 
              
-            glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(1.0, 0.0, 1.0));
+            glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
             //ModelData walking;
             ReadAssimpFile("../assets/models/Walking.dae",
                 modelTr,

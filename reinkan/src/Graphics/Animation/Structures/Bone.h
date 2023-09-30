@@ -29,15 +29,15 @@ namespace Reinkan::Graphics::Animation
     class Bone
     {
     private:
-        std::vector<KeyPosition> m_Positions;
-        std::vector<KeyRotation> m_Rotations;
-        std::vector<KeyScale> m_Scales;
-        int m_NumPositions;
-        int m_NumRotations;
-        int m_NumScalings;
+        std::vector<KeyPosition> positions;
+        std::vector<KeyRotation> rotations;
+        std::vector<KeyScale> scales;
+        int numPositions;
+        int numRotations;
+        int numScalings;
 
-        glm::mat4 m_LocalTransform;
-        std::string m_Name;
-        int m_ID;
+        glm::mat4 localTransform;
+        std::string name;
+        int id;
     };
 }

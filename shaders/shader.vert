@@ -26,8 +26,8 @@ layout(location = 1) in vec3    inVertexNormal;
 layout(location = 2) in vec3    inVertexTangent;
 layout(location = 3) in vec3    inVertexBitangent;
 layout(location = 4) in vec2    inTexCoord;
-layout(location = 5) in int     inBoneId;
-layout(location = 6) in float   inBoneWeight;
+layout(location = 5) in int     inBoneId[4];
+layout(location = 9) in float   inBoneWeight[4];
 
 layout(location = 0) out vec3 worldPos;
 layout(location = 1) out vec3 vertexNormal;
@@ -36,8 +36,32 @@ layout(location = 3) out vec3 vertexBitangent;
 layout(location = 4) out vec3 viewDir;
 layout(location = 5) out vec2 fragTexCoord;
 
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 4;
+
 void main() 
 {
+    //////////////////////////////
+    //      Bone Transformation
+    //////////////////////////////
+    vec4 totalPosition = vec4(0.0f);
+    for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+    {
+        if(inBoneId[i] == -1) 
+            continue;
+        if(inBoneId[i] >=MAX_BONES) 
+        {
+            totalPosition = vec4(inPosition,1.0f);
+            break;
+        }
+        /*
+        vec4 localPosition = finalBonesMatrices[inBoneId[i]] * vec4(inPosition,1.0f);
+        totalPosition += localPosition * inBoneWeight[i];
+        vec3 localNormal = mat3(finalBonesMatrices[inBoneId[i]]) * inVertexNormal;
+        */
+    }
+
+
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
     mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
     // mat4 modelTransform = ubo.proj * ubo.view * ubo.model;

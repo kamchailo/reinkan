@@ -117,6 +117,25 @@ uint tileNumberX = 16;
 uint tileNumberY = 9;
 uint tileNumberZ = 32;
 
+vec3 colorSample[8] = {vec3(1.0, 0.0, 0.0), 
+                        vec3(1.0, 1.0, 0.0), 
+                        vec3(0.0, 1.0, 0.0), 
+                        vec3(0.0, 1.0, 1.0), 
+                        vec3(0.0, 0.0, 1.0), 
+                        vec3(1.0, 0.0, 1.0), 
+                        vec3(0.0, 0.0, 0.0), 
+                        vec3(1.0, 1.0, 1.0)}; 
+
+float linearDepth(float depthSample, float zNear, float zFar)
+{
+    // float depthRange = 2.0 * depthSample - 1.0;
+    // Near... Far... wherever you are...
+    // float linear = 2.0 * zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
+    // after remove 2.0 * it fit the world depth
+    float linear = zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
+    return linear;
+}
+
 void main() 
 {
     Material material = materials[pushConstant.materialId];
@@ -172,40 +191,28 @@ void main()
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     
-    vec3 ndc = vec3(vec2(gl_FragCoord.x /ubo.screenExtent.x,  
-                    gl_FragCoord.y /ubo.screenExtent.y) 
-                    * 2.0 - 1.0, 
-                    gl_FragCoord.z);
-    vec3 middleNDC = vec3(0.0, 0.0, gl_FragCoord.z);
 
-    vec3 div = ndc - middleNDC;
-
-    float middleDot = dot(ndc, middleNDC);
-
-    float deltaZ = gl_FragCoord.z - middleDot;
-
-    float adjustZ = ndc.z + deltaZ;
-
-    // outColor = vec4(div,1.0);
-    outColor = vec4(vec3(deltaZ),1.0);
-
-    return;
-
+    ////////////////////////////////////////
+    //          Grid Calculation
+    ////////////////////////////////////////
     // Determine which Grid for this fragment
-    float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
-    // float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
-    float aTerm = tileNumberZ / log(zFar/ zNear);
-    uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
-    // float scale = 2.0;
-    // float bias = 1.0;
-    // uint zTile = uint(max(log2(linear) * scale + bias, 0.0));
+    float linear = linearDepth(gl_FragCoord.z, zNear, zFar);
+    float aTerm = tileNumberZ / log2(zFar/ zNear);
+    // uint slice = uint(log2(gl_FragCoord.z) * (aTerm) - aTerm * log2(zNear));
+    uint slice = uint(log2(linear) * (aTerm) - aTerm * log2(zNear));
+    float scale = 1.0;
+    float bias = 0.0;
     uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
     uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
-    uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, 
-                            gl_FragCoord.y /tileSizeY ), slice);
-                            
+    // uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, gl_FragCoord.y /tileSizeY ), slice);
+    uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, gl_FragCoord.y /tileSizeY ), slice);
+    /*
+    uint colorIndex = slice % 8;
+    outColor = vec4(vec3(colorSample[colorIndex]), 1.0);
+    return;
+    */
     uint tileIndex = tiles.x +
                      tileNumberX * tiles.y +
                      (tileNumberX * tileNumberY) * tiles.z;
@@ -235,4 +242,7 @@ void main()
     }
 
     outColor = vec4(brdfColor, 1.0);
+
+    uint colorIndex = slice % 8;
+    outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
 }

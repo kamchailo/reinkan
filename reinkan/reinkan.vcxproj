@@ -262,6 +262,7 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Core\Locator\GraphicsSystemLocator.h" />
     <ClInclude Include="src\Core\Locator\TimeSystemLocator.h" />
+    <ClInclude Include="src\GameObjects\GameObject.h" />
     <ClInclude Include="src\Graphics\Animation\Animation.h" />
     <ClInclude Include="src\Graphics\Animation\Structures\Bone.h" />
     <ClInclude Include="src\Graphics\Constant\CoreConstant.h" />

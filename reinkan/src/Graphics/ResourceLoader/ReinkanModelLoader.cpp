@@ -197,7 +197,7 @@ namespace Reinkan::Graphics
         for (unsigned int m = 0; m < node->mNumMeshes; ++m) 
         {
             aiMesh* aimesh = aiscene->mMeshes[node->mMeshes[m]];
-            std::printf("- - [ASSIMP]:   %d: %s vert-%d: face-%d\n", m, aimesh->mName.C_Str(), aimesh->mNumVertices, aimesh->mNumFaces);
+            //std::printf("- - [ASSIMP]:   %d: %s vert-%d: face-%d\n", m, aimesh->mName.C_Str(), aimesh->mNumVertices, aimesh->mNumFaces);
 
             ModelData modelDataMesh;
 
@@ -295,6 +295,8 @@ namespace Reinkan::Graphics
             dfsStack.pop();
 
             std::printf("- - [ASSIMP]: [BONE]: %s Name %s\n", level.c_str(), currentNode->mName.C_Str());
+
+            // Process 
 
             for (int i = 0; i < currentNode->mNumChildren; ++i)
             {

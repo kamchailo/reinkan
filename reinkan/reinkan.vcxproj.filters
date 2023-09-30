@@ -174,12 +174,6 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanVertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics\ScanlineBufferUtilities\ReinkanBufferUtility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\ReinkanVulkan.h">
@@ -267,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Animation\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObjects\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -231,9 +231,10 @@ void main()
             continue;
         }
         L = normalize(light.position - worldPos);
-        float intensity = light.intensity * (1 - lightDistance / light.radius);
-        brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        // brdfColor += intensity * 0.2 * light.color;
+        // float intensity = light.intensity * (1 - lightDistance / light.radius);
+        float intensity = light.intensity;
+        // brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        brdfColor += intensity * 0.2 * light.color;
     }
 
     if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) == 1)
@@ -246,6 +247,8 @@ void main()
     if((pushConstant.debugFlag & 0x2) > 0)
     {
         uint colorIndex = slice % 8;
-        outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
+        // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
+        outColor += vec4(colorSample[colorIndex], 0.3);
+        outColor += vec4(tiles.x / 16.0, tiles.y / 9.0, 0.0, 0.1);
     }
 }

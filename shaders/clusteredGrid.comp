@@ -81,9 +81,9 @@ void main()
     vec3 minPointAABB = min(min(minPointNear, minPointFar),min(maxPointNear, maxPointFar));
     vec3 maxPointAABB = max(max(minPointNear, minPointFar),max(maxPointNear, maxPointFar));
 
-    minPointAABB -= 0.1 * abs(minPointAABB); 
-
-    maxPointAABB += 0.1 * abs(maxPointAABB);
+    // Add more threashold for intersection
+    // minPointAABB -= 0.1 * abs(minPointAABB); 
+    // maxPointAABB += 0.1 * abs(maxPointAABB);
 
     clusterGrids[tileIndex].minPosition = minPointAABB;
     clusterGrids[tileIndex].maxPosition = maxPointAABB;

@@ -89,6 +89,8 @@ void main()
             visibleLightIndices[visibleLightCount] = lightIndex;
             visibleLightCount += 1;
         }
+
+        globalLights_debug[lightIndex].position = (ubo.view * vec4(globalLights[lightIndex].position, 1.0)).xyz;
     }
 
     barrier();
@@ -118,10 +120,12 @@ float sqDistPointAABB(vec3 point, uint tile)
     for(int i = 0; i < 3; ++i)
     {
         float v = point[i];
-        if(v < currentCell.minPosition[i]){
+        if(v < currentCell.minPosition[i])
+        {
             sqDist += (currentCell.minPosition[i] - v) * (currentCell.minPosition[i] - v);
         }
-        if(v > currentCell.maxPosition[i]){
+        if(v > currentCell.maxPosition[i])
+        {
             sqDist += (v - currentCell.maxPosition[i]) * (v - currentCell.maxPosition[i]);
         }
     }   

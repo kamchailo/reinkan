@@ -280,7 +280,7 @@ namespace Reinkan::Graphics
     // ReinkanVertexBuffer.cpp
         static VkVertexInputBindingDescription GetBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 7> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 13> GetAttributeDescriptions();
 
     // ReinkanScanlineUniformBuffer.cpp
         void UpdateScanlineUBO(uint32_t currentImage);

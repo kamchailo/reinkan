@@ -224,16 +224,17 @@ namespace Reinkan::Graphics
 
                 
                 Vertex vertex;
-                // The OBJ format assumes a coordinate system 
-                // where a vertical coordinate of 0 means the bottom of the image, 
-                // however we've uploaded our image into Vulkan in a top to bottom orientation 
-                // where 0 means the top of the image. Solve this by 
-                // flipping the vertical component of the texture coordinates
                 vertex.position = { aipnt.x, aipnt.y, aipnt.z };
                 vertex.vertexNormal = { ainrm.x, ainrm.y, ainrm.z };
                 vertex.vertexTangent = { aitan.x, aitan.y, aitan.z };
                 vertex.vertexBitangent = { aibit.x, aibit.y, aibit.z };
                 vertex.texCoord = { aitex.x , 1.0 - aitex.y };
+                // The OBJ format assumes a coordinate system 
+                // where a vertical coordinate of 0 means the bottom of the image, 
+                // however we've uploaded our image into Vulkan in a top to bottom orientation 
+                // where 0 means the top of the image. Solve this by 
+                // flipping the vertical component of the texture coordinates
+
                 for (int boneIndex = 0; boneIndex < std::min(aimesh->mNumBones, MAX_BONE_INFLUENCE); ++boneIndex)
                 {
                     vertex.boneIds[boneIndex] = -1;
@@ -243,13 +244,6 @@ namespace Reinkan::Graphics
                 }
 
                 modelDataMesh.vertices.push_back(vertex);
-                /*
-                modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
-                                               {ainrm.x, ainrm.y, ainrm.z},
-                                               {aitan.x, aitan.y, aitan.z},
-                                               {aibit.x, aibit.y, aibit.z},
-                                               {aitex.x , 1.0 - aitex.y} });
-                */
                                                 
             }
 

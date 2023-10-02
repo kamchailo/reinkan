@@ -79,11 +79,24 @@ namespace Reinkan::Graphics
             // Lights
             //vulkanApp->AppendLight({ glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
 
-            //vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 10.0, 1.0 });
-            //vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 2.0), glm::vec3(0.0,1.0,0.0), 10.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 0.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 0.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
 
-            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 10.0), glm::vec3(1.0,0.0,0.0), 10.0, 3.0 });
-            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 10.0), glm::vec3(0.0,1.0,0.0), 10.0, 3.0 });
+            vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 1.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+
+            vulkanApp->AppendLight({ glm::vec3(-1.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(1.0, 1.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+
+            vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+            vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 2.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
+
+            //vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 10.0), glm::vec3(1.0,0.0,0.0), 10.0, 3.0 });
+            //vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 10.0), glm::vec3(0.0,1.0,0.0), 10.0, 3.0 });
 
             /*
             uint32_t maxLightNumber = 5000;

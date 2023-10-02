@@ -38,6 +38,32 @@ layout(std140, binding = 2) buffer ClusterGridBlock
     ClusterGrid clusterGrids[];
 };
 
+/*
+struct ClusterGridDebug
+{
+    vec3	 leftTopFront;
+    float    leftTopFront_padding;
+    vec3	 rigthTopFront;
+    float    rigthTopFront_padding;
+    vec3	 leftBottomFront;
+    float    leftBottomFront_padding;
+    vec3	 rightBottomFront;
+    float    rightBottomFront_padding;
+    vec3	 leftTopBack;
+    float    leftTopBack_padding;
+    vec3	 rigthTopBack;
+    float    rigthTopBack_padding;
+    vec3	 leftBottomBack;
+    float    leftBottomBack_padding;
+    vec3	 rightBottomBack;
+    float    rightBottomBack_padding;
+};
+layout(std140, binding = 3) buffer ClusterGridBlockDebug 
+{
+    ClusterGridDebug clusterGridsDebug[];
+};
+*/
+
 // include helper function
 #include "clusteredGridFunc.glsl"
 
@@ -87,4 +113,6 @@ void main()
 
     clusterGrids[tileIndex].minPosition = minPointAABB;
     clusterGrids[tileIndex].maxPosition = maxPointAABB;
+    // clusterGrids[tileIndex].minPosition = minPointViewS;
+    // clusterGrids[tileIndex].maxPosition = maxPointViewS;
 }

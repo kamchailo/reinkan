@@ -108,9 +108,10 @@ void main()
 bool testSphereAABB(uint light, uint tile){
     float radius = globalLights[light].radius;
     vec3 center  = (ubo.view * vec4(globalLights[light].position, 1.0)).xyz;
+    center.z = -center.z;
     float squaredDistance = sqDistPointAABB(center, tile);
 
-    return squaredDistance <= (radius * radius);
+    return squaredDistance <= (radius * radius) + radius *0.1;;
 }
 
 float sqDistPointAABB(vec3 point, uint tile)

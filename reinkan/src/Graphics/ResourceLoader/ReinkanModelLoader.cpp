@@ -242,11 +242,14 @@ namespace Reinkan::Graphics
                     //weights[boneIndex] = aimesh->mBones[boneIndex]->mWeights
                 }
 
+                modelDataMesh.vertices.push_back(vertex);
+                /*
                 modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
                                                {ainrm.x, ainrm.y, ainrm.z},
                                                {aitan.x, aitan.y, aitan.z},
                                                {aibit.x, aibit.y, aibit.z},
                                                {aitex.x , 1.0 - aitex.y} });
+                */
                                                 
             }
 

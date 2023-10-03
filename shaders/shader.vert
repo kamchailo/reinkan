@@ -21,6 +21,11 @@ layout(binding = 0) uniform UniformBufferObject
     vec2 screenExtent;
 } ubo;
 
+layout(binding = 8) uniform AnimationMatrices 
+{
+   mat4 matrix;
+} animationMatrices[];
+
 layout(location = 0) in vec3    inPosition;
 layout(location = 1) in vec3    inVertexNormal;
 layout(location = 2) in vec3    inVertexTangent;

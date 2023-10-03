@@ -18,8 +18,6 @@ namespace Reinkan::Graphics
         std::vector<std::string>& texturePool,
         unsigned int materialOffset);
 
-    // passi= in std::vector<ModelData> instead to load each mesh as individual object
-
     void RecurseModelNodes(std::vector<ModelData>& modelData,
         const aiScene* aiscene,
         const aiNode* node,
@@ -28,4 +26,8 @@ namespace Reinkan::Graphics
         unsigned int materialOffset);
 
     void ProcessBones(aiBone* bone);
+
+    void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
+
+    void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh);
 }

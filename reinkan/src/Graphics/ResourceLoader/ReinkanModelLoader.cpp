@@ -9,7 +9,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Core/Locator/AnimationSystemLocator.h"
 #include "Graphics/Structure/ObjectData.h"
+#include "Animation/Structures/BoneInfo.h"
+#include "Animation/Utilities/AssimpGlmHelper.h"
 
 namespace Reinkan::Graphics
 {
@@ -83,6 +86,7 @@ namespace Reinkan::Graphics
                 for (int j = 0; j < animation->mNumChannels; ++j)
                 {
                     std::printf("- - [ASSIMP]: Channels %d: %s\n", j, animation->mChannels[j]->mNodeName.C_Str());
+
                 }
 
             }
@@ -203,12 +207,14 @@ namespace Reinkan::Graphics
 
             modelDataMesh.name = aimesh->mName.C_Str();
 
+            /*
             if (aimesh->mNumBones > 0)
             {
                 aiBone* aibone = aimesh->mBones[0];
 
                 ProcessBones(aibone);
             }
+            */
 
             // Loop through all vertices and record the
             // vertex/normal/texture/tangent data with the node's model
@@ -222,7 +228,6 @@ namespace Reinkan::Graphics
                 aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
                 aiVector3D aibit = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mBitangents[t] : aiVector3D(1, 0, 0);
 
-                
                 Vertex vertex;
                 vertex.position = { aipnt.x, aipnt.y, aipnt.z };
                 vertex.vertexNormal = { ainrm.x, ainrm.y, ainrm.z };
@@ -235,17 +240,21 @@ namespace Reinkan::Graphics
                 // where 0 means the top of the image. Solve this by 
                 // flipping the vertical component of the texture coordinates
 
+                auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
+
                 for (int boneIndex = 0; boneIndex < std::min(aimesh->mNumBones, MAX_BONE_INFLUENCE); ++boneIndex)
                 {
-                    vertex.boneIds[boneIndex] = -1;
-                    vertex.boneWeights[boneIndex] = -1;
+                    vertex.boneIds[boneIndex] = animationSystem->GetBoneId(aimesh->mBones[boneIndex]->mName.C_Str());
+                    //vertex.boneWeights[boneIndex] = aimesh->mBones[boneIndex]->mWeights->
+
+                    //vertex.boneWeights[boneIndex] = -1;
                     //bones[boneIndex] = aimesh->mBones[boneIndex]->mNode->;
                     //weights[boneIndex] = aimesh->mBones[boneIndex]->mWeights
                 }
 
                 modelDataMesh.vertices.push_back(vertex);
-                                                
             }
+                                       
 
             // force mesh to have only 1 material
             modelDataMesh.materialIndex = materialOffset + aimesh->mMaterialIndex;
@@ -267,6 +276,8 @@ namespace Reinkan::Graphics
                     modelDataMesh.indices.push_back(aiface->mIndices[i] + faceOffset);
                 }
             };
+
+            ExtractBoneWeightForVertices(modelDataMesh.vertices, aimesh);
 
             modelDatas.push_back(modelDataMesh);
         }
@@ -298,6 +309,60 @@ namespace Reinkan::Graphics
             for (int i = 0; i < currentNode->mNumChildren; ++i)
             {
                 dfsStack.push(currentNode->mChildren[i]);
+            }
+        }
+    }
+
+    void SetVertexBoneData(Vertex& vertex, int boneID, float weight)
+    {
+        for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
+        {
+            if (vertex.boneIds[i] < 0)
+            {
+                vertex.boneWeights[i] = weight;
+                vertex.boneIds[i] = boneID;
+                break;
+            }
+        }
+    }
+
+    void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh)
+    {
+        auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
+        auto& boneInfoMap = animationSystem->GetMapBoneName();
+
+        for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+        {
+            //int boneID = -1;
+            std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+            
+            uint32_t boneId = animationSystem->GetBoneId(boneName);
+
+            if (boneId != -1)
+            {
+                std::printf("Duplicated Bone #%d : %s\n", boneId, boneName.c_str());
+            }
+
+            if (boneId == -1)
+            {
+                animationSystem->AddBoneName(boneName);
+
+                auto offset = Utilities::AssimpGlmHelper::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);;
+                animationSystem->SetBoneOffset(boneName, offset);
+
+                boneId = animationSystem->GetBoneId(boneName);
+            }
+            assert(boneId != -1);
+
+            auto weights = mesh->mBones[boneIndex]->mWeights;
+            int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+            for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
+            {
+                int vertexId = weights[weightIndex].mVertexId;
+                float weight = weights[weightIndex].mWeight;
+                assert(vertexId <= vertices.size());
+                SetVertexBoneData(vertices[vertexId], boneId, weight);
             }
         }
     }

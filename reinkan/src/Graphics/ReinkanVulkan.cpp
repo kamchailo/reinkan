@@ -56,49 +56,48 @@ namespace Reinkan::Graphics
 
 	void ReinkanApp::BindResources()
 	{
+		BindModelData();
 
-		{
-			BindModelData();
+		BindMaterials();
 
-			BindMaterials();
+		BindTextures();
 
-			BindTextures();
+		// Clustered
+		CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
 
-			// Clustered
-			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
+		CreateComputeClusteredDescriptorSetWrap();
 
-			CreateComputeClusteredDescriptorSetWrap();
+		CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
 
-			CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
+		CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
 
-			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+		// Scanline
+		CreateScanlineBufferWrap();
 
-			// Scanline
-			CreateScanlineDescriptorWrap();
+		CreateScanlineDescriptorSet();
 
-			CreateScanlinePipeline(appScanlineDescriptorWrap);
+		CreateScanlinePipeline(appScanlineDescriptorWrap);
 
-			// Debug
-			CreateDebugBufferWraps();
+		// Debug
+		CreateDebugBufferWraps();
 
-			CreateDebugDescriptorSetWrap();
+		CreateDebugDescriptorSetWrap();
 
-			CreateDebugPipeline(appDebugDescriptorWrap, 
-								VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
-								VK_POLYGON_MODE_LINE,
-								1.0f);
+		CreateDebugPipeline(appDebugDescriptorWrap, 
+							VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+							VK_POLYGON_MODE_LINE,
+							1.0f);
 
-			// Particle
-			//CreateComputeParticleBufferWraps();
+		// Particle
+		//CreateComputeParticleBufferWraps();
 
-			//CreateComputeParticleDescriptorSetWrap();
+		//CreateComputeParticleDescriptorSetWrap();
 
-			//CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
+		//CreateComputeParticlePipeline(appComputeParticleDescriptorWrap);
 
-			//CreateComputeParticleSyncObjects()
+		//CreateComputeParticleSyncObjects()
 
-			std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
-		}
+		std::printf("\n=============================== END OF BIND RESOURCES ===============================\n\n");
 	}
 
 	bool ReinkanApp::ShouldClose()

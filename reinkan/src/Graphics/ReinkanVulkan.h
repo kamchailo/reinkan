@@ -291,6 +291,11 @@ namespace Reinkan::Graphics
         std::vector<BufferWrap>         appScanlineUBO;
         std::vector<void*>              appScanlineUBOMapped; // Address to Buffer | HOST_VISIBLE
 
+        void UpdateAnimationMatricesUBO(uint32_t currentImage);
+
+        std::vector< AnimationUniformBufferObject> appAnimationMatrices;
+        std::vector<BufferWrap>         appAnimationMatricesBuffer;
+        std::vector<void*>              appAnimationMatricesBufferMapped;
     
     // ReinkanImageLoader.cpp
         ImageWrap CreateTextureImageWrap(std::string path);
@@ -355,17 +360,21 @@ namespace Reinkan::Graphics
 
         void BindTextures();
 
-        void CreateScanlineDescriptorWrap();
-
         std::vector<ModelDataLoading> appModelDataToBeLoaded;
 
         std::vector<ObjectData>     appObjects;
 
         std::vector<Material>       appMaterials;
-        BufferWrap                  appMaterialBufferWrap;
 
         std::vector<std::string>    appTexturePaths;
         std::vector<ImageWrap>      appTextureImageWraps;
+
+    // ReinkanScanline.cpp
+        void CreateScanlineBufferWrap();
+
+        void CreateScanlineDescriptorSet();
+
+        BufferWrap                  appMaterialBufferWrap;
 
         DescriptorWrap              appScanlineDescriptorWrap;
 

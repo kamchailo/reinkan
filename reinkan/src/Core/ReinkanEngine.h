@@ -3,6 +3,7 @@
 #include "Time/Time.h"
 #include "Graphics/GraphicsSystem.h"
 #include "Input/InputSystem.h"
+#include "Animation/AnimationSystem.h"
 
 namespace Reinkan::Core
 {
@@ -23,6 +24,8 @@ namespace Reinkan::Core
 		std::shared_ptr<Graphics::GraphicsSystem> graphicsSystem;
 
 		std::shared_ptr<Input::InputSystem> inputSystem;
+
+		std::shared_ptr<Animation::AnimationSystem> animationSystem;
 
 		std::unique_ptr<Camera::Camera> defaultCamera;
 

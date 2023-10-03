@@ -30,5 +30,10 @@ namespace Reinkan::Graphics
         // Barrier : VK_ACCESS_TRANSFER_WRITE_BIT -> VK_ACCESS_SHADER_READ_BIT
 
     }
+
+    void ReinkanApp::UpdateAnimationMatricesUBO(uint32_t currentImage)
+    {
+
+    }
 }
 

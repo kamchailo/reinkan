@@ -2,6 +2,7 @@
 #include "GraphicsSystem.h"
 
 #include "ResourceLoader/ReinkanModelLoader.h"
+#include "Core/Locator/AnimationSystemLocator.h"
 
 #include <glm/gtx/transform.hpp>
 
@@ -117,14 +118,15 @@ namespace Reinkan::Graphics
             vulkanApp->BindResources();
         }
 
-        ////////////////////////////////////////
-        //          Game Object Control
-        ////////////////////////////////////////
-        //vulkanApp->SetEyePosition(0.0, 3.0, 2.0);
+        auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
 
-        // set binding to action
-        // CreateAction 
-        // action call camera
+        auto boneMap = animationSystem->GetMapBoneName();
+
+        for (auto& bone : boneMap)
+        {
+            std::printf("BoneID: %d BoneName %s\n", bone.second.id, bone.first.c_str());
+        }
+
 
 	}
 

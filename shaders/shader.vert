@@ -72,10 +72,11 @@ void main()
         /*
         */
     }
-
+    
     if(boneInfluence == 0)
     {
         totalPosition = vec4(inPosition,1.0f);
+        localNormal = vertexNormal;
     }
 
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);

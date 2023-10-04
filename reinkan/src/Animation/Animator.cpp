@@ -62,6 +62,7 @@ namespace Reinkan::Animation
         {
             int index = boneInfoMap[nodeName].id;
             glm::mat4 offset = boneInfoMap[nodeName].offset;
+            //m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
             m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
 
             debugVertices[index].first = glm::vec3((globalTransformation * offset * glm::vec4(0, 0, 0, 1)));

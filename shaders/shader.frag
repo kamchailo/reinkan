@@ -191,6 +191,9 @@ void main()
 
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     
+    outColor = vec4(brdfColor, 1.0);
+
+    return;
 
     ////////////////////////////////////////
     //          Grid Calculation

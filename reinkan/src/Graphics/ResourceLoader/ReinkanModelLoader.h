@@ -21,7 +21,7 @@ namespace Reinkan::Graphics
     void RecurseModelNodes(std::vector<ModelData>& modelData,
         const aiScene* aiscene,
         const aiNode* node,
-        const aiMatrix4x4& parentTr,
+        const glm::mat4& parentTr,
         const int level,
         unsigned int materialOffset);
 

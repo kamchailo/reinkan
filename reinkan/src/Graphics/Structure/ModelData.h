@@ -17,6 +17,8 @@ namespace Reinkan::Graphics
 		uint32_t materialIndex;
 
 		std::string name;
+
+		glm::mat4 transform;
 	};
 
 	// For future ModelToBeLoaded

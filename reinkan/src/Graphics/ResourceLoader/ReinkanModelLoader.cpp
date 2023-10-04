@@ -178,13 +178,13 @@ namespace Reinkan::Graphics
             materialPool.push_back(newmat);
         }
 
-        RecurseModelNodes(modelDatas, aiscene, aiscene->mRootNode, modelTr, 0, materialOffset);
+        RecurseModelNodes(modelDatas, aiscene, aiscene->mRootNode, modelTransform, 0, materialOffset);
 	}
 
     void RecurseModelNodes(std::vector<ModelData>& modelDatas,
                            const aiScene* aiscene,
                            const aiNode* node,
-                           const aiMatrix4x4& parentTr,
+                           const glm::mat4& parentTr,
                            const int level,
                            unsigned int materialOffset)
     {
@@ -194,8 +194,9 @@ namespace Reinkan::Graphics
         //std::printf("%s \n", node->mName.data);
 
         // Accumulating transformations while traversing down the hierarchy.    
-        aiMatrix4x4 childTr = parentTr * node->mTransformation;
-        aiMatrix3x3 normalTr = aiMatrix3x3(childTr); // Really should be inverse-transpose for full generality
+        //aiMatrix4x4 childTr = parentTr * node->mTransformation;
+        //aiMatrix4x4 childTr = node->mTransformation;
+        //aiMatrix3x3 normalTr = aiMatrix3x3(childTr); // Really should be inverse-transpose for full generality
 
         // Loop through this node's meshes
         for (unsigned int m = 0; m < node->mNumMeshes; ++m) 
@@ -207,14 +208,7 @@ namespace Reinkan::Graphics
 
             modelDataMesh.name = aimesh->mName.C_Str();
 
-            /*
-            if (aimesh->mNumBones > 0)
-            {
-                aiBone* aibone = aimesh->mBones[0];
-
-                ProcessBones(aibone);
-            }
-            */
+            modelDataMesh.transform = parentTr;
 
             // Loop through all vertices and record the
             // vertex/normal/texture/tangent data with the node's model
@@ -222,11 +216,11 @@ namespace Reinkan::Graphics
             unsigned int faceOffset = modelDataMesh.vertices.size();
             for (unsigned int t = 0; t < aimesh->mNumVertices; ++t)
             {
-                aiVector3D aipnt = childTr * aimesh->mVertices[t];
-                aiVector3D ainrm = aimesh->HasNormals() ? normalTr * aimesh->mNormals[t] : aiVector3D(0, 0, 1);
+                aiVector3D aipnt = aimesh->mVertices[t];
+                aiVector3D ainrm = aimesh->HasNormals() ?  aimesh->mNormals[t] : aiVector3D(0, 0, 1);
                 aiVector3D aitex = aimesh->HasTextureCoords(0) ? aimesh->mTextureCoords[0][t] : aiVector3D(0, 0, 0);
-                aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
-                aiVector3D aibit = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mBitangents[t] : aiVector3D(1, 0, 0);
+                aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? aimesh->mTangents[t] : aiVector3D(1, 0, 0);
+                aiVector3D aibit = aimesh->HasTangentsAndBitangents() ? aimesh->mBitangents[t] : aiVector3D(1, 0, 0);
 
                 Vertex vertex;
                 vertex.position = { aipnt.x, aipnt.y, aipnt.z };
@@ -239,18 +233,6 @@ namespace Reinkan::Graphics
                 // however we've uploaded our image into Vulkan in a top to bottom orientation 
                 // where 0 means the top of the image. Solve this by 
                 // flipping the vertical component of the texture coordinates
-
-                auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
-
-                for (int boneIndex = 0; boneIndex < std::min(aimesh->mNumBones, MAX_BONE_INFLUENCE); ++boneIndex)
-                {
-                    vertex.boneIds[boneIndex] = animationSystem->GetBoneId(aimesh->mBones[boneIndex]->mName.C_Str());
-                    //vertex.boneWeights[boneIndex] = aimesh->mBones[boneIndex]->mWeights->
-
-                    //vertex.boneWeights[boneIndex] = -1;
-                    //bones[boneIndex] = aimesh->mBones[boneIndex]->mNode->;
-                    //weights[boneIndex] = aimesh->mBones[boneIndex]->mWeights
-                }
 
                 modelDataMesh.vertices.push_back(vertex);
             }
@@ -285,35 +267,9 @@ namespace Reinkan::Graphics
         // Recurse onto this node's children
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
+            RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], parentTr, level + 1, materialOffset);
         }
     }
-
-    /*
-    void ProcessBones(aiBone* bone)
-    {
-        //DFS
-        std::stack<aiNode*> dfsStack;
-        dfsStack.push(bone->mNode);
-
-        std::string level = "| ";
-
-        while (!dfsStack.empty())
-        {
-            aiNode* currentNode = dfsStack.top();
-            dfsStack.pop();
-
-            std::printf("- - [ASSIMP]: [BONE]: %s Name %s\n", level.c_str(), currentNode->mName.C_Str());
-
-            // Process 
-
-            for (int i = 0; i < currentNode->mNumChildren; ++i)
-            {
-                dfsStack.push(currentNode->mChildren[i]);
-            }
-        }
-    }
-    */
 
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight)
     {
@@ -335,7 +291,7 @@ namespace Reinkan::Graphics
 
         for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
         {
-            //int boneID = -1;
+            int boneID = -1;
             std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
             
             uint32_t boneId = animationSystem->GetBoneId(boneName);

@@ -107,7 +107,7 @@ namespace Reinkan::Animation
     // and returns the translation matrix
     glm::mat4 Bone::InterpolatePosition(float animationTime)
     {
-        if (1 == numPositions)
+        if (numPositions == 1)
             return glm::translate(glm::mat4(1.0f), positions[0].position);
 
         int p0Index = GetPositionIndex(animationTime);

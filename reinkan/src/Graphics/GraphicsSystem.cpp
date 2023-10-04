@@ -17,8 +17,6 @@ namespace Reinkan::Graphics
 
         vulkanApp->Init();
 
-        
-
         ////////////////////////////////////////
         //          Load & Bind Resources
         ////////////////////////////////////////
@@ -26,9 +24,11 @@ namespace Reinkan::Graphics
 
             std::vector<ModelData> modelDatas;
 
+
+            glm::mat4 simpleShapeTr = glm::scale(glm::mat4(1), glm::vec3(0.01));
             //Reinkan::ModelData model;
             ReadAssimpFile("../assets/models/simpleshape.obj",
-                glm::mat4(0.01),
+                simpleShapeTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
@@ -75,7 +75,7 @@ namespace Reinkan::Graphics
 
             for (int i = 0; i < modelDatas.size(); ++i)
             {
-                vulkanApp->LoadModel(modelDatas[i], glm::mat4(1.5));
+                vulkanApp->LoadModel(modelDatas[i], modelDatas[i].transform);
             }
 
 

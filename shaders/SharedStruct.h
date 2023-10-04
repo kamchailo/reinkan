@@ -6,6 +6,8 @@ namespace Reinkan
 {
 	constexpr uint32_t MAX_BONE_INFLUENCE{ 4 };
 
+	constexpr uint32_t MAX_BONE{ 100 };
+
 	struct Vertex
 	{
 		glm::vec3	position;
@@ -28,7 +30,7 @@ namespace Reinkan
 
 	struct AnimationUniformBufferObject
 	{
-		alignas(16) glm::mat4 boneMatrices;
+		glm::mat4 boneMatrices[MAX_BONE];
 	};
 
 	struct PushConstantScanline

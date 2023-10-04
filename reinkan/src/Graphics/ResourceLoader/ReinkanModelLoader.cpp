@@ -289,6 +289,7 @@ namespace Reinkan::Graphics
         }
     }
 
+    /*
     void ProcessBones(aiBone* bone)
     {
         //DFS
@@ -312,6 +313,7 @@ namespace Reinkan::Graphics
             }
         }
     }
+    */
 
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight)
     {

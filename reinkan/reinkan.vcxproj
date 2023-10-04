@@ -201,7 +201,10 @@
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Animation\Animation.cpp" />
     <ClCompile Include="src\Animation\AnimationSystem.cpp" />
+    <ClCompile Include="src\Animation\Animator.cpp" />
+    <ClCompile Include="src\Animation\Structures\Bone.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Camera\ReinkanCamera.cpp" />
     <ClCompile Include="src\Components\ComponentRenderer.cpp" />
@@ -263,6 +266,7 @@
     <ClInclude Include="imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="imgui\backends\imgui_impl_vulkan.h" />
     <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="src\Animation\Animator.h" />
     <ClInclude Include="src\Animation\Structures\BoneInfo.h" />
     <ClInclude Include="src\Animation\Structures\Keyframe.h" />
     <ClInclude Include="src\Animation\Utilities\AssimpGlmHelper.h" />

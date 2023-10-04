@@ -21,21 +21,18 @@ namespace Reinkan::Graphics
             vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
         }
 
-        auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
-        if (animationSystem->animationMatrices.size() > 0)
+        // Animation UBO
+        bufferSize = sizeof(AnimationUniformBufferObject);
+        appAnimationMatricesBuffer.resize(MAX_FRAMES_IN_FLIGHT);
+        appAnimationMatricesBufferMapped.resize(MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
         {
-            // Animation UBO
-            bufferSize = sizeof(AnimationUniformBufferObject) * animationSystem->animationMatrices.size();
-            appAnimationMatricesBuffer.resize(MAX_FRAMES_IN_FLIGHT);
-            appAnimationMatricesBufferMapped.resize(MAX_FRAMES_IN_FLIGHT);
-            for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-            {
-                appAnimationMatricesBuffer[i] = CreateBufferWrap(bufferSize,
-                                                    VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                vkMapMemory(appDevice, appAnimationMatricesBuffer[i].memory, 0, bufferSize, 0, &appAnimationMatricesBufferMapped[i]);
-            }
+            appAnimationMatricesBuffer[i] = CreateBufferWrap(bufferSize,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkMapMemory(appDevice, appAnimationMatricesBuffer[i].memory, 0, bufferSize, 0, &appAnimationMatricesBufferMapped[i]);
         }
+        
 
     }
 
@@ -108,10 +105,10 @@ namespace Reinkan::Graphics
                                        VK_SHADER_STAGE_FRAGMENT_BIT });                      // stageFlags;
         // AnimationMatrices
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                        bindingIndex++,                                                   // binding;
-                                        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                                // descriptorType;
-                                        1,                                                                // descriptorCount; 
-                                        VK_SHADER_STAGE_VERTEX_BIT});     // stageFlags;
+                                        bindingIndex++,                                     // binding;
+                                        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // descriptorType;
+                                        1,                                                  // descriptorCount; 
+                                        VK_SHADER_STAGE_VERTEX_BIT });                      // stageFlags;
 
         appScanlineDescriptorWrap.SetBindings(appDevice,
             bindingTable,
@@ -150,10 +147,7 @@ namespace Reinkan::Graphics
         appScanlineDescriptorWrap.Write(appDevice, 7, appClusteredLightGrid);
         std::swap(appClusteredLightGrid[0], appClusteredLightGrid[1]);
 
-        auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
-        if (animationSystem->animationMatrices.size() > 0)
-        {
-            appScanlineDescriptorWrap.Write(appDevice, 8, appAnimationMatricesBuffer);
-        }
+        appScanlineDescriptorWrap.Write(appDevice, 8, appAnimationMatricesBuffer);
+        
     }
 }

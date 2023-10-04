@@ -25,7 +25,7 @@ namespace Reinkan::Graphics
         const int level,
         unsigned int materialOffset);
 
-    void ProcessBones(aiBone* bone);
+    //void ProcessBones(aiBone* bone);
 
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
 

@@ -1,5 +1,7 @@
 #version 450
 
+#extension GL_EXT_nonuniform_qualifier : enable
+
 struct PushConstant
 {
     mat4 modelMatrix;
@@ -23,8 +25,8 @@ layout(binding = 0) uniform UniformBufferObject
 
 layout(binding = 8) uniform AnimationMatrices 
 {
-   mat4 matrix;
-} animationMatrices[];
+   mat4 matrices[100];
+} animationMatrices;
 
 layout(location = 0) in vec3    inPosition;
 layout(location = 1) in vec3    inVertexNormal;
@@ -50,22 +52,31 @@ void main()
     //      Bone Transformation
     //////////////////////////////
     vec4 totalPosition = vec4(0.0f);
+    // mat4 test = animationMatrices[0].matrices;
+    vec3 localNormal;
+    
+    int boneInfluence = 0;
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
-        if(inBoneId[i] == -1) 
+        if(inBoneId[i] < 0) 
             continue;
-        if(inBoneId[i] >=MAX_BONES) 
+        if(inBoneId[i] >= MAX_BONES) 
         {
             totalPosition = vec4(inPosition,1.0f);
             break;
         }
-        /*
-        vec4 localPosition = finalBonesMatrices[inBoneId[i]] * vec4(inPosition,1.0f);
+        ++boneInfluence;
+        vec4 localPosition = animationMatrices.matrices[inBoneId[i]] * vec4(inPosition,1.0f);
         totalPosition += localPosition * inBoneWeight[i];
-        vec3 localNormal = mat3(finalBonesMatrices[inBoneId[i]]) * inVertexNormal;
+        localNormal = mat3(animationMatrices.matrices[inBoneId[i]]) * inVertexNormal;
+        /*
         */
     }
 
+    if(boneInfluence == 0)
+    {
+        totalPosition = vec4(inPosition,1.0f);
+    }
 
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
     mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
@@ -73,12 +84,14 @@ void main()
     mat4 normalTransform = pushConstant.modelMatrix;
     // mat4 normalTransform = inverse(pushConstant.modelMatrix);
 
-    gl_Position =  modelTransform * vec4(inPosition, 1.0);
+    // gl_Position =  modelTransform * vec4(inPosition, 1.0);
+    gl_Position =  modelTransform * totalPosition;
     
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
     // out
-    worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
+    // worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
+    worldPos = vec3(pushConstant.modelMatrix * totalPosition);
     // worldPos = gl_Position.rgb / gl_Position.w;
     vertexNormal = normalize((normalTransform * vec4(inVertexNormal, 1.0))).rgb;
     vertexTangent = normalize((normalTransform * vec4(inVertexTangent, 1.0))).rgb;

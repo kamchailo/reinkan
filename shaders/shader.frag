@@ -244,7 +244,7 @@ void main()
 
     outColor = vec4(brdfColor, 1.0);
 
-    if((pushConstant.debugFlag & 0x2) > 0)
+    if((pushConstant.debugFlag & 0x2) > 0 && false)
     {
         uint colorIndex = slice % 8;
         // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);

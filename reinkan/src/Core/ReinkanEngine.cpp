@@ -23,8 +23,11 @@ namespace Reinkan::Core
 		AnimationSystemLocator::Provide(animationSystem.get());
 
 		graphicsSystem->Init(width, height);
+		
+		// Move to Init inside Graphics System
+		//animationSystem->Init();
+
 		inputSystem->Init();
-		animationSystem->Init();
 
 		defaultCamera = std::make_unique<Camera::Camera>();
 		graphicsSystem->GetVulkanApp()->SetMainCamera(defaultCamera.get());

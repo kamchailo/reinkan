@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "Animation.h"
+#include "Animation/Animator.h"
 #include "Structures/BoneInfo.h"
 
 namespace Reinkan::Animation
@@ -18,6 +19,8 @@ namespace Reinkan::Animation
 		void Init();
 
 		void Update();
+
+		void Shutdown();
 
 		void AddBoneName(std::string boneName);
 
@@ -31,15 +34,23 @@ namespace Reinkan::Animation
 
 		void AddAnimation(Animation animation);
 
+		void AddAnimator(Animator animator);
 
-
-		std::vector<AnimationUniformBufferObject> animationMatrices;
+		Animation* GetCurrentAnimation() const;
+		
+		Animator* GetcurrentAnimator() const;
 
 	private:
 
 		std::vector<Animation> animations;
 
+		std::vector<Animator> animators;
+
 		std::map<std::string, BoneInfo> mapBoneName;
+
+		Animation* currentAnimation;
+
+		Animator* currentAnimator;
 
 		uint32_t boneCount{ 0 };
 	};

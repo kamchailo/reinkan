@@ -11,6 +11,7 @@ namespace Reinkan::Graphics
         {
             appDebugUBO[i].Destroy(appDevice);
 
+            appDebugStorageBufferWraps[i].Destroy(appDevice);
         }
 
         vkDestroyPipeline(appDevice, appDebugPipeline, nullptr);

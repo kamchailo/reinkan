@@ -31,6 +31,7 @@ namespace Reinkan::Graphics
 			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
 			{
 				appScanlineUBO[i].Destroy(appDevice);
+				appAnimationMatricesBuffer[i].Destroy(appDevice);
 			}
 
 			for (auto object : appObjects)

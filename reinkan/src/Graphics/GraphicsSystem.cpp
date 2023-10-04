@@ -17,6 +17,8 @@ namespace Reinkan::Graphics
 
         vulkanApp->Init();
 
+        
+
         ////////////////////////////////////////
         //          Load & Bind Resources
         ////////////////////////////////////////
@@ -25,14 +27,14 @@ namespace Reinkan::Graphics
             std::vector<ModelData> modelDatas;
 
             //Reinkan::ModelData model;
-            /*
             ReadAssimpFile("../assets/models/simpleshape.obj",
-                glm::mat4(1.0),
+                glm::mat4(0.01),
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
             
+            /*
 
             //ModelData vampire;
             ReadAssimpFile("../assets/models/dancing_vampire.dae",
@@ -51,7 +53,6 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-            */
 
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
@@ -60,6 +61,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            */
 
              
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
@@ -115,9 +117,12 @@ namespace Reinkan::Graphics
             
             */
 
-            vulkanApp->BindResources();
         }
 
+        Core::AnimationSystemLocator::GetAnimationSystem()->Init();
+        
+        vulkanApp->BindResources();
+        /*
         auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
 
         auto boneMap = animationSystem->GetMapBoneName();
@@ -127,6 +132,10 @@ namespace Reinkan::Graphics
             std::printf("BoneID: %d BoneName %s\n", bone.second.id, bone.first.c_str());
         }
 
+        */
+        //Animation::Animation walkAnim("../assets/models/Walking.dae");
+
+        //animationSystem->AddAnimation(walkAnim);
 
 	}
 

@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "Graphics/ReinkanVulkan.h"
 
-
 #include <chrono>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Core/Locator/AnimationSystemLocator.h"
+    
 namespace Reinkan::Graphics
 {
     void ReinkanApp::UpdateScanlineUBO(uint32_t currentImage)
@@ -33,7 +34,24 @@ namespace Reinkan::Graphics
 
     void ReinkanApp::UpdateAnimationMatricesUBO(uint32_t currentImage)
     {
+        auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
+        AnimationUniformBufferObject ubo{};
 
+        ubo = animationSystem->GetcurrentAnimator()->GetFinalBoneMatrices();
+        memcpy(appAnimationMatricesBufferMapped[currentImage], &ubo, sizeof(AnimationUniformBufferObject));
+
+        auto vertDebug = animationSystem->GetcurrentAnimator()->GetDebugVertices();
+        memcpy(appDebugStorageMapped[currentImage], &vertDebug, sizeof(glm::vec3) * 200);
+
+        /*
+        std::vector<std::pair<glm::vec3, glm::vec3>> debugVert = animationSystem->GetcurrentAnimator()->GetDebugVertices();
+        memcpy(appDebugStorageMapped[currentImage], &debugVert, sizeof(glm::vec3) * 200);
+
+        std::printf("-------------------------------\n");
+        std::printf(" size of animation UBO %d\n", sizeof(AnimationUniformBufferObject) * ubo.size());
+        std::printf(" size of animation Vert UBO %d\n", sizeof(glm::vec3) * 2 * debugVert.size());
+        std::printf("-------------------------------\n");
+        */
     }
 }
 

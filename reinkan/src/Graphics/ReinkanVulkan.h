@@ -293,7 +293,7 @@ namespace Reinkan::Graphics
 
         void UpdateAnimationMatricesUBO(uint32_t currentImage);
 
-        std::vector< AnimationUniformBufferObject> appAnimationMatrices;
+        std::vector<AnimationUniformBufferObject> appAnimationMatrices;
         std::vector<BufferWrap>         appAnimationMatricesBuffer;
         std::vector<void*>              appAnimationMatricesBufferMapped;
     
@@ -362,6 +362,7 @@ namespace Reinkan::Graphics
 
         std::vector<ModelDataLoading> appModelDataToBeLoaded;
 
+        // Vulkan Own Objects
         std::vector<ObjectData>     appObjects;
 
         std::vector<Material>       appMaterials;
@@ -429,6 +430,7 @@ namespace Reinkan::Graphics
         std::vector<void*>              appDebugUBOMapped;
 
         std::vector<BufferWrap>         appDebugStorageBufferWraps;
+        std::vector<void*>              appDebugStorageMapped;
 
     ////////////////////////////////////////
     //          Debug UI (ImGui)

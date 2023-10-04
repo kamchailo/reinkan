@@ -23,5 +23,7 @@ namespace Reinkan::Graphics
         uint32_t        materialId;
 
         glm::mat4       transform;
+
+
 	};
 }

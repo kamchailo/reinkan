@@ -5,11 +5,25 @@ namespace Reinkan::Animation
 {
 	void AnimationSystem::Init()
 	{
-		animationMatrices = std::vector< AnimationUniformBufferObject>(100, { glm::mat4(1) });
 
+		Animation animation("../assets/models/Walking.dae");
+		AddAnimation(animation);
+
+		Animator animator(currentAnimation);
+		AddAnimator(animator);
+		
+		currentAnimator->PlayAnimation(currentAnimation);
 	}
 
 	void AnimationSystem::Update()
+	{
+		for (auto& animator : animators)
+		{
+			animator.UpdateAnimation();
+		}
+	}
+
+	void AnimationSystem::Shutdown()
 	{
 	}
 
@@ -54,6 +68,22 @@ namespace Reinkan::Animation
 	void AnimationSystem::AddAnimation(Animation animation)
 	{
 		animations.push_back(animation);
+		currentAnimation = &animations.back();
+	}
+
+	void AnimationSystem::AddAnimator(Animator animator)
+	{	
+		animators.push_back(animator);
+		currentAnimator = &animators.back();;
+	}
+
+	Animation* AnimationSystem::GetCurrentAnimation() const
+	{
+		return currentAnimation;
+	}
+	Animator* AnimationSystem::GetcurrentAnimator() const
+	{
+		return currentAnimator;
 	}
 }
 

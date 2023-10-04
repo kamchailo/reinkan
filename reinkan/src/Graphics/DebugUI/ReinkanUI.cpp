@@ -97,6 +97,8 @@ namespace Reinkan::Graphics
 
         ImGui::Checkbox("Draw Cluster: ", &appImguiBool2);
 
+        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, -4.0f, 4.0f);
+
         ImGui::End();
 
         // Update appDebugFlag

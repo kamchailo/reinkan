@@ -13,9 +13,9 @@ namespace Reinkan::Graphics
         return bindingDescription;
     }
 
-    std::array<VkVertexInputAttributeDescription, 7> ReinkanApp::GetAttributeDescriptions()
+    std::array<VkVertexInputAttributeDescription, 5> ReinkanApp::GetAttributeDescriptions()
     {
-        std::array<VkVertexInputAttributeDescription, 7> attributeDescriptions;
+        std::array<VkVertexInputAttributeDescription, 5> attributeDescriptions;
         
         attributeDescriptions[0].binding = 0;
         attributeDescriptions[0].location = 0;
@@ -41,16 +41,6 @@ namespace Reinkan::Graphics
         attributeDescriptions[4].location = 4;
         attributeDescriptions[4].format = VK_FORMAT_R32G32_SFLOAT;
         attributeDescriptions[4].offset = offsetof(Vertex, texCoord);
-
-        attributeDescriptions[5].binding = 0;
-        attributeDescriptions[5].location = 5;
-        attributeDescriptions[5].format = VK_FORMAT_R32_SINT;
-        attributeDescriptions[5].offset = offsetof(Vertex, boneIds);
-
-        attributeDescriptions[6].binding = 0;
-        attributeDescriptions[6].location = 6;
-        attributeDescriptions[6].format = VK_FORMAT_R32_SFLOAT;
-        attributeDescriptions[6].offset = offsetof(Vertex, boneWeights);
         
         return attributeDescriptions;
     }

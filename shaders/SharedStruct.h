@@ -31,6 +31,7 @@ namespace Reinkan
 		alignas(4) uint32_t objectId;
 		alignas(4) uint32_t materialId;
 		alignas(4) uint32_t debugFlag;
+		alignas(4) float debugFloat;
 	};
 
 	struct Material {

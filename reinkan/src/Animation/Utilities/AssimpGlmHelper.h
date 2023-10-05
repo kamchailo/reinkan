@@ -29,7 +29,7 @@ namespace Reinkan::Utilities
             return glm::vec3(vec.x, vec.y, vec.z);
         }
 
-        // TODO: change to engine quaternion
+        // TODO: change to engine Quaternion
         static inline glm::quat GetGLMQuat(const aiQuaternion& pOrientation)
         {
             return glm::quat(pOrientation.w, pOrientation.x, pOrientation.y, pOrientation.z);

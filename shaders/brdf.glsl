@@ -23,7 +23,7 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
     float D = clamp(mN, 0.0, 1.0) * alpha_square
            / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
     // float D = alpha_square
-        //    / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
+    //    / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
 
 
     // G factor with V

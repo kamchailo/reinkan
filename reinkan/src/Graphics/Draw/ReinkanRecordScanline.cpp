@@ -108,7 +108,7 @@ namespace Reinkan::Graphics
                     auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appDebugStorageBufferWraps[appCurrentFrame].buffer, offsets);
                     uint32_t numVerts = MAX_BONE * 2;
-                    vkCmdDraw(commandBuffer, sizeof(glm::vec3) * numVerts, 1, 0, 0);
+                    vkCmdDraw(commandBuffer, sizeof(glm::vec3) * numVerts, 1, 2, 0);
                 }
 
                 #ifdef GUI

@@ -76,7 +76,7 @@ void main()
     if(boneInfluence == 0)
     {
         totalPosition = vec4(inPosition,1.0f);
-        localNormal = vertexNormal;
+        localNormal = inVertexNormal;
     }
 
     // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
@@ -88,13 +88,13 @@ void main()
     // gl_Position =  modelTransform * vec4(inPosition, 1.0);
     gl_Position =  modelTransform * totalPosition;
     
-    vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
+    vec3 eye = vec3(-ubo.view[3].x, -ubo.view[3].y, -ubo.view[3].z);
 
     // out
     // worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
     worldPos = vec3(pushConstant.modelMatrix * totalPosition);
     // worldPos = gl_Position.rgb / gl_Position.w;
-    vertexNormal = normalize((normalTransform * vec4(inVertexNormal, 1.0))).rgb;
+    vertexNormal = normalize((normalTransform * vec4(localNormal, 1.0))).rgb;
     vertexTangent = normalize((normalTransform * vec4(inVertexTangent, 1.0))).rgb;
     vertexBitangent = normalize((normalTransform * vec4(inVertexBitangent, 1.0))).rgb;
     viewDir = vec3(eye - worldPos);

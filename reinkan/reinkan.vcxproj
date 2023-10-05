@@ -249,6 +249,7 @@
     <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp" />
     <ClCompile Include="src\Graphics\ReinkanVulkan.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -295,8 +296,9 @@
     <ClInclude Include="src\Graphics\Structure\ImageWrap.h" />
     <ClInclude Include="src\Graphics\Structure\InitializationStruct.h" />
     <ClInclude Include="src\Graphics\ReinkanVulkan.h" />
+    <ClInclude Include="src\Math\Interpolation.hpp" />
     <ClInclude Include="src\Math\Quaternion.h" />
-    <ClInclude Include="src\Math\Vector.h" />
+    <ClInclude Include="src\Math\VQS.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Graphics\Structure\ModelData.h" />
     <ClInclude Include="src\Time\Time.h" />

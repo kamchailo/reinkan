@@ -66,11 +66,15 @@ namespace Reinkan::Animation
             // Set Final Matrix in Shader
             m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
 
-            debugVertices[index * 2] = glm::vec3((globalTransformation[3]));
+            debugVertices[index * 2] = globalTransformation[3];
 
             if (node->parent)
             {
-                debugVertices[index * 2 + 1] = glm::vec3((parentTransform[3]));
+                debugVertices[index * 2 + 1] = parentTransform[3];
+            }
+            else
+            {
+                debugVertices[index * 2 + 1] = globalTransformation[3];
             }
         }
 

@@ -29,6 +29,7 @@ namespace Reinkan::Animation
             aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
             float timeStamp = channel->mRotationKeys[rotationIndex].mTime;
             KeyRotation data;
+            // TODO: change to engine Quaternion
             data.orientation = Utilities::AssimpGlmHelper::GetGLMQuat(aiOrientation);
             data.timeStamp = timeStamp;
             rotations.push_back(data);
@@ -116,6 +117,7 @@ namespace Reinkan::Animation
         float scaleFactor = GetScaleFactor(positions[p0Index].timeStamp,
             positions[p1Index].timeStamp, animationTime);
 
+        // TODO: change to engine Lerp
         glm::vec3 finalPosition = glm::mix(positions[p0Index].position,
             positions[p1Index].position, scaleFactor);
 
@@ -138,6 +140,8 @@ namespace Reinkan::Animation
         float scaleFactor = GetScaleFactor(rotations[p0Index].timeStamp,
             rotations[p1Index].timeStamp, animationTime);
 
+        // TODO: change to engine Quaternion
+        // TODO: change to engine SLerp
         glm::quat finalRotation = glm::slerp(rotations[p0Index].orientation,
             rotations[p1Index].orientation, scaleFactor);
 

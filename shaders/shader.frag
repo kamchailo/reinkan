@@ -142,34 +142,6 @@ void main()
     
     vec2 fragTexCoord = inFragTexCoord;
 
-    ////////////////////////////////////////
-    //          Parallax Occlusion
-    ////////////////////////////////////////
-    // if(material.heightMapId != -1)
-    if(false)
-    {
-        mat3 TBN = transpose(mat3(vertexTangent, 
-                                 vertexBitangent,
-                                 vertexNormal));
-
-        vec3 viewPos = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
-
-        vec3 TangentViewPos  = TBN * viewPos;
-        vec3 TangentFragPos  = TBN * worldPos;
-
-        vec3 viewD = normalize(TangentViewPos - TangentFragPos);
-
-        float height =  1.0 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
-    
-        // fragTexCoord = ParallaxMapping(fragTexCoord, viewD, height);
-        fragTexCoord = HighParallaxMapping(fragTexCoord, viewD, textureSamplers[material.heightMapId]);
-        
-        if(fragTexCoord.x > 1.0 || fragTexCoord.y > 1.0 || fragTexCoord.x < 0.0 || fragTexCoord.y < 0.0)
-        {
-            discard;
-        }
-    }
-
     if(material.diffuseMapId != -1)
     {
         vec4 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord);
@@ -188,14 +160,22 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
-    vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
-    float ambientLight = 0.6;
-    float intensity = 0.7;
+    vec3 L = normalize(vec3(2.0, 5.0, 1.0) - worldPos);
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
     vec3 V = normalize(viewDir);
-
-    vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     
-    outColor = vec4(brdfColor, 1.0);
+    vec3 ambient = vec3(0.1);
+    vec3 diffuse = max(dot(N,L), 0.0) * lightColor;
+
+    vec3 reflectDir = reflect(-L, N);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 7);
+    vec3 specular = material.specular * spec * lightColor * 0.1; 
+    
+    vec3 phong = (ambient + diffuse + specular) * material.diffuse;
+
+    outColor = vec4(phong, 1.0);
+    // vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
+    // outColor = vec4(brdfColor, 1.0);
 
     return;
 }

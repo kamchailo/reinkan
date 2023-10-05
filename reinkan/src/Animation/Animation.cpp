@@ -45,7 +45,7 @@ namespace Reinkan::Animation
 
         int size = animation->mNumChannels;
 
-        auto& boneInfoMap = animationSystem->GetMapBoneName(); //getting m_BoneInfoMap from Model class
+        auto& boneInfoMap = animationSystem->GetMapBoneName(); // getting m_BoneInfoMap from Animation System
         //int& boneCount = model.GetBoneCount(); //getting the m_BoneCounter from Model class
 
         //reading channels(bones engaged in an animation and their keyframes)

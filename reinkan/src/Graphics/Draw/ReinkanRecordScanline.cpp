@@ -105,12 +105,9 @@ namespace Reinkan::Graphics
                                             nullptr);
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
-                    //vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
-                    //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);
-
                     auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appDebugStorageBufferWraps[appCurrentFrame].buffer, offsets);
-                    size_t numVerts = MAX_BONE * 2;
+                    uint32_t numVerts = MAX_BONE * 2;
                     vkCmdDraw(commandBuffer, sizeof(glm::vec3) * numVerts, 1, 0, 0);
                 }
 

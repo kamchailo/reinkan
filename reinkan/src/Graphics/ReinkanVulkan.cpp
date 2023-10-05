@@ -86,7 +86,7 @@ namespace Reinkan::Graphics
 		CreateDebugPipeline(appDebugDescriptorWrap, 
 							VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
 							VK_POLYGON_MODE_LINE,
-							5.0f);
+							4.0f);
 
 		// Particle
 		//CreateComputeParticleBufferWraps();

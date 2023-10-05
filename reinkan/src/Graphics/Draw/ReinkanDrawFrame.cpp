@@ -19,15 +19,6 @@ namespace Reinkan::Graphics
         }
         */
 
-        /*
-        if (!appIsClusteredGridReady)
-        {
-            UpdateClusteredGrids();
-            appIsClusteredGridReady = true;
-        }
-        */
-
-
         ////////////////////////////////////////
         //          Acquiring Image 
         ////////////////////////////////////////
@@ -64,47 +55,7 @@ namespace Reinkan::Graphics
         //          Compute Dispatch
         ////////////////////////////////////////
 
-        // --------------------
-        // ComputeClusteredGrid
-        // --------------------
-        /*
-        VkSubmitInfo submitComputeInfo{};
-        submitComputeInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-        // Compute submission        
-        vkWaitForFences(appDevice, 1, &appComputeClusteredInFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
-
-        // Update UBO
-        UpdateComputeClusteredUBO(appCurrentFrame);
-
-        vkResetFences(appDevice, 1, &appComputeClusteredInFlightFences[appCurrentFrame]);
-
-        vkResetCommandBuffer(appComputeClusteredCommandBuffers[appCurrentFrame], 0);
-
-        // --------------------
-        // ComputeClusteredCullLight
-        // --------------------
-        RecordComputeCommandBuffer(appComputeClusteredCommandBuffers[appCurrentFrame],
-                                    appClusteredCullLightPipeline,
-                                    appClusteredCullLightPipelineLayout,
-                                    appClusteredCullLightDescriptorWrap,
-                                    //appClusteredSizeX, appClusteredSizeY, appClusteredSizeZ, false);
-                                    1, 1, 16, false);
-        
-
-        submitComputeInfo.commandBufferCount = 1;
-        submitComputeInfo.pCommandBuffers = &appComputeClusteredCommandBuffers[appCurrentFrame];
-        //submitComputeInfo.waitSemaphoreCount = 0;
-        //submitComputeInfo.pWaitSemaphores = {};
-        submitComputeInfo.signalSemaphoreCount = 1;
-        //uint32_t nextFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-        submitComputeInfo.pSignalSemaphores = &appComputeClusteredFinishedSemaphores[appCurrentFrame];
-
-        if (vkQueueSubmit(appComputeQueue, 1, &submitComputeInfo, appComputeClusteredInFlightFences[appCurrentFrame]) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to submit compute command buffer!");
-        };
-        */
+        // For CLustered Shading
 
         ////////////////////////////////////////
         //          Graphics Draw

@@ -62,11 +62,17 @@ namespace Reinkan::Animation
     void Bone::Update(float animationTime)
     {
         glm::mat4 translation = InterpolatePosition(animationTime);
+
         glm::mat4 rotation = InterpolateRotation(animationTime);
-        glm::mat4 rotationGLM = InterpolateRotationGLM(animationTime);
-        glm::mat4 diff = rotationGLM - rotation;
+
         glm::mat4 scale = InterpolateScaling(animationTime);
-        localTransform = translation * rotation * scale;
+
+        //localTransform = translation * rotation * scale;
+
+        glm::mat4 rotationGLM = InterpolateRotationGLM(animationTime);
+        localTransform = translation * rotationGLM * scale;
+
+        localVQS = InterpolatingVQS(animationTime);
     }
 
     // Gets the current index on mKeyPositions to interpolate to based on
@@ -109,9 +115,13 @@ namespace Reinkan::Animation
     float Bone::GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime)
     {
         float scaleFactor = 0.0f;
+
         float midWayLength = animationTime - lastTimeStamp;
+
         float framesDiff = nextTimeStamp - lastTimeStamp;
+
         scaleFactor = midWayLength / framesDiff;
+
         return scaleFactor;
     }
 
@@ -129,8 +139,8 @@ namespace Reinkan::Animation
             positions[p1Index].timeStamp, animationTime);
 
         // TODO: change to engine Lerp
-        glm::vec3 finalPosition = glm::mix(positions[p0Index].position,
-            positions[p1Index].position, scaleFactor);
+        //glm::vec3 finalPosition = glm::mix(positions[p0Index].position, positions[p1Index].position, scaleFactor);
+        glm::vec3 finalPosition = Math::Lerp(positions[p0Index].position, positions[p1Index].position, scaleFactor);
 
         return glm::translate(glm::mat4(1.0f), finalPosition);
     }
@@ -141,7 +151,6 @@ namespace Reinkan::Animation
     {
         if (1 == numRotations)
         {
-            //rotations[0].orientation.Normalize();
             return rotations[0].orientation.GetRotationMatrix();
         }
 
@@ -191,9 +200,31 @@ namespace Reinkan::Animation
         float scaleFactor = GetScaleFactor(scales[p0Index].timeStamp,
             scales[p1Index].timeStamp, animationTime);
 
-        glm::vec3 finalScale = glm::mix(scales[p0Index].scale, scales[p1Index].scale
-            , scaleFactor);
+        // only take y scale to use elerp
+        //glm::vec3 finalScale = glm::vec3(Math::Elerp(scales[p0Index].scale.y, scales[p1Index].scale.y, scaleFactor));
+        glm::vec3 finalScale = glm::mix(scales[p0Index].scale, scales[p1Index].scale, scaleFactor);
 
         return glm::scale(glm::mat4(1.0f), finalScale);
+    }
+
+    Math::VQS Bone::InterpolatingVQS(float animationTime)
+    {
+        int p0Index = GetScaleIndex(animationTime);
+        int p1Index = p0Index + 1;
+
+        float scaleFactor = GetScaleFactor(scales[p0Index].timeStamp,
+            scales[p1Index].timeStamp, animationTime);
+
+        // Construct VQS at p0
+        // Construct VQS at p1
+
+
+
+        Math::VQS finalVQS;
+        // Interpolate VQS
+        // finalVQS =  VQS::Interpolate(VQS a, VQS b, scaleFactor);
+
+
+        return finalVQS;
     }
 }

@@ -13,6 +13,7 @@
 
 #include "Animation/Structures/Keyframe.h"
 #include "Animation/Utilities/AssimpGlmHelper.h"
+#include "Math/VQS.h"
 
 namespace Reinkan::Animation
 {
@@ -25,6 +26,8 @@ namespace Reinkan::Animation
         void Update(float animationTime);
 
         glm::mat4 GetLocalTransform() { return localTransform; }
+
+        Math::VQS GetLocalVQS() { return localVQS; }
 
         std::string GetBoneName() const { return name; }
         
@@ -48,6 +51,8 @@ namespace Reinkan::Animation
 
         glm::mat4 InterpolateScaling(float animationTime);
 
+        Math::VQS InterpolatingVQS(float animationTime);
+
         std::vector<KeyPosition> positions;
 
         std::vector<KeyRotation> rotations;
@@ -61,6 +66,8 @@ namespace Reinkan::Animation
         int numScalings;
 
         glm::mat4 localTransform;
+
+        Math::VQS localVQS;
 
         std::string name;
 

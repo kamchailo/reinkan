@@ -172,7 +172,7 @@ void main()
     vec3 specular = material.specular * spec * lightColor * 0.1; 
     
     vec3 phong = (ambient + diffuse + specular) * material.diffuse;
-
+    
     outColor = vec4(phong, 1.0);
     // vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     // outColor = vec4(brdfColor, 1.0);

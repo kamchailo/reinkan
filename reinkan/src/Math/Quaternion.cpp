@@ -84,7 +84,7 @@ namespace  Reinkan::Math
 	Quaternion Quaternion::operator-() const
 	{
 		Quaternion result(*this);
-		result.s = -result.s;
+		//result.s = -result.s;
 		result.v = -result.v;
 
 		return result;
@@ -143,7 +143,7 @@ namespace  Reinkan::Math
 		this->s = this->s * rhs.s - glm::dot(this->v, rhs.v);
 
 		this->v = this->s * rhs.v +
-				  rhs.s * this->v +
+				  rhs.s   * this->v +
 				  glm::cross(this->v, rhs.v);
 
 		return *this;

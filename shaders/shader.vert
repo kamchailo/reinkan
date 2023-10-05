@@ -88,7 +88,7 @@ void main()
     // gl_Position =  modelTransform * vec4(inPosition, 1.0);
     gl_Position =  modelTransform * totalPosition;
     
-    vec3 eye = vec3(-ubo.view[3].x, -ubo.view[3].y, -ubo.view[3].z);
+    vec3 eye = ubo.viewInverse[3].xyz;
 
     // out
     // worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));

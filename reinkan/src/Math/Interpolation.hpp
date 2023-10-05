@@ -36,7 +36,7 @@ namespace Reinkan::Math
 
 		if (dot < 0)
 		{
-			dot = -dot;
+			dot = dot;
 			temp = -end;
 		}
 
@@ -63,6 +63,6 @@ namespace Reinkan::Math
 	template<typename T>
 	static T Elerp(const T& begin, const T& end, float t)
 	{
-		return std::pow(end / begin) * begin;
+		return std::pow(end / begin, t) * begin;
 	}
 }

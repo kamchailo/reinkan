@@ -44,6 +44,8 @@ namespace Reinkan::Animation
 
         glm::mat4 InterpolateRotation(float animationTime);
 
+        glm::mat4 InterpolateRotationGLM(float animationTime);
+
         glm::mat4 InterpolateScaling(float animationTime);
 
         std::vector<KeyPosition> positions;

@@ -7,6 +7,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Math/Quaternion.h"
+
 namespace Reinkan::Utilities
 {
 	class AssimpGlmHelper
@@ -29,7 +31,11 @@ namespace Reinkan::Utilities
             return glm::vec3(vec.x, vec.y, vec.z);
         }
 
-        // TODO: change to engine Quaternion
+        static inline Math::Quaternion GetQuat(const aiQuaternion& pOrientation)
+        {
+            return Math::Quaternion(static_cast<float>(pOrientation.w), glm::vec3(pOrientation.x, pOrientation.y, pOrientation.z));
+        }
+
         static inline glm::quat GetGLMQuat(const aiQuaternion& pOrientation)
         {
             return glm::quat(pOrientation.w, pOrientation.x, pOrientation.y, pOrientation.z);

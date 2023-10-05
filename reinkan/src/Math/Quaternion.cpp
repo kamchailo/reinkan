@@ -5,17 +5,16 @@ namespace  Reinkan::Math
 {
 	void Quaternion::Normalize()
 	{
-
+		*this /= this->Length(*this);
 	}
 
 	glm::mat4 Quaternion::ToMatrix() const
 	{
 		glm::mat4 matrixForm(s);
 
-		float x, y, z;
-		x = v[0];
-		y = v[1];
-		z = v[2];
+		float x = v[0];
+		float y = v[1];
+		float z = v[2];
 
 		// 1st column
 		matrixForm[0][1] = z;
@@ -61,10 +60,10 @@ namespace  Reinkan::Math
 		rotationMatrix[1][3] = 0.0f;
 
 		// 3rd Column
-		rotationMatrix[1][0] = 2 * (x * z + s * y);
-		rotationMatrix[1][1] = 2 * (y * z - s * x);
-		rotationMatrix[1][2] = 1 - 2 * (x * x + y * y);
-		rotationMatrix[1][3] = 0.0f;
+		rotationMatrix[2][0] = 2 * (x * z + s * y);
+		rotationMatrix[2][1] = 2 * (y * z - s * x);
+		rotationMatrix[2][2] = 1 - 2 * (x * x + y * y);
+		rotationMatrix[2][3] = 0.0f;
 
 		// 4th Column
 		rotationMatrix[3][0] = 0.0f;
@@ -85,6 +84,7 @@ namespace  Reinkan::Math
 	Quaternion Quaternion::operator-() const
 	{
 		Quaternion result(*this);
+		result.s = -result.s;
 		result.v = -result.v;
 
 		return result;

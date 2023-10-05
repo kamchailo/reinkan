@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Bone.h"
 
+#include "Math/Quaternion.h"
+#include "Math/Interpolation.hpp"
 
 namespace Reinkan::Animation
 {
@@ -29,8 +31,15 @@ namespace Reinkan::Animation
             aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
             float timeStamp = channel->mRotationKeys[rotationIndex].mTime;
             KeyRotation data;
-            // TODO: change to engine Quaternion
-            data.orientation = Utilities::AssimpGlmHelper::GetGLMQuat(aiOrientation);
+            // Use Engine Quaternion
+            data.orientation = Utilities::AssimpGlmHelper::GetQuat(aiOrientation);
+            data.orientation.Normalize();
+
+            /*
+            * GLM debug
+            */
+            data.orientationGLM = Utilities::AssimpGlmHelper::GetGLMQuat(aiOrientation);
+
             data.timeStamp = timeStamp;
             rotations.push_back(data);
         }
@@ -54,6 +63,8 @@ namespace Reinkan::Animation
     {
         glm::mat4 translation = InterpolatePosition(animationTime);
         glm::mat4 rotation = InterpolateRotation(animationTime);
+        glm::mat4 rotationGLM = InterpolateRotationGLM(animationTime);
+        glm::mat4 diff = rotationGLM - rotation;
         glm::mat4 scale = InterpolateScaling(animationTime);
         localTransform = translation * rotation * scale;
     }
@@ -130,7 +141,28 @@ namespace Reinkan::Animation
     {
         if (1 == numRotations)
         {
-            auto rotation = glm::normalize(rotations[0].orientation);
+            //rotations[0].orientation.Normalize();
+            return rotations[0].orientation.GetRotationMatrix();
+        }
+
+        int p0Index = GetRotationIndex(animationTime);
+        int p1Index = p0Index + 1;
+
+        float scaleFactor = GetScaleFactor(rotations[p0Index].timeStamp,
+            rotations[p1Index].timeStamp, animationTime);
+
+        Math::Quaternion finalRotation = Math::Slerp(rotations[p0Index].orientation,
+                                                    rotations[p1Index].orientation, 
+                                                    scaleFactor);
+
+        return finalRotation.GetRotationMatrix();
+    }
+
+    glm::mat4 Bone::InterpolateRotationGLM(float animationTime)
+    {
+        if (1 == numRotations)
+        {
+            auto rotation = glm::normalize(rotations[0].orientationGLM);
             return glm::toMat4(rotation);
         }
 
@@ -140,13 +172,10 @@ namespace Reinkan::Animation
         float scaleFactor = GetScaleFactor(rotations[p0Index].timeStamp,
             rotations[p1Index].timeStamp, animationTime);
 
-        // TODO: change to engine Quaternion
-        // TODO: change to engine SLerp
-        glm::quat finalRotation = glm::slerp(rotations[p0Index].orientation,
-            rotations[p1Index].orientation, scaleFactor);
-
-        finalRotation = glm::normalize(finalRotation);
-        return glm::toMat4(finalRotation);
+        glm::quat finalRotationGLM = glm::slerp(rotations[p0Index].orientationGLM, rotations[p1Index].orientationGLM, scaleFactor);
+        finalRotationGLM = glm::normalize(finalRotationGLM);
+        
+        return glm::toMat4(finalRotationGLM);
     }
 
     // figures out which scaling keys to interpolate b/w and performs the interpolation

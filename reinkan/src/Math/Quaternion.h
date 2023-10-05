@@ -6,9 +6,11 @@ namespace Reinkan::Math
 {
 	class Quaternion
 	{
+	public:
+
 		float s;
 		glm::vec3 v;
-		
+
 		Quaternion() : s(1), v(0) {};
 		Quaternion(float s, glm::vec3 v) : s(s), v(v) {};
 
@@ -69,7 +71,7 @@ namespace Reinkan::Math
 						   q.v.y * q.v.y + 
 						   q.v.z * q.v.z;
 
-			return sqrt(length);
+			return std::sqrt(length);
 		}
 
 		static inline float LengthSquared(Quaternion const& q) 

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+//#include <glm/gtx/quaternion.hpp>
+#include "Math/Quaternion.h"
 
 namespace Reinkan::Animation
 {
@@ -13,7 +14,8 @@ namespace Reinkan::Animation
 
     struct KeyRotation
     {
-        glm::quat orientation;
+        glm::quat orientationGLM;
+        Math::Quaternion orientation;
         float timeStamp;
     };
 

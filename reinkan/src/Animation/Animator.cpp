@@ -16,8 +16,8 @@ namespace Reinkan::Animation
         for (int i = 0; i < MAX_BONE; ++i)
         {
             m_FinalBoneMatrices.boneMatrices[i] = glm::mat4(1.0f);
-            debugVertices[i].first = glm::vec3(0);
-            debugVertices[i].second = glm::vec3(0);
+            debugVertices[i * 2] = glm::vec3(0);
+            debugVertices[i * 2 + 1] = glm::vec3(0);
         }
 
     }
@@ -62,23 +62,16 @@ namespace Reinkan::Animation
         {
             int index = boneInfoMap[nodeName].id;
             glm::mat4 offset = boneInfoMap[nodeName].offset;
-            //m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
+
+            // Set Final Matrix in Shader
             m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
 
-            debugVertices[index].first = glm::vec3((globalTransformation * offset * glm::vec4(0, 0, 0, 1)));
-            debugVertices[index].second = glm::vec3((parentTransform * offset * glm::vec4(0, 0, 0, 1)));
+            debugVertices[index * 2] = glm::vec3((globalTransformation[3]));
 
-            /*
-            std::printf("Write at index %d : value\n", index);
-            std::printf("%f %f %f %f\n", m_FinalBoneMatrices.boneMatrices[index][0][0], m_FinalBoneMatrices.boneMatrices[index][1][0], m_FinalBoneMatrices.boneMatrices[index][2][0], m_FinalBoneMatrices.boneMatrices[index][3][0]);
-            std::printf("%f %f %f %f\n", m_FinalBoneMatrices.boneMatrices[index][0][1], m_FinalBoneMatrices.boneMatrices[index][1][1], m_FinalBoneMatrices.boneMatrices[index][2][1], m_FinalBoneMatrices.boneMatrices[index][3][1]);
-            std::printf("%f %f %f %f\n", m_FinalBoneMatrices.boneMatrices[index][0][2], m_FinalBoneMatrices.boneMatrices[index][1][2], m_FinalBoneMatrices.boneMatrices[index][2][2], m_FinalBoneMatrices.boneMatrices[index][3][2]);
-            std::printf("%f %f %f %f\n", m_FinalBoneMatrices.boneMatrices[index][0][3], m_FinalBoneMatrices.boneMatrices[index][1][3], m_FinalBoneMatrices.boneMatrices[index][2][3], m_FinalBoneMatrices.boneMatrices[index][3][3]);
-
-            std::printf("Bone #%d, {%f, %f, %f} {%f, %f, %f}\n", index,
-                debugVertices[index].first.x, debugVertices[index].first.y, debugVertices[index].first.z,
-                debugVertices[index].second.x, debugVertices[index].second.y, debugVertices[index].second.z);
-            */
+            if (node->parent)
+            {
+                debugVertices[index * 2 + 1] = glm::vec3((parentTransform[3]));
+            }
         }
 
         for (int i = 0; i < node->childrenCount; i++)
@@ -92,7 +85,7 @@ namespace Reinkan::Animation
         return m_FinalBoneMatrices;
     }
 
-    std::pair<glm::vec3, glm::vec3>* Animator::GetDebugVertices()
+    glm::vec3* Animator::GetDebugVertices()
     {
         return debugVertices;
     }

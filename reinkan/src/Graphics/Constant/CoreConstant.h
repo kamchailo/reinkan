@@ -13,6 +13,8 @@ namespace Reinkan::Graphics
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
+    const int MAX_BONE = 100;
+
     const std::vector<const char*> validationLayers = 
     {
         //"VK_LAYER_LUNARG_api_dump",

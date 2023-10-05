@@ -172,9 +172,13 @@ void main()
 
     if(material.diffuseMapId != -1)
     {
-        vec3 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord).rgb;
+        vec4 diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord);
         // overrride material
-        material.diffuse = diffuse;
+        material.diffuse = diffuse.rgb;
+        if(diffuse.a == 0.0)
+        {
+            discard;
+        }
     }
 
     vec3 N = normalize(vertexNormal);
@@ -194,64 +198,4 @@ void main()
     outColor = vec4(brdfColor, 1.0);
 
     return;
-
-    ////////////////////////////////////////
-    //          Grid Calculation
-    ////////////////////////////////////////
-    // Determine which Grid for this fragment
-    float zNear = clusterPlanes[0].zNear;
-    float zFar = clusterPlanes[tileNumberZ - 1].zFar;
-    float linear = linearDepth(gl_FragCoord.z, zNear, zFar);
-    float aTerm = tileNumberZ / log2(zFar/ zNear);
-    // uint slice = uint(log2(gl_FragCoord.z) * (aTerm) - aTerm * log2(zNear));
-    uint slice = uint(log2(linear) * (aTerm) - aTerm * log2(zNear));
-    float scale = 1.0;
-    float bias = 0.0;
-    uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
-    uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
-    // uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, gl_FragCoord.y /tileSizeY ), slice);
-    uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, gl_FragCoord.y /tileSizeY ), slice);
-    /*
-    uint colorIndex = slice % 8;
-    outColor = vec4(vec3(colorSample[colorIndex]), 1.0);
-    return;
-    */
-    uint tileIndex = tiles.x +
-                     tileNumberX * tiles.y +
-                     (tileNumberX * tileNumberY) * tiles.z;
-
-    LightGrid lightGrid = lightGrids[tileIndex];
-    uint offset = lightGrid.offset;
-    // Loop through all light assigned in the grid
-    for(int i = 0; i < lightGrid.size; ++i)
-    {
-        uint lightIndex = lightIndexList[offset + i];
-        LightObject light = globalLights[lightIndex];
-
-        float lightDistance = distance(light.position, worldPos);
-        if(lightDistance >= light.radius)
-        {
-            continue;
-        }
-        L = normalize(light.position - worldPos);
-        // float intensity = light.intensity * (1 - lightDistance / light.radius);
-        float intensity = light.intensity;
-        // brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        brdfColor += intensity * 0.2 * light.color;
-    }
-
-    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) == 1)
-    {
-        brdfColor += vec3(float(lightGrid.size)/ 50);
-    }
-
-    outColor = vec4(brdfColor, 1.0);
-
-    if((pushConstant.debugFlag & 0x2) > 0 && false)
-    {
-        uint colorIndex = slice % 8;
-        // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
-        outColor += vec4(colorSample[colorIndex], 0.3);
-        outColor += vec4(tiles.x / 16.0, tiles.y / 9.0, 0.0, 0.1);
-    }
 }

@@ -40,8 +40,10 @@ namespace Reinkan::Graphics
         ubo = animationSystem->GetcurrentAnimator()->GetFinalBoneMatrices();
         memcpy(appAnimationMatricesBufferMapped[currentImage], &ubo, sizeof(AnimationUniformBufferObject));
 
-        auto vertDebug = animationSystem->GetcurrentAnimator()->GetDebugVertices();
-        memcpy(appDebugStorageMapped[currentImage], &vertDebug, sizeof(glm::vec3) * 200);
+        glm::vec3* vertDebug = animationSystem->GetcurrentAnimator()->GetDebugVertices();
+
+
+        memcpy(appDebugStorageMapped[currentImage], vertDebug, sizeof(glm::vec3) * 2 * MAX_BONE);
 
         /*
         std::vector<std::pair<glm::vec3, glm::vec3>> debugVert = animationSystem->GetcurrentAnimator()->GetDebugVertices();

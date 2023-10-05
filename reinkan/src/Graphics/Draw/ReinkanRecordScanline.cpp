@@ -42,13 +42,13 @@ namespace Reinkan::Graphics
                 vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, appScanlinePipeline);
                 
                 vkCmdBindDescriptorSets(commandBuffer,
-                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    appScanlinePipelineLayout,
-                    0,
-                    1,
-                    &appScanlineDescriptorWrap.descriptorSets[appCurrentFrame],
-                    0,
-                    nullptr);
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                        appScanlinePipelineLayout,
+                                        0,
+                                        1,
+                                        &appScanlineDescriptorWrap.descriptorSets[appCurrentFrame],
+                                        0,
+                                        nullptr);
 
                 VkViewport viewport{};
                 viewport.x = 0.0f;
@@ -78,15 +78,15 @@ namespace Reinkan::Graphics
                                        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                                        0,
                                        sizeof(PushConstantScanline),
-                                       &pushConstant
-                    );
+                                       &pushConstant );
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object.vertexBufferWrap.buffer, offsets);
                     vkCmdBindIndexBuffer(commandBuffer, object.indexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
-
-                    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
-
+                    if (appDebugFlag & 0x01 || object.name == "Plane")
+                    {
+                        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(object.nbIndices), 1, 0, 0, 0);
+                    }
                 }
 
                 // Debug Draw
@@ -106,15 +106,13 @@ namespace Reinkan::Graphics
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
                     //vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
-                    //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);\
+                    //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);
 
                     auto animationSystem = Core::AnimationSystemLocator::GetAnimationSystem();
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appDebugStorageBufferWraps[appCurrentFrame].buffer, offsets);
                     size_t numVerts = MAX_BONE * 2;
                     vkCmdDraw(commandBuffer, sizeof(glm::vec3) * numVerts, 1, 0, 0);
                 }
-                /*
-                */
 
                 #ifdef GUI
                 ImGui::Render();  // Rendering UI

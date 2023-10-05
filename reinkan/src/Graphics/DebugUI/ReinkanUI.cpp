@@ -93,9 +93,9 @@ namespace Reinkan::Graphics
 
         ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Show Cluster: ", &appImguiBool1);
+        ImGui::Checkbox("Draw Mesh: ", &appImguiBool1);
 
-        ImGui::Checkbox("Draw Cluster: ", &appImguiBool2);
+        ImGui::Checkbox("Draw Bone: ", &appImguiBool2);
 
         ImGui::End();
 

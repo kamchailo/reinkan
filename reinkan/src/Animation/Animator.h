@@ -21,7 +21,7 @@ namespace Reinkan::Animation
 
         AnimationUniformBufferObject& GetFinalBoneMatrices();
 
-        std::pair<glm::vec3, glm::vec3>* GetDebugVertices();
+        glm::vec3* GetDebugVertices();
 
     private:
 
@@ -33,7 +33,7 @@ namespace Reinkan::Animation
         
         float m_DeltaTime;
 
-        std::pair<glm::vec3, glm::vec3> debugVertices[MAX_BONE];
+        glm::vec3 debugVertices[MAX_BONE * 2];
     };
 
 }

@@ -451,8 +451,8 @@ namespace Reinkan::Graphics
 
         uint32_t appDebugFlag{ 0x0 };
 
-        bool appImguiBool1{ false };
-        bool appImguiBool2{ false };
+        bool appImguiBool1{ true };
+        bool appImguiBool2{ true };
 
     ////////////////////////////////////////
     //          Compute Shaders

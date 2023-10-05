@@ -18,7 +18,7 @@ namespace Reinkan::Animation
 
         m_TicksPerSecond = animation->mTicksPerSecond;
 
-        ReadHeirarchyData(m_RootNode, scene->mRootNode);
+        ReadHeirarchyData(m_RootNode, scene->mRootNode, nullptr);
         
         ReadMissingBones(animation);
 	}
@@ -65,18 +65,19 @@ namespace Reinkan::Animation
         m_BoneInfoMap = boneInfoMap;
     }
 
-    void Animation::ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src)
+    void Animation::ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src, AssimpNodeData* parent)
     {
         assert(src);
 
         dest.name = src->mName.data;
+        dest.parent = parent;
         dest.transformation = Utilities::AssimpGlmHelper::ConvertMatrixToGLMFormat(src->mTransformation);
         dest.childrenCount = src->mNumChildren;
 
         for (int i = 0; i < src->mNumChildren; i++)
         {
             AssimpNodeData newData;
-            ReadHeirarchyData(newData, src->mChildren[i]);
+            ReadHeirarchyData(newData, src->mChildren[i], &dest);
             dest.children.push_back(newData);
         }
     }

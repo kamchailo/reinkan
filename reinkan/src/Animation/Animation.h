@@ -21,6 +21,8 @@ namespace Reinkan::Animation
         int childrenCount;
         
         std::vector<AssimpNodeData> children;
+
+        AssimpNodeData* parent;
     };
 
 
@@ -48,7 +50,7 @@ namespace Reinkan::Animation
         //void ReadMissingBones(const aiAnimation* animation, Model& model) // support more than one bone structure
         void ReadMissingBones(const aiAnimation* animation);
 
-        void ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src);
+        void ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src, AssimpNodeData* parent);
 
         float m_Duration;
 

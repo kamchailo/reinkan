@@ -26,10 +26,9 @@ namespace Reinkan::Math
 
     glm::vec3 VQS::operator*(glm::vec3 const& r) const
     {
-        return ((s * s - v * v) * r) +
-                (2.0f * v * glm::dot(v, r)) +
-                (2.0f * s * glm::cross(v, r)) + 
-                v;
+        glm::vec3 sr = s * r;
+
+        return q * sr + v;
     }
 }
 

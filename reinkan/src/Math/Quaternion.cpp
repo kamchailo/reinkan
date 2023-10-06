@@ -187,4 +187,13 @@ namespace  Reinkan::Math
 
 		return *this;
 	}
+
+	// Transform Vector by Quaternion
+	glm::vec3 Quaternion::operator*(glm::vec3 const& vector) const
+	{
+		glm::vec3 result = ((s * s - v * v) * vector) +
+							(2.0f * v * glm::dot(v, vector)) +
+							(2.0f * s * glm::cross(v, vector));
+		return vector;
+	}
 }

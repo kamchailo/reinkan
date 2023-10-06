@@ -43,6 +43,8 @@ namespace Reinkan::Math
 		Quaternion operator*=(float const& scalar);
 		Quaternion operator/=(float const& denom);
 
+		glm::vec3 operator*(glm::vec3 const& vector) const;
+
 		static inline float Dot(Quaternion const& q1, Quaternion const& q2) 
 		{
 			return (q1.s * q2.s + 
@@ -83,6 +85,11 @@ namespace Reinkan::Math
 						   q.v.z * q.v.z;
 
 			return length;
+		}
+
+		static inline glm::vec3 TransformVector(Quaternion const& q, glm::vec3 vector)
+		{
+			return q * vector;
 		}
 
 		static Quaternion Unit(Quaternion const& q) {

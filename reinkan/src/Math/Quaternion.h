@@ -12,7 +12,8 @@ namespace Reinkan::Math
 		glm::vec3 v;
 
 		Quaternion() : s(1), v(0) {};
-		Quaternion(float s, glm::vec3 v) : s(s), v(v) {};
+		Quaternion(float s, glm::vec3 v) : s{ s }, v{ v } {};
+		Quaternion(float s, float x, float y, float z) : s{ s }, v( x, y, z ) {};
 
 		void Normalize();
 

@@ -9,11 +9,15 @@
 #include "Animation/Structures/BoneInfo.h"
 #include "Animation/Structures/Bone.h"
 #include "Animation/Utilities/AssimpGlmHelper.h"
+#include "Math/VQS.h"
 
 namespace Reinkan::Animation
 {
     struct AssimpNodeData
     {
+        // TODO: change to VQS
+        Math::VQS vqs;
+
         glm::mat4 transformation;
 
         std::string name;

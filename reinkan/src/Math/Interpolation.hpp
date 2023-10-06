@@ -36,7 +36,8 @@ namespace Reinkan::Math
 
 		if (dot < 0)
 		{
-			dot = dot;
+			// change from -dot 
+			dot = -dot;
 			temp = -end;
 		}
 

@@ -163,6 +163,7 @@ namespace Reinkan::Animation
         Math::Quaternion finalRotation = Math::Slerp(rotations[p0Index].orientation,
                                                     rotations[p1Index].orientation, 
                                                     scaleFactor);
+        finalRotation.Normalize();
 
         return finalRotation.GetRotationMatrix();
     }

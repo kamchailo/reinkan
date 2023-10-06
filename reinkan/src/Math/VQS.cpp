@@ -28,7 +28,8 @@ namespace Reinkan::Math
     {
         return ((s * s - v * v) * r) +
                 (2.0f * v * glm::dot(v, r)) +
-                (2.0f * s * glm::cross(v, r));
+                (2.0f * s * glm::cross(v, r)) + 
+                v;
     }
 }
 

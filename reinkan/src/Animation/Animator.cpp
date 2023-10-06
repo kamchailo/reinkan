@@ -41,10 +41,11 @@ namespace Reinkan::Animation
         m_CurrentAnimation = pAnimation;
         m_CurrentTime = 0.0f;
     }
-
+                                                                        // TODO: change to VQS
     void Animator::CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform)
     {
         std::string nodeName = node->name;
+        // TODO: change to VQS system
         glm::mat4 nodeTransform = node->transformation;
 
         Bone* Bone = m_CurrentAnimation->FindBone(nodeName);
@@ -52,9 +53,11 @@ namespace Reinkan::Animation
         if (Bone)
         {
             Bone->Update(m_CurrentTime);
+            // TODO: get localVQS 
             nodeTransform = Bone->GetLocalTransform();
         }
 
+        // TODO: change to VQS
         glm::mat4 globalTransformation = parentTransform * nodeTransform;
 
         auto boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
@@ -63,6 +66,7 @@ namespace Reinkan::Animation
             int index = boneInfoMap[nodeName].id;
             glm::mat4 offset = boneInfoMap[nodeName].offset;
 
+            // TODO: convert from VQS to matrix
             // Set Final Matrix in Shader
             m_FinalBoneMatrices.boneMatrices[index] = { globalTransformation * offset };
 

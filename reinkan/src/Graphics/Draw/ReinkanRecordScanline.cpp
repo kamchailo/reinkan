@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Graphics/ReinkanVulkan.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
+
 #include "Graphics/ParticleSystem/ParticleSystemConstant.h"
 #include "Core/Locator/AnimationSystemLocator.h"
 
@@ -71,6 +73,7 @@ namespace Reinkan::Graphics
                     pushConstant.materialId = object.materialId;
                     pushConstant.objectId = object.objectId;
                     pushConstant.modelMatrix = object.transform;
+                    pushConstant.normalMatrix = object.normalTransform;
                     pushConstant.debugFlag = appDebugFlag;
 
                     vkCmdPushConstants(commandBuffer,

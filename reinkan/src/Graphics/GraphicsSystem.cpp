@@ -41,16 +41,17 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-            
 
             //ModelData vampire;
+            glm::mat4 vampTr = glm::translate(glm::mat4(1), glm::vec3(2.0, 0.0, 0.0));
             ReadAssimpFile("../assets/models/dancing_vampire.dae",
-                glm::mat4(1.0),
+                vampTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
             */
+            
              
             //ModelData walking;
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));

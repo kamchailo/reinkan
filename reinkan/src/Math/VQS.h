@@ -19,26 +19,14 @@ namespace Reinkan::Math
 
 		VQS(glm::vec3 v, Math::Quaternion q, float s) : v(v), q(q), s(s) {};
 
+		glm::mat4 ToMatrix() const;
+
 		void Normalize()
 		{
 			q.Normalize();
 		}
 
-		inline static VQS Interpolate(VQS const& a, VQS const& b, float t)
-		{
-			VQS result;
-
-			// Lerp V
-			result.v = Math::Lerp(a.v, b.v, t);
-
-			// SLerp Q
-			result.q = Math::Slerp(a.q, b.q, t);
-
-			// ELerp S
-			result.s = Math::Elerp(a.s, b.s, t);
-
-			return result;
-		}
+		void Print() const;
 
 		VQS operator* (VQS const& op2) const;
 

@@ -24,6 +24,6 @@ namespace Reinkan::Graphics
 
         glm::mat4       transform;
 
-
+        glm::mat4       normalTransform;
 	};
 }

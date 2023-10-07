@@ -17,7 +17,7 @@ namespace Reinkan::Math
 
 		void Normalize();
 
-		glm::mat4 ToMatrix() const;
+		Quaternion GetInverse() const;
 
 		glm::mat4 GetRotationMatrix() const;
 
@@ -36,7 +36,7 @@ namespace Reinkan::Math
 		Quaternion operator*= (Quaternion const& rhs);
 		Quaternion operator/= (Quaternion const& rhs);
 
-		// Arithmetic Operatoions
+		// Arithmetic Operations
 		Quaternion operator*(float const& scalar) const;
 		Quaternion operator/(float const& denom) const;
 

@@ -7,11 +7,11 @@ namespace Reinkan::Math
 	/// <summary>
 	/// Lerp Template Function
 	/// </summary>
-	/// <typeparam name="T"> : requires operator* (float lhs)</typeparam>
-	/// <param name="begin"> : value at t = 0</param>
-	/// <param name="end"> : value at t = 11</param>
-	/// <param name="t"> : [0:1] describe the value between</param>
-	/// <returns> Lerped value</returns>
+	/// <typeparam name="T">: requires operator* (float lhs)</typeparam>
+	/// <param name="begin">: value at t = 0</param>
+	/// <param name="end">: value at t = 11</param>
+	/// <param name="t">: [0:1] describe the value between</param>
+	/// <returns>Lerped value</returns>
 	template<typename T>
 	static T Lerp(const T& begin, const T& end, float t)
 	{
@@ -21,11 +21,11 @@ namespace Reinkan::Math
 	/// <summary>
 	/// SLerp Template Function
 	/// </summary>
-	/// <typeparam name="T"> : requires operator* (float lhs)</typeparam>
-	/// <param name="begin"> : value at t = 0</param>
-	/// <param name="end"> : value at t = 1</param>
-	/// <param name="t"> : [0:1] describe the value between</param>
-	/// <returns> SLerped value</returns>
+	/// <typeparam name="T">: requires operator* (float lhs)</typeparam>
+	/// <param name="begin">: value at t = 0</param>
+	/// <param name="end">: value at t = 1</param>
+	/// <param name="t">: [0:1] describe the value between</param>
+	/// <returns>SLerped value</returns>
 	template<typename T>
 	static T Slerp(const T& begin, const T& end, float t)
 	{
@@ -54,13 +54,13 @@ namespace Reinkan::Math
 
 	/// <summary>
 	/// ELerp Template Function
-	/// (Usually used to interpolate scaling)
+	/// <para>Used to interpolate scaling</para>
 	/// </summary>
-	/// <typeparam name="T"> : requires operator/ </typeparam>
-	/// <param name="begin"> : value at t = 0</param>
-	/// <param name="end"> : value at t = 1</param>
-	/// <param name="t"> : </param>
-	/// <returns> ELerped value</returns>
+	/// <typeparam name="T">: requires operator/ </typeparam>
+	/// <param name="begin">: value at t = 0</param>
+	/// <param name="end">: value at t = 1</param>
+	/// <param name="t">: [0:1] describe the value between</param>
+	/// <returns>ELerped value</returns>
 	template<typename T>
 	static T Elerp(const T& begin, const T& end, float t)
 	{

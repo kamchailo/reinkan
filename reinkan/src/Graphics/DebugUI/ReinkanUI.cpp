@@ -97,6 +97,8 @@ namespace Reinkan::Graphics
 
         ImGui::Checkbox("Draw Bone: ", &appImguiBool2);
 
+        //ImGui::Checkbox("Alternative Model: ", &appImguiBool3);
+
         ImGui::End();
 
         // Update appDebugFlag
@@ -116,6 +118,15 @@ namespace Reinkan::Graphics
         else
         {
             appDebugFlag &= INT32_MAX - 0x2;
+        }
+
+        if (appImguiBool3)
+        {
+            appDebugFlag = appDebugFlag | 0x4;
+        }
+        else
+        {
+            appDebugFlag &= INT32_MAX - 0x4;
         }
     }
 

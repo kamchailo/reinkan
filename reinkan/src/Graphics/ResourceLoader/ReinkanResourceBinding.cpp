@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Graphics/ReinkanVulkan.h"
 
+#include <glm/gtx/matrix_decompose.hpp>
 #include <vector>
 
 namespace Reinkan::Graphics
@@ -24,6 +25,14 @@ namespace Reinkan::Graphics
 
             // Object Instance Properties
             object.transform = modelData.modelTransform;
+
+            glm::vec3 scale;
+            glm::quat rotation;
+            glm::vec3 translation;
+            glm::vec3 skew;
+            glm::vec4 perspective;
+            glm::decompose(modelData.modelTransform, scale, rotation, translation, skew, perspective);
+            object.normalTransform = glm::transpose(glm::inverse(glm::mat4_cast(rotation)));
 
             appObjects.push_back(object);
         }

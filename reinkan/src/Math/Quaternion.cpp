@@ -8,37 +8,16 @@ namespace  Reinkan::Math
 		*this /= this->Length(*this);
 	}
 
-	glm::mat4 Quaternion::ToMatrix() const
+	Quaternion Quaternion::GetInverse() const
 	{
-		glm::mat4 matrixForm(s);
-
-		float x = v[0];
-		float y = v[1];
-		float z = v[2];
-
-		// 1st column
-		matrixForm[0][1] = z;
-		matrixForm[0][2] = -y;
-		matrixForm[0][3] = -x;
-
-		// 2nd column
-		matrixForm[1][0] = -z;
-		matrixForm[1][2] = x;
-		matrixForm[1][3] = -y;
-
-		// 3rd Column
-		matrixForm[2][0] = y;
-		matrixForm[2][1] = -x;
-		matrixForm[2][3] = -z;
-
-		// 4th Column
-		matrixForm[3][0] = x;
-		matrixForm[3][1] = y;
-		matrixForm[3][2] = z;
-
-		return matrixForm;
+		//return Quaternion(s, -v) / LengthSquared(*this);
+		return Quaternion(s, -v);
 	}
 
+	/// <summary>
+	/// Get Matrix form of the quaternion for rotation
+	/// </summary>
+	/// <returns>Rotation Matrix</returns>
 	glm::mat4 Quaternion::GetRotationMatrix() const
 	{
 		glm::mat4 rotationMatrix;
@@ -84,7 +63,7 @@ namespace  Reinkan::Math
 	Quaternion Quaternion::operator-() const
 	{
 		Quaternion result(*this);
-		//result.s = -result.s;
+		result.s = -result.s;
 		result.v = -result.v;
 
 		return result;
@@ -104,6 +83,12 @@ namespace  Reinkan::Math
 		return result -= op2;
 	}
 
+	/// <summary>
+	/// Multiply between Quaternion
+	/// <para>Also concatenation</para>
+	/// </summary>
+	/// <param name="op2">: Another quaternion that will get transform by this quaternion</param>
+	/// <returns>Transformed quaternion</returns>
 	Quaternion Quaternion::operator*(Quaternion const& op2) const
 	{
 		Quaternion result(*this);
@@ -138,11 +123,18 @@ namespace  Reinkan::Math
 		return *this;
 	}
 
+	/// <summary>
+	/// Multiply between Quaternion
+	/// <para>Also concatenation</para>
+	/// </summary>
+	/// <param name="rhs">: Another quaternion that will get transform by this quaternion</param>
+	/// <returns>Transformed quaternion</returns>
 	Quaternion Quaternion::operator*=(Quaternion const& rhs)
 	{
+		float tempS = this->s;
 		this->s = this->s * rhs.s - glm::dot(this->v, rhs.v);
 
-		this->v = this->s * rhs.v +
+		this->v = tempS * rhs.v +
 				  rhs.s   * this->v +
 				  glm::cross(this->v, rhs.v);
 
@@ -151,9 +143,7 @@ namespace  Reinkan::Math
 
 	Quaternion Quaternion::operator/=(Quaternion const& rhs)
 	{
-		Quaternion inverseRhs(rhs);
-
-		inverseRhs.v = -inverseRhs.v;
+		Quaternion inverseRhs(rhs.GetInverse());
 
 		return *this * inverseRhs;
 	}
@@ -188,12 +178,16 @@ namespace  Reinkan::Math
 		return *this;
 	}
 
-	// Transform Vector by Quaternion
+	/// <summary>
+	/// Transform  vector using this Quaternion
+	/// </summary>
+	/// <param name="vector">origin orientation</param>
+	/// <returns>transformed orientation</returns>
 	glm::vec3 Quaternion::operator*(glm::vec3 const& vector) const
 	{
-		glm::vec3 result = ((s * s - v * v) * vector) +
-							(2.0f * v * glm::dot(v, vector)) +
-							(2.0f * s * glm::cross(v, vector));
-		return vector;
+		Quaternion inverse = GetInverse();
+		Quaternion pureQuaternion = Quaternion(0, vector);
+
+		return (*this * pureQuaternion * inverse).v;
 	}
 }

@@ -20,8 +20,6 @@ void main()
 
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
     
-    // gl_PointSize  = 10.0f;
-
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
     // out

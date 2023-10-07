@@ -70,7 +70,7 @@ namespace Reinkan::Animation
 
         dest.name = src->mName.data;
         dest.parent = parent;
-        // TODO: store VQS instead of matrix
+
         dest.transformation = Utilities::AssimpGlmHelper::ConvertMatrixToGLMFormat(src->mTransformation);
 
         // Decompose Assimp Matrix to VQS
@@ -84,7 +84,6 @@ namespace Reinkan::Animation
         dest.vqs.s = aiScale.y;
         dest.vqs.q = Math::Quaternion(aiRotation.w, aiRotation.x, aiRotation.y, aiRotation.z);
         dest.vqs.v = Utilities::AssimpGlmHelper::GetGLMVec(aiPosition);
-
 
         dest.childrenCount = src->mNumChildren;
 

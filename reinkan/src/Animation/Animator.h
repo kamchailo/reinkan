@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "Animation/Animation.h"
+#include "Math/VQS.h"
 
 namespace Reinkan::Animation
 {
@@ -19,6 +20,8 @@ namespace Reinkan::Animation
 
         void CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform);
 
+        void CalculateBoneVQS(const AssimpNodeData* node, Math::VQS parentVQS);
+
         AnimationUniformBufferObject& GetFinalBoneMatrices();
 
         glm::vec3* GetDebugVertices();
@@ -27,11 +30,11 @@ namespace Reinkan::Animation
 
         AnimationUniformBufferObject m_FinalBoneMatrices;
 
-        Animation* m_CurrentAnimation;
+        Animation* m_CurrentAnimation{ nullptr };
         
-        float m_CurrentTime;
+        float m_CurrentTime{ 0 };
         
-        float m_DeltaTime;
+        float m_DeltaTime{ 0 };
 
         glm::vec3 debugVertices[MAX_BONE * 2];
     };

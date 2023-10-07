@@ -5,6 +5,7 @@
 struct PushConstant
 {
     mat4 modelMatrix;
+    mat4 normalMatrix;
 	int objectId;
     int materialId;
     uint debugFlag;
@@ -52,7 +53,7 @@ void main()
     //      Bone Transformation
     //////////////////////////////
     vec4 totalPosition = vec4(0.0f);
-    // mat4 test = animationMatrices[0].matrices;
+    
     vec3 localNormal;
     
     int boneInfluence = 0;
@@ -69,8 +70,6 @@ void main()
         vec4 localPosition = animationMatrices.matrices[inBoneId[i]] * vec4(inPosition,1.0f);
         totalPosition += localPosition * inBoneWeight[i];
         localNormal = mat3(animationMatrices.matrices[inBoneId[i]]) * inVertexNormal;
-        /*
-        */
     }
     
     if(boneInfluence == 0)
@@ -79,21 +78,17 @@ void main()
         localNormal = inVertexNormal;
     }
 
-    // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
     mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
-    // mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
-    mat4 normalTransform = pushConstant.modelMatrix;
-    // mat4 normalTransform = inverse(pushConstant.modelMatrix);
+    
+    mat4 normalTransform = pushConstant.normalMatrix;
+    
 
-    // gl_Position =  modelTransform * vec4(inPosition, 1.0);
     gl_Position =  modelTransform * totalPosition;
     
     vec3 eye = ubo.viewInverse[3].xyz;
 
     // out
-    // worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
     worldPos = vec3(pushConstant.modelMatrix * totalPosition);
-    // worldPos = gl_Position.rgb / gl_Position.w;
     vertexNormal = normalize((normalTransform * vec4(localNormal, 1.0))).rgb;
     vertexTangent = normalize((normalTransform * vec4(inVertexTangent, 1.0))).rgb;
     vertexBitangent = normalize((normalTransform * vec4(inVertexBitangent, 1.0))).rgb;

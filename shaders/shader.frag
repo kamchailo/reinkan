@@ -6,6 +6,7 @@
 struct PushConstant
 {
     mat4 modelMatrix;
+    mat4 normalMatrix;
 	int objectId;
     int materialId;
     uint debugFlag;
@@ -174,6 +175,7 @@ void main()
     vec3 phong = (ambient + diffuse + specular) * material.diffuse;
     
     outColor = vec4(phong, 1.0);
+    // float intensity = 0.3;
     // vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     // outColor = vec4(brdfColor, 1.0);
 

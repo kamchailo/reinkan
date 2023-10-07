@@ -35,11 +35,6 @@ namespace Reinkan::Animation
             data.orientation = Utilities::AssimpGlmHelper::GetQuat(aiOrientation);
             data.orientation.Normalize();
 
-            /*
-            * GLM debug
-            */
-            data.orientationGLM = Utilities::AssimpGlmHelper::GetGLMQuat(aiOrientation);
-
             data.timeStamp = timeStamp;
             rotations.push_back(data);
         }
@@ -56,22 +51,12 @@ namespace Reinkan::Animation
         }
     }
 
-    // interpolates  b/w positions,rotations & scaling keys based on the curren time of
-    // the animation and prepares the local transformation matrix by combining all keys
-    // tranformations
+    /// <summary>
+    /// Update Bone transformation(VQS)
+    /// </summary>
+    /// <param name="animationTime">: Elapsed time to determine which keyframes will be used to interpolate</param>
     void Bone::Update(float animationTime)
     {
-        glm::mat4 translation = InterpolatePosition(animationTime);
-
-        glm::mat4 rotation = InterpolateRotation(animationTime);
-
-        glm::mat4 scale = InterpolateScaling(animationTime);
-
-        //localTransform = translation * rotation * scale;
-
-        glm::mat4 rotationGLM = InterpolateRotationGLM(animationTime);
-        localTransform = translation * rotationGLM * scale;
-
         localVQS = InterpolatingVQS(animationTime);
     }
 
@@ -111,7 +96,14 @@ namespace Reinkan::Animation
         assert(0);
     }
 
-    // Gets normalized value for Lerp & Slerp
+    /// <summary>
+    /// Get 't' for interpolating.
+    /// <para>while t: [0:1]</para>
+    /// </summary>
+    /// <param name="lastTimeStamp">p0: previous keyframe</param>
+    /// <param name="nextTimeStamp">p1: next keyframe</param>
+    /// <param name="animationTime">: Elapsed time to determine which keyframes will be used to interpolate</param>
+    /// <returns></returns>
     float Bone::GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime)
     {
         float scaleFactor = 0.0f;
@@ -138,8 +130,6 @@ namespace Reinkan::Animation
         float scaleFactor = GetScaleFactor(positions[p0Index].timeStamp,
             positions[p1Index].timeStamp, animationTime);
 
-        // TODO: change to engine Lerp
-        //glm::vec3 finalPosition = glm::mix(positions[p0Index].position, positions[p1Index].position, scaleFactor);
         glm::vec3 finalPosition = Math::Lerp(positions[p0Index].position, positions[p1Index].position, scaleFactor);
 
         return glm::translate(glm::mat4(1.0f), finalPosition);
@@ -163,29 +153,8 @@ namespace Reinkan::Animation
         Math::Quaternion finalRotation = Math::Slerp(rotations[p0Index].orientation,
                                                     rotations[p1Index].orientation, 
                                                     scaleFactor);
-        finalRotation.Normalize();
 
         return finalRotation.GetRotationMatrix();
-    }
-
-    glm::mat4 Bone::InterpolateRotationGLM(float animationTime)
-    {
-        if (1 == numRotations)
-        {
-            auto rotation = glm::normalize(rotations[0].orientationGLM);
-            return glm::toMat4(rotation);
-        }
-
-        int p0Index = GetRotationIndex(animationTime);
-        int p1Index = p0Index + 1;
-
-        float scaleFactor = GetScaleFactor(rotations[p0Index].timeStamp,
-            rotations[p1Index].timeStamp, animationTime);
-
-        glm::quat finalRotationGLM = glm::slerp(rotations[p0Index].orientationGLM, rotations[p1Index].orientationGLM, scaleFactor);
-        finalRotationGLM = glm::normalize(finalRotationGLM);
-        
-        return glm::toMat4(finalRotationGLM);
     }
 
     // figures out which scaling keys to interpolate b/w and performs the interpolation
@@ -202,30 +171,55 @@ namespace Reinkan::Animation
             scales[p1Index].timeStamp, animationTime);
 
         // only take y scale to use elerp
-        //glm::vec3 finalScale = glm::vec3(Math::Elerp(scales[p0Index].scale.y, scales[p1Index].scale.y, scaleFactor));
-        glm::vec3 finalScale = glm::mix(scales[p0Index].scale, scales[p1Index].scale, scaleFactor);
+        glm::vec3 finalScale = glm::vec3(Math::Elerp(scales[p0Index].scale.y, scales[p1Index].scale.y, scaleFactor));
 
         return glm::scale(glm::mat4(1.0f), finalScale);
     }
 
+    /// <summary>
+    /// Interpolate VQS of each Bone
+    /// </summary>
+    /// <param name="animationTime">: Elapsed time to determine which keyframes will be used to interpolate</param>
+    /// <returns></returns>
     Math::VQS Bone::InterpolatingVQS(float animationTime)
     {
-        int p0Index = GetScaleIndex(animationTime);
+
+        Math::VQS iFrameVQS;
+
+        int p0Index = GetPositionIndex(animationTime);
         int p1Index = p0Index + 1;
 
-        float scaleFactor = GetScaleFactor(scales[p0Index].timeStamp,
-            scales[p1Index].timeStamp, animationTime);
+        float scaleFactorTranslate = GetScaleFactor(positions[p0Index].timeStamp,
+                                                    positions[p1Index].timeStamp, animationTime);
 
-        // Construct VQS at p0
-        // Construct VQS at p1
+        /// Lerp VQS translation Vector ///
+        iFrameVQS.v = Math::Lerp(positions[p0Index].position, 
+                                 positions[p1Index].position, 
+                                 scaleFactorTranslate);
 
+        p0Index = GetRotationIndex(animationTime);
+        p1Index = p0Index + 1;
 
+        float scaleFactorRotation = GetScaleFactor(rotations[p0Index].timeStamp,
+                                                   rotations[p1Index].timeStamp, animationTime);
 
-        Math::VQS finalVQS;
-        // Interpolate VQS
-        // finalVQS =  VQS::Interpolate(VQS a, VQS b, scaleFactor);
+        /// SLerp VQS rotation Quaternion ///
+        iFrameVQS.q = Math::Slerp(rotations[p0Index].orientation,
+                                  rotations[p1Index].orientation,
+                                  scaleFactorRotation);
 
+        p0Index = GetScaleIndex(animationTime);
+        p1Index = p0Index + 1;
 
-        return finalVQS;
+        float scaleFactorScale = GetScaleFactor(scales[p0Index].timeStamp,
+                                                scales[p1Index].timeStamp, animationTime);
+
+        /// ELerp scale float ///
+        /// as VQS only support uniform scaling, use only y in this case
+        iFrameVQS.s = Math::Elerp(scales[p0Index].scale.y, 
+                                  scales[p1Index].scale.y, 
+                                  scaleFactorScale);
+
+        return iFrameVQS;
     }
 }

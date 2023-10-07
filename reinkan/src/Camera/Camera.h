@@ -49,6 +49,10 @@ namespace Reinkan::Camera
 
 		void UpdateCursorPosition(const float x, const float y);
 
+		void SetPosition(glm::vec3 const& position);
+
+		void Reset();
+
 		float GetSpeed() const;
 
 		float GetRotateSpeed() const;

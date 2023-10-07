@@ -111,8 +111,8 @@ layout(location = 5) in vec2 inFragTexCoord;
 layout(location = 0) out vec4 outColor;
 
 // include BRDF calculation
-#include "brdf.glsl"
-#include "parallax.glsl"
+// #include "brdf.glsl"
+// #include "parallax.glsl"
 
 uint tileNumberX = 16;
 uint tileNumberY = 9;
@@ -166,11 +166,11 @@ void main()
     vec3 V = normalize(viewDir);
     
     vec3 ambient = vec3(0.1);
-    vec3 diffuse = max(dot(N,L), 0.0) * lightColor;
+    vec3 diffuse = max(dot(N,L), 0.0) * lightColor * 0.2;
 
     vec3 reflectDir = reflect(-L, N);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 7);
-    vec3 specular = material.specular * spec * lightColor * 0.1; 
+    vec3 specular = material.specular * spec * lightColor * 0.01; 
     
     vec3 phong = (ambient + diffuse + specular) * material.diffuse;
     

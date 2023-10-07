@@ -110,6 +110,18 @@ namespace Reinkan::Camera
 		cursorPosY = y;
 	}
 
+	void Camera::SetPosition(glm::vec3 const& position)
+	{
+		this->position = position;
+	}
+
+	void Camera::Reset()
+	{
+		position = glm::vec3(0.0, 3.0, 3.0);
+		spin = 1.57f; // PI / 2.0
+		tilt = 0.6f;
+	}
+
 	float Camera::GetSpeed() const
 	{
 		return speed;

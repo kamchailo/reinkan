@@ -67,9 +67,9 @@ namespace Reinkan::Graphics
 
 		CreateComputeClusteredDescriptorSetWrap();
 
-		CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
+		//CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
 
-		CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+		//CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
 
 		// Scanline
 		CreateScanlineBufferWrap();

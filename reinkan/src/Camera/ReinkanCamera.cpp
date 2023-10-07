@@ -33,26 +33,41 @@ namespace Reinkan::Graphics
 
 		float rad = 3.14159 / 180;
 
-		if (inputSystem->IsKeyHeld(GLFW_KEY_W))
+		if (inputSystem->IsKeyHeld(GLFW_KEY_W) || inputSystem->IsKeyHeld(GLFW_KEY_KP_ADD))
 		{
 			appMainCamera->Move(speed * direction);
 		}
 
-		if (inputSystem->IsKeyHeld(GLFW_KEY_S))
+		if (inputSystem->IsKeyHeld(GLFW_KEY_S) || inputSystem->IsKeyHeld(GLFW_KEY_KP_SUBTRACT))
 		{
 			appMainCamera->Move(speed * -direction);
 		}
 
-		if (inputSystem->IsKeyHeld(GLFW_KEY_A))
+		if (inputSystem->IsKeyHeld(GLFW_KEY_O) || inputSystem->IsKeyHeld(GLFW_KEY_KP_8))
+		{
+			appMainCamera->Move(speed * glm::vec3(direction.x, 0.0f, direction.z));
+		}
+
+		if (inputSystem->IsKeyHeld(GLFW_KEY_L) || inputSystem->IsKeyHeld(GLFW_KEY_KP_2))
+		{
+			appMainCamera->Move(speed * -glm::vec3(direction.x, 0.0f, direction.z));
+		}
+
+		if (inputSystem->IsKeyHeld(GLFW_KEY_A) || inputSystem->IsKeyHeld(GLFW_KEY_KP_4))
 		{
 			glm::vec3 sideDirection = glm::cross(direction, upDirection);
 			appMainCamera->Move(speed * -sideDirection);
 		}
 
-		if (inputSystem->IsKeyHeld(GLFW_KEY_D))
+		if (inputSystem->IsKeyHeld(GLFW_KEY_D) || inputSystem->IsKeyHeld(GLFW_KEY_KP_6))
 		{
 			glm::vec3 sideDirection = glm::cross(direction, upDirection);
 			appMainCamera->Move(speed * sideDirection);
+		}
+
+		if (inputSystem->IsKeyHeld(GLFW_KEY_R) || inputSystem->IsKeyHeld(GLFW_KEY_KP_5))
+		{
+			appMainCamera->Reset();
 		}
 
 		if (inputSystem->IsKeyHeld(GLFW_KEY_E))

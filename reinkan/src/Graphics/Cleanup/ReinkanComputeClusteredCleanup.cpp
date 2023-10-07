@@ -31,11 +31,11 @@ namespace Reinkan::Graphics
         }
 
         // Pipeline
-        vkDestroyPipeline(appDevice, appClusteredGridPipeline, nullptr);
-        vkDestroyPipelineLayout(appDevice, appClusteredGridPipelineLayout, nullptr);
+        //vkDestroyPipeline(appDevice, appClusteredGridPipeline, nullptr);
+        //vkDestroyPipelineLayout(appDevice, appClusteredGridPipelineLayout, nullptr);
 
-        vkDestroyPipeline(appDevice, appClusteredCullLightPipeline, nullptr);
-        vkDestroyPipelineLayout(appDevice, appClusteredCullLightPipelineLayout, nullptr);
+        //vkDestroyPipeline(appDevice, appClusteredCullLightPipeline, nullptr);
+        //vkDestroyPipelineLayout(appDevice, appClusteredCullLightPipelineLayout, nullptr);
 
         // Sync
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)

@@ -168,7 +168,7 @@
     <ClCompile Include="src\Graphics\Pipeline\ReinkanDebugPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Debug\ReinkanDebug.cpp">
+    <ClCompile Include="src\Graphics\DebugPipelineResources\ReinkanDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp">

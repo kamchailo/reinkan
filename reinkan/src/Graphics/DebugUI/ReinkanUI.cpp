@@ -48,8 +48,6 @@ namespace Reinkan::Graphics
         poolInfo.pPoolSizes = poolSize.data();
         vkCreateDescriptorPool(appDevice, &poolInfo, nullptr, &appImguiDescPool);
 
-
-
         // Setup Platform/Renderer back ends
         ImGui_ImplVulkan_InitInfo init_info = {};
         init_info.Instance = appInstance;
@@ -81,7 +79,7 @@ namespace Reinkan::Graphics
     void ReinkanApp::DrawGUI()
     {
         IM_ASSERT(ImGui::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
-        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
         //ImGui::SetNextWindowSize(ImVec2(300, 300));
         ImGui::Begin("Reinkan", NULL);
         

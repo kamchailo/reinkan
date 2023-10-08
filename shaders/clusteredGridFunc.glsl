@@ -15,7 +15,7 @@ vec4 screenToView(vec4 screen, vec2 screenDimensions, mat4 inverseProjection)
     //Perspective projection
     view = view / view.w;
 
-    view.z = -view.z;
+    // view.z = -view.z;
 
     return view;
 }
@@ -25,7 +25,7 @@ vec4 screenToView(vec4 screen, vec2 screenDimensions, mat4 inverseProjection)
 vec3 lineIntersectionToZPlane(vec3 A, vec3 B, float zDistance)
 {
     //all clusters planes are aligned in the same z direction
-    vec3 normal = vec3(0.0, 0.0, 1.0);
+    vec3 normal = vec3(0.0, 0.0, -1.0);
 
     //getting the line from the eye to the tile
     vec3 ab =  B - A;

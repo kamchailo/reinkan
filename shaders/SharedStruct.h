@@ -13,8 +13,6 @@ namespace Reinkan
 		glm::vec3	vertexTangent;
 		glm::vec3	vertexBitangent;
 		glm::vec2	texCoord;
-		int32_t		boneIds[MAX_BONE_INFLUENCE];
-		float		boneWeights[MAX_BONE_INFLUENCE];
 	};
 
 	struct UniformBufferObject {

@@ -72,7 +72,7 @@ namespace Reinkan::Graphics
 
             for (int i = 0; i < modelDatas.size(); ++i)
             {
-                vulkanApp->LoadModel(modelDatas[i], glm::mat4(1.5));
+                vulkanApp->LoadModel(modelDatas[i], glm::mat4(1.0f));
             }
 
 

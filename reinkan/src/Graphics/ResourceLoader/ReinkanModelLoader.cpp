@@ -69,25 +69,6 @@ namespace Reinkan::Graphics
         std::printf("- - [ASSIMP]: Assimp mNumMaterials: %d\n", aiscene->mNumMaterials);
         std::printf("- - [ASSIMP]: Assimp mNumTextures: %d\n", aiscene->mNumTextures);
 
-        // Load Animation
-        if (aiscene->mNumAnimations > 0)
-        {
-            for (int i = 0; i < aiscene->mNumAnimations; ++i)
-            {
-                auto animation = aiscene->mAnimations[i];
-                std::printf("- - [ASSIMP]: Animation %d: %s\n", i, animation->mName.C_Str());
-                std::printf("- - [ASSIMP]: mDuration %f\n", animation->mDuration);
-                std::printf("- - [ASSIMP]: mTicksPerSecond %f\n", animation->mTicksPerSecond);
-                std::printf("- - [ASSIMP]: mNumMeshChannels %d\n", animation->mNumMeshChannels);
-                
-                for (int j = 0; j < animation->mNumChannels; ++j)
-                {
-                    std::printf("- - [ASSIMP]: Channels %d: %s\n", j, animation->mChannels[j]->mNodeName.C_Str());
-                }
-
-            }
-        }
-
         for (int i = 0; i < aiscene->mNumMaterials; i++) 
         {
             aiMaterial* mtl = aiscene->mMaterials[i];
@@ -203,13 +184,6 @@ namespace Reinkan::Graphics
 
             modelDataMesh.name = aimesh->mName.C_Str();
 
-            if (aimesh->mNumBones > 0)
-            {
-                aiBone* aibone = aimesh->mBones[0];
-
-                ProcessBones(aibone);
-            }
-
             // Loop through all vertices and record the
             // vertex/normal/texture/tangent data with the node's model
             // transformation applied.
@@ -234,23 +208,8 @@ namespace Reinkan::Graphics
                 vertex.vertexTangent = { aitan.x, aitan.y, aitan.z };
                 vertex.vertexBitangent = { aibit.x, aibit.y, aibit.z };
                 vertex.texCoord = { aitex.x , 1.0 - aitex.y };
-                for (int boneIndex = 0; boneIndex < std::min(aimesh->mNumBones, MAX_BONE_INFLUENCE); ++boneIndex)
-                {
-                    vertex.boneIds[boneIndex] = -1;
-                    vertex.boneWeights[boneIndex] = -1;
-                    //bones[boneIndex] = aimesh->mBones[boneIndex]->mNode->;
-                    //weights[boneIndex] = aimesh->mBones[boneIndex]->mWeights
-                }
 
                 modelDataMesh.vertices.push_back(vertex);
-                /*
-                modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
-                                               {ainrm.x, ainrm.y, ainrm.z},
-                                               {aitan.x, aitan.y, aitan.z},
-                                               {aibit.x, aibit.y, aibit.z},
-                                               {aitex.x , 1.0 - aitex.y} });
-                */
-                                                
             }
 
             // force mesh to have only 1 material
@@ -281,30 +240,6 @@ namespace Reinkan::Graphics
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
             RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
-        }
-    }
-
-    void ProcessBones(aiBone* bone)
-    {
-        //DFS
-        std::stack<aiNode*> dfsStack;
-        dfsStack.push(bone->mNode);
-
-        std::string level = "| ";
-
-        while (!dfsStack.empty())
-        {
-            aiNode* currentNode = dfsStack.top();
-            dfsStack.pop();
-
-            std::printf("- - [ASSIMP]: [BONE]: %s Name %s\n", level.c_str(), currentNode->mName.C_Str());
-
-            // Process 
-
-            for (int i = 0; i < currentNode->mNumChildren; ++i)
-            {
-                dfsStack.push(currentNode->mChildren[i]);
-            }
         }
     }
 }

@@ -26,6 +26,4 @@ namespace Reinkan::Graphics
         const aiMatrix4x4& parentTr,
         const int level,
         unsigned int materialOffset);
-
-    void ProcessBones(aiBone* bone);
 }

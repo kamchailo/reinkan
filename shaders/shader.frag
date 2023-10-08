@@ -196,22 +196,32 @@ void main()
     //          Grid Calculation
     ////////////////////////////////////////
     // Determine which Grid for this fragment
+    float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
+
     float linear = LinearDepth(gl_FragCoord.z, zNear, zFar);
-    float aTerm = float(tileNumberZ) / log2(zFar/ zNear);
+    
+    float aTerm = float(tileNumberZ) / log(zFar/ zNear);
 
     // linear = pow(linear,  pushConstant.debugFloat);
 
+    // float diff = z - gl_FragCoord.z;
+
+    // outColor = vec4(vec3(diff), 1.0);
+
+    // return;
+
     // Final Z Plane
-    uint slice = uint(log2(linear) * (aTerm) - aTerm * log2(zNear));
+    // uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
+    uint sliceFlat = uint(log(linear) * (aTerm) - aTerm * log(zNear));
 
     uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
     uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
     
     uvec3 tiles = uvec3( gl_FragCoord.x / tileSizeX, 
                          gl_FragCoord.y /tileSizeY, 
-                         slice );
+                         sliceFlat );
 
     uint tileIndex = tiles.x +
                      tileNumberX * tiles.y +
@@ -231,10 +241,10 @@ void main()
             continue;
         }
         L = normalize(light.position - worldPos);
-        // float intensity = light.intensity * (1 - lightDistance / light.radius);
-        float intensity = light.intensity;
-        // brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        brdfColor += intensity * 0.2 * light.color;
+        float intensity = light.intensity * (1 - lightDistance / light.radius);
+        // float intensity = light.intensity;
+        brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        // brdfColor += intensity * 0.2 * light.color;
     }
 
 
@@ -250,7 +260,7 @@ void main()
     outColor = vec4(brdfColor, 1.0);
     if((pushConstant.debugFlag & 0x2) > 0)
     {
-        uint colorIndex = slice % 8;
+        uint colorIndex = sliceFlat % 8;
         // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
         outColor += vec4(colorSample[colorIndex] * 0.1, 1.0);
         // outColor += vec4(tiles.x / 16.0, tiles.y / 9.0, 0.0, 0.1);

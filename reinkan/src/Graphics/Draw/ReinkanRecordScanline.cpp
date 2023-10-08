@@ -90,7 +90,7 @@ namespace Reinkan::Graphics
                 }
 
                 // Debug Draw
-                if(appDebugFlag & 0x02)
+                if(appDebugFlag & 0x02 && false)
                 {
                     UpdateDebugUBO(appCurrentFrame);
 

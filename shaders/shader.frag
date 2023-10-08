@@ -241,10 +241,17 @@ void main()
             continue;
         }
         L = normalize(light.position - worldPos);
-        float intensity = light.intensity * (1 - lightDistance / light.radius);
-        // float intensity = light.intensity;
-        brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        // brdfColor += intensity * 0.2 * light.color;
+
+        if((pushConstant.debugFlag & 0x4) > 1)
+        {
+            float intensity = light.intensity;
+            brdfColor += intensity * 0.2 * light.color;
+        }
+        else
+        {
+            float intensity = light.intensity * (1 - lightDistance / light.radius);
+            brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        }
     }
 
 
@@ -252,7 +259,7 @@ void main()
     //          Debug Flag
     ////////////////////////////////////////
 
-    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) == 1)
+    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) > 0)
     {
         brdfColor += vec3(float(lightGrid.size)/ 50);
     }

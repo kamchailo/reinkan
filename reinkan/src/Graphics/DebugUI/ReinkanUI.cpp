@@ -91,32 +91,27 @@ namespace Reinkan::Graphics
 
         ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Show Cluster: ", &appImguiBool1);
+        ImGui::Checkbox("Show Cluster Size: ", &appImguiBool1);
 
-        ImGui::Checkbox("Draw Cluster: ", &appImguiBool2);
+        ImGui::Checkbox("Draw Planes: ", &appImguiBool2);
+
+        ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 
         ImGui::SliderFloat("Debug Float: ", &appDebugFloat, -4.0f, 4.0f);
 
         ImGui::End();
 
         // Update appDebugFlag
-        if (appImguiBool1)
-        {
-            appDebugFlag = appDebugFlag | 0x1;
-        }
-        else
-        {
-            appDebugFlag &= INT32_MAX - 0x1;
-        }
 
-        if (appImguiBool2)
-        {
-            appDebugFlag = appDebugFlag | 0x2;
-        }
-        else
-        {
-            appDebugFlag &= INT32_MAX - 0x2;
-        }
+        if (appImguiBool1) { appDebugFlag = appDebugFlag | 0x1; }
+        else { appDebugFlag &= INT32_MAX - 0x1; }
+
+        if (appImguiBool2) { appDebugFlag = appDebugFlag | 0x2; }
+        else { appDebugFlag &= INT32_MAX - 0x2; }
+        
+        if (appImguiBool3) { appDebugFlag = appDebugFlag | 0x4; }
+        else { appDebugFlag &= INT32_MAX - 0x4; }
+
     }
 
     void ReinkanApp::DestroyGUI()

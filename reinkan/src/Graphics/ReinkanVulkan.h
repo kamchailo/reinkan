@@ -420,6 +420,7 @@ namespace Reinkan::Graphics
         std::vector<void*>              appDebugUBOMapped;
 
         std::vector<BufferWrap>         appDebugStorageBufferWraps;
+        std::vector<void*>              appDebugStorageMapped;
 
     ////////////////////////////////////////
     //          Debug UI (ImGui)

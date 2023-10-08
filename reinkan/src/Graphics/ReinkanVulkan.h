@@ -280,7 +280,7 @@ namespace Reinkan::Graphics
     // ReinkanVertexBuffer.cpp
         static VkVertexInputBindingDescription GetBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 7> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 5> GetAttributeDescriptions();
 
     // ReinkanScanlineUniformBuffer.cpp
         void UpdateScanlineUBO(uint32_t currentImage);
@@ -420,6 +420,7 @@ namespace Reinkan::Graphics
         std::vector<void*>              appDebugUBOMapped;
 
         std::vector<BufferWrap>         appDebugStorageBufferWraps;
+        std::vector<void*>              appDebugStorageMapped;
 
     ////////////////////////////////////////
     //          Debug UI (ImGui)
@@ -438,9 +439,12 @@ namespace Reinkan::Graphics
 
         #endif
 
-        uint32_t appDebugFlag{ 0x0 };
+        uint32_t    appDebugFlag{ 0x0 };
+        float       appDebugFloat{ 1.0f };
 
-        bool appImguiBool1{ false };
+        bool        appImguiBool1{ false };
+        bool        appImguiBool2{ false };
+        bool        appImguiBool3{ false };
 
     ////////////////////////////////////////
     //          Compute Shaders

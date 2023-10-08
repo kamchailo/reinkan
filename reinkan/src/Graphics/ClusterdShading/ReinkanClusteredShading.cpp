@@ -61,6 +61,8 @@ namespace Reinkan::Graphics
 
             currentZFar = nearClippingPlane * pow(farClippingPlane / nearClippingPlane, static_cast<float>(i+1) / sizeZ);
             clusterPlanes[i].zFar = currentZFar;
+
+            std::printf("plane %d: near %f far %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar);
         }
 
         VkDeviceSize bufferSize = sizeof(ClusterPlane) * sizeZ;
@@ -85,7 +87,7 @@ namespace Reinkan::Graphics
         // readonly in clusteredCullLight  readonly in Scanline
         //BufferWrap                      appClusteredGlobalLights;
         appClusteredGlobalLights = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-        appClusteredGlobalLights_DEBUG = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+        appClusteredGlobalLights_DEBUG = CreateStagedBufferWrap(appLightObjects, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     }
 
     void ReinkanApp::CreateComputeClusteredLightBuffers(uint32_t sizeX, uint32_t sizeY, uint32_t sizeZ)

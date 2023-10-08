@@ -4,6 +4,8 @@
 
 namespace Reinkan
 {
+	constexpr uint32_t MAX_BONE_INFLUENCE{ 4 };
+
 	struct Vertex
 	{
 		glm::vec3	position;
@@ -11,8 +13,6 @@ namespace Reinkan
 		glm::vec3	vertexTangent;
 		glm::vec3	vertexBitangent;
 		glm::vec2	texCoord;
-		int32_t		boneId;
-		float		boneWeight;
 	};
 
 	struct UniformBufferObject {
@@ -29,6 +29,7 @@ namespace Reinkan
 		alignas(4) uint32_t objectId;
 		alignas(4) uint32_t materialId;
 		alignas(4) uint32_t debugFlag;
+		alignas(4) float debugFloat;
 	};
 
 	struct Material {

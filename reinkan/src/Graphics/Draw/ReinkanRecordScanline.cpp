@@ -71,6 +71,7 @@ namespace Reinkan::Graphics
                     pushConstant.objectId = object.objectId;
                     pushConstant.modelMatrix = object.transform;
                     pushConstant.debugFlag = appDebugFlag;
+                    pushConstant.debugFloat = appDebugFloat;
 
                     vkCmdPushConstants(commandBuffer,
                                        appScanlinePipelineLayout,
@@ -89,6 +90,7 @@ namespace Reinkan::Graphics
                 }
 
                 // Debug Draw
+                if(appDebugFlag & 0x02 && false)
                 {
                     UpdateDebugUBO(appCurrentFrame);
 
@@ -104,7 +106,8 @@ namespace Reinkan::Graphics
 
                     VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
                     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
-                    vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ, 1, 0, 0);
+                    vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);
+                    //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * 2, 1, 0, 0);
                 }
                 /*
                 */

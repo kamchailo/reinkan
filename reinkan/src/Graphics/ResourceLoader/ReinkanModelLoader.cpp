@@ -3,6 +3,7 @@
 #include "ReinkanModelLoader.h"
 
 #include <fstream>
+#include <stack>
 #include <assimp/Importer.hpp>
 #include <assimp/version.h>
 #include <assimp/scene.h>
@@ -31,11 +32,10 @@ namespace Reinkan::Graphics
         std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
 
         aiMatrix4x4 modelTr(modelTransform[0][0], modelTransform[1][0], modelTransform[2][0], modelTransform[3][0],
-            modelTransform[0][1], modelTransform[1][1], modelTransform[2][1], modelTransform[3][1],
-            modelTransform[0][2], modelTransform[1][2], modelTransform[2][2], modelTransform[3][2],
-            modelTransform[0][3], modelTransform[1][3], modelTransform[2][3], modelTransform[3][3]);
+                            modelTransform[0][1], modelTransform[1][1], modelTransform[2][1], modelTransform[3][1],
+                            modelTransform[0][2], modelTransform[1][2], modelTransform[2][2], modelTransform[3][2],
+                            modelTransform[0][3], modelTransform[1][3], modelTransform[2][3], modelTransform[3][3]);
 
-        // Does the file exist?
         std::ifstream find_it(path.c_str());
         if (find_it.fail())
         {
@@ -68,16 +68,6 @@ namespace Reinkan::Graphics
         std::printf("- - [ASSIMP]: Assimp mNumMeshes: %d\n", aiscene->mNumMeshes);
         std::printf("- - [ASSIMP]: Assimp mNumMaterials: %d\n", aiscene->mNumMaterials);
         std::printf("- - [ASSIMP]: Assimp mNumTextures: %d\n", aiscene->mNumTextures);
-
-        // Check Animation
-        if (aiscene->mNumAnimations > 0)
-        {
-            for (int i = 0; i < aiscene->mNumAnimations; ++i)
-            {
-                std::printf("- - [ASSIMP]: Animation %d: %s\n", i, aiscene->mAnimations[i]->mName.C_Str());
-                // Load Animation
-            }
-        }
 
         for (int i = 0; i < aiscene->mNumMaterials; i++) 
         {
@@ -158,7 +148,7 @@ namespace Reinkan::Graphics
                 
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
-                std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
+                //std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
             }
 
             // change to materialPool appMaterials
@@ -194,17 +184,6 @@ namespace Reinkan::Graphics
 
             modelDataMesh.name = aimesh->mName.C_Str();
 
-            // Load Bone
-            for (int boneIndex = 0; boneIndex < aimesh->mNumBones; ++boneIndex)
-            {
-                aiBone* aibone = aimesh->mBones[boneIndex];
-                std::printf("- - [ASSIMP]: #%d Bone: %s mNumWeights: %d \n", aibone->mNode, aibone->mName.C_Str(), aibone->mNumWeights);
-                //for (int vertW = 0; vertW < aibone->mNumWeights; ++vertW)
-                //{
-                    //std::printf("- - [ASSIMP]:   VertID: %d Weight: %f\n", aibone->mWeights[vertW].mVertexId, aibone->mWeights[vertW].mWeight);
-                //}
-            }
-
             // Loop through all vertices and record the
             // vertex/normal/texture/tangent data with the node's model
             // transformation applied.
@@ -217,16 +196,20 @@ namespace Reinkan::Graphics
                 aiVector3D aitan = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mTangents[t] : aiVector3D(1, 0, 0);
                 aiVector3D aibit = aimesh->HasTangentsAndBitangents() ? normalTr * aimesh->mBitangents[t] : aiVector3D(1, 0, 0);
 
-                modelDataMesh.vertices.push_back({ {aipnt.x, aipnt.y, aipnt.z},
-                                               {ainrm.x, ainrm.y, ainrm.z},
-                                               {aitan.x, aitan.y, aitan.z},
-                                               {aibit.x, aibit.y, aibit.z},
-                                               {aitex.x , 1.0 - aitex.y} });
-                                                // The OBJ format assumes a coordinate system 
-                                                // where a vertical coordinate of 0 means the bottom of the image, 
-                                                // however we've uploaded our image into Vulkan in a top to bottom orientation 
-                                                // where 0 means the top of the image. Solve this by 
-                                                // flipping the vertical component of the texture coordinates
+                
+                Vertex vertex;
+                // The OBJ format assumes a coordinate system 
+                // where a vertical coordinate of 0 means the bottom of the image, 
+                // however we've uploaded our image into Vulkan in a top to bottom orientation 
+                // where 0 means the top of the image. Solve this by 
+                // flipping the vertical component of the texture coordinates
+                vertex.position = { aipnt.x, aipnt.y, aipnt.z };
+                vertex.vertexNormal = { ainrm.x, ainrm.y, ainrm.z };
+                vertex.vertexTangent = { aitan.x, aitan.y, aitan.z };
+                vertex.vertexBitangent = { aibit.x, aibit.y, aibit.z };
+                vertex.texCoord = { aitex.x , 1.0 - aitex.y };
+
+                modelDataMesh.vertices.push_back(vertex);
             }
 
             // force mesh to have only 1 material

@@ -66,6 +66,8 @@ layout (local_size_x = 16, local_size_y = 9, local_size_z = 2) in;
 bool testSphereAABB(uint light, uint tile);
 float sqDistPointAABB(vec3 point, uint tile);
 
+const uint MAX_LIGHT_PER_GRID = 200;
+
 void main()
 {
     // TODO: bug that globalIndexCount 
@@ -79,16 +81,18 @@ void main()
     uint lightCount  = globalLights.length();
     
     uint visibleLightCount = 0;
-    uint visibleLightIndices[100];
+    uint visibleLightIndices[MAX_LIGHT_PER_GRID];
 
     for(int lightIndex = 0; lightIndex < lightCount; ++lightIndex)
     {
         // Maximum light per cluster = 99
-        if( testSphereAABB(lightIndex, tileIndex) && visibleLightCount < 100)
+        if( testSphereAABB(lightIndex, tileIndex) && visibleLightCount < MAX_LIGHT_PER_GRID)
         {
             visibleLightIndices[visibleLightCount] = lightIndex;
             visibleLightCount += 1;
         }
+
+        globalLights_debug[lightIndex].position = (ubo.view * vec4(globalLights[lightIndex].position, 1.0)).xyz;
     }
 
     barrier();
@@ -106,8 +110,10 @@ void main()
 bool testSphereAABB(uint light, uint tile){
     float radius = globalLights[light].radius;
     vec3 center  = (ubo.view * vec4(globalLights[light].position, 1.0)).xyz;
+    // center.z = -center.z;
     float squaredDistance = sqDistPointAABB(center, tile);
 
+    // return squaredDistance <= (radius * radius) + radius *0.1;
     return squaredDistance <= (radius * radius);
 }
 
@@ -118,10 +124,12 @@ float sqDistPointAABB(vec3 point, uint tile)
     for(int i = 0; i < 3; ++i)
     {
         float v = point[i];
-        if(v < currentCell.minPosition[i]){
+        if(v < currentCell.minPosition[i])
+        {
             sqDist += (currentCell.minPosition[i] - v) * (currentCell.minPosition[i] - v);
         }
-        if(v > currentCell.maxPosition[i]){
+        if(v > currentCell.maxPosition[i])
+        {
             sqDist += (v - currentCell.maxPosition[i]) * (v - currentCell.maxPosition[i]);
         }
     }   

@@ -15,6 +15,8 @@ vec4 screenToView(vec4 screen, vec2 screenDimensions, mat4 inverseProjection)
     //Perspective projection
     view = view / view.w;
 
+    // view.z = -view.z;
+
     return view;
 }
 
@@ -29,7 +31,7 @@ vec3 lineIntersectionToZPlane(vec3 A, vec3 B, float zDistance)
     vec3 ab =  B - A;
 
     //Computing the intersection length for the line and the plane
-    float t = (zDistance - dot(normal, A)) / dot(normal, ab);
+    float t = (zDistance - dot(normal, A)) / dot(normal, ab); // ab.z
 
     //Computing the actual xyz position of the point along the line
     vec3 result = A + t * ab;

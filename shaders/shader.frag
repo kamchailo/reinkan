@@ -9,6 +9,7 @@ struct PushConstant
 	int objectId;
     int materialId;
     uint debugFlag;
+    float debugFloat;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -117,6 +118,25 @@ uint tileNumberX = 16;
 uint tileNumberY = 9;
 uint tileNumberZ = 32;
 
+vec3 colorSample[8] = {vec3(1.0, 0.0, 0.0), 
+                        vec3(1.0, 1.0, 0.0), 
+                        vec3(0.0, 1.0, 0.0), 
+                        vec3(0.0, 1.0, 1.0), 
+                        vec3(0.0, 0.0, 1.0), 
+                        vec3(1.0, 0.0, 1.0), 
+                        vec3(0.0, 0.0, 0.0), 
+                        vec3(1.0, 1.0, 1.0)}; 
+
+float LinearDepth(float depthSample, float zNear, float zFar)
+{
+    // float depthRange = 2.0 * depthSample - 1.0;
+    // Near... Far... wherever you are...
+    // float linear = 2.0 * zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
+    // after remove 2.0 * it fit the world depth
+    float linear = zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
+    return linear;
+}
+
 void main() 
 {
     Material material = materials[pushConstant.materialId];
@@ -165,28 +185,44 @@ void main()
         // N = normalize(normalMap * 2.0 - 1.0);
     }
 
+    // Main Directional Light
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
     float ambientLight = 0.6;
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
-
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
-
+    
+    ////////////////////////////////////////
+    //          Grid Calculation
+    ////////////////////////////////////////
     // Determine which Grid for this fragment
     float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
-    float linear = 2.0 * zNear * zFar / (zFar + zNear - z * (zFar - zNear));
-    float aTerm = tileNumberZ / log(zFar/ zNear);
-    uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
-    float scale = 2.0;
-    float bias = 1.0;
-    uint zTile = uint(max(log2(linear) * scale + bias, 0.0));
+
+    float linear = LinearDepth(gl_FragCoord.z, zNear, zFar);
+    
+    float aTerm = float(tileNumberZ) / log(zFar/ zNear);
+
+    // linear = pow(linear,  pushConstant.debugFloat);
+
+    // float diff = z - gl_FragCoord.z;
+
+    // outColor = vec4(vec3(diff), 1.0);
+
+    // return;
+
+    // Final Z Plane
+    // uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
+    uint sliceFlat = uint(log(linear) * (aTerm) - aTerm * log(zNear));
+
     uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
     uint tileSizeY = uint(ubo.screenExtent.y / tileNumberY);
-    uvec3 tiles = uvec3( uvec2( gl_FragCoord.x / tileSizeX, 
-                            gl_FragCoord.y /tileSizeY ), slice);
-                            
+    
+    uvec3 tiles = uvec3( gl_FragCoord.x / tileSizeX, 
+                         gl_FragCoord.y /tileSizeY, 
+                         sliceFlat );
+
     uint tileIndex = tiles.x +
                      tileNumberX * tiles.y +
                      (tileNumberX * tileNumberY) * tiles.z;
@@ -205,15 +241,35 @@ void main()
             continue;
         }
         L = normalize(light.position - worldPos);
-        float intensity = light.intensity * (1 - lightDistance / light.radius);
-        brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        // brdfColor += intensity * 0.2 * light.color;
+
+        if((pushConstant.debugFlag & 0x4) > 1)
+        {
+            float intensity = light.intensity;
+            brdfColor += intensity * 0.2 * light.color;
+        }
+        else
+        {
+            float intensity = light.intensity * (1 - lightDistance / light.radius);
+            brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        }
     }
 
-    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) == 1)
+
+    ////////////////////////////////////////
+    //          Debug Flag
+    ////////////////////////////////////////
+
+    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) > 0)
     {
         brdfColor += vec3(float(lightGrid.size)/ 50);
     }
 
     outColor = vec4(brdfColor, 1.0);
+    if((pushConstant.debugFlag & 0x2) > 0)
+    {
+        uint colorIndex = sliceFlat % 8;
+        // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
+        outColor += vec4(colorSample[colorIndex] * 0.1, 1.0);
+        // outColor += vec4(tiles.x / 16.0, tiles.y / 9.0, 0.0, 0.1);
+    }
 }

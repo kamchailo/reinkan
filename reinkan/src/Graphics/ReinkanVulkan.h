@@ -571,5 +571,16 @@ namespace Reinkan::Graphics
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();
 
+    // -------- Parallax Compute -------- //
+
+    // ReinkanHeightComputePipeline.cpp
+        void CreateComputeParallaxPipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout    appComputeParallaxPipelineLayout;
+        VkPipeline          appComputeParallaxPipeline;
+
+    // ReinkanParallaxOcclusion.cpp
+        std::vector<ImageWrap> appPyramidalImages;
+
     };
 }

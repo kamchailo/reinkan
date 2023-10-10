@@ -220,8 +220,10 @@
     <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp" />
     <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Graphics\MultiSampling\ReinkanMultiSampling.cpp" />
+    <ClCompile Include="src\Graphics\ParallaxOcclusion\ReinkanParallaxOcclusion.cpp" />
     <ClCompile Include="src\Graphics\ParticleSystem\ReinkanParticleSystem.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeClusteredPipeline.cpp" />
+    <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeGeneratePyramidalPipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeParticlePipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanDebugPipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanPipelineUtility.cpp" />

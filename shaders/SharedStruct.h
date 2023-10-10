@@ -101,5 +101,7 @@ namespace Reinkan
 	struct PyramidalHeightMap
 	{
 		alignas(4) uint32_t heightMapId;
+		alignas(4) uint32_t width;
+		alignas(4) uint32_t height;
 	};
 }

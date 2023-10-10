@@ -574,14 +574,23 @@ namespace Reinkan::Graphics
 
     // -------- Parallax Compute -------- //
 
-    // ReinkanHeightComputePipeline.cpp
-        void CreateComputeParallaxPipeline(DescriptorWrap& descriptorWrap);
+    // ReinkanComputeGeneratePyramidalPipeline.cpp
+        void CreateComputeGeneratePyramidalPipeline(DescriptorWrap& descriptorWrap);
 
-        VkPipelineLayout    appComputeParallaxPipelineLayout;
-        VkPipeline          appComputeParallaxPipeline;
+        VkPipelineLayout                appComputeGeneratePyramidalPipelineLayout;
+        VkPipeline                      appComputeGeneratePyramidalPipeline;
 
     // ReinkanParallaxOcclusion.cpp
-        std::vector<ImageWrap> appPyramidalImages;
+        void CreatePyramidalBufferWraps();
+
+        void CreateComputeGeneratePyramidalDescriptorSetWrap();
+
+        DescriptorWrap                  appComputeGeneratePyramidalDescriptorWrap;
+        std::vector<ImageWrap>          appPyramidalImageWraps;
+
+        // Contain HeightMapId in texture buffer
+        std::vector<PyramidalHeightMap> appPyramidalHeightMaps;
+        BufferWrap                      appPyramidalHeightMapsBufferWrap;
 
     };
 }

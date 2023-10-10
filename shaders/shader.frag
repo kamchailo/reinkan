@@ -129,10 +129,6 @@ vec3 colorSample[8] = {vec3(1.0, 0.0, 0.0),
 
 float LinearDepth(float depthSample, float zNear, float zFar)
 {
-    // float depthRange = 2.0 * depthSample - 1.0;
-    // Near... Far... wherever you are...
-    // float linear = 2.0 * zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
-    // after remove 2.0 * it fit the world depth
     float linear = zNear * zFar / (zFar + zNear - depthSample * (zFar - zNear));
     return linear;
 }
@@ -192,6 +188,26 @@ void main()
     vec3 V = normalize(viewDir);
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
     
+    if((pushConstant.debugFlag & 0x8) > 0)
+    {
+        for(int i = 0; i < globalLights.length(); ++i)
+        {
+            LightObject light = globalLights[i];
+
+            float lightDistance = distance(light.position, worldPos);
+            if(lightDistance >= light.radius)
+            {
+                continue;
+            }
+            L = normalize(light.position - worldPos);
+
+            float intensity = light.intensity * (1 - lightDistance / light.radius);
+            brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
+        }
+        outColor = vec4(brdfColor, 1.0);
+        return;
+    }
+
     ////////////////////////////////////////
     //          Grid Calculation
     ////////////////////////////////////////
@@ -199,21 +215,9 @@ void main()
     float z = length(viewDir);
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
-
     float linear = LinearDepth(gl_FragCoord.z, zNear, zFar);
-    
     float aTerm = float(tileNumberZ) / log(zFar/ zNear);
-
-    // linear = pow(linear,  pushConstant.debugFloat);
-
-    // float diff = z - gl_FragCoord.z;
-
-    // outColor = vec4(vec3(diff), 1.0);
-
-    // return;
-
-    // Final Z Plane
-    // uint slice = uint(log(z) * (aTerm) - aTerm * log(zNear));
+    // Z Plane of current Grid
     uint sliceFlat = uint(log(linear) * (aTerm) - aTerm * log(zNear));
 
     uint tileSizeX = uint(ubo.screenExtent.x / tileNumberX);
@@ -268,8 +272,6 @@ void main()
     if((pushConstant.debugFlag & 0x2) > 0)
     {
         uint colorIndex = sliceFlat % 8;
-        // outColor += vec4(vec3(colorSample[colorIndex]), 0.3);
-        outColor += vec4(colorSample[colorIndex] * 0.1, 1.0);
-        // outColor += vec4(tiles.x / 16.0, tiles.y / 9.0, 0.0, 0.1);
+        outColor += vec4(colorSample[colorIndex] * 0.3, 1.0);
     }
 }

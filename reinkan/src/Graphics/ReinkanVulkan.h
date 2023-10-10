@@ -445,6 +445,7 @@ namespace Reinkan::Graphics
         bool        appImguiBool1{ false };
         bool        appImguiBool2{ false };
         bool        appImguiBool3{ false };
+        bool        appImguiBool4{ false };
 
     ////////////////////////////////////////
     //          Compute Shaders
@@ -570,6 +571,17 @@ namespace Reinkan::Graphics
 
     // ReinkanComputeClusteredCleanup.cpp
         void DestroyComputeClusteredResources();
+
+    // -------- Parallax Compute -------- //
+
+    // ReinkanHeightComputePipeline.cpp
+        void CreateComputeParallaxPipeline(DescriptorWrap& descriptorWrap);
+
+        VkPipelineLayout    appComputeParallaxPipelineLayout;
+        VkPipeline          appComputeParallaxPipeline;
+
+    // ReinkanParallaxOcclusion.cpp
+        std::vector<ImageWrap> appPyramidalImages;
 
     };
 }

@@ -89,6 +89,9 @@ namespace Reinkan::Graphics
         
         ImGui::Text("FPS: %d", Core::TimeSystemLocator::GetTime()->GetStableFPS());
 
+        glm::vec3 camPos = appMainCamera->GetPosition();
+        ImGui::Text("Camera Position [%.3f, %.3f, %.3f]", camPos.x, camPos.y, camPos.z);
+
         ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
         ImGui::Checkbox("Show Cluster Size: ", &appImguiBool1);
@@ -96,6 +99,8 @@ namespace Reinkan::Graphics
         ImGui::Checkbox("Draw Planes: ", &appImguiBool2);
 
         ImGui::Checkbox("Fill Light: ", &appImguiBool3);
+
+        ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
 
         ImGui::SliderFloat("Debug Float: ", &appDebugFloat, -4.0f, 4.0f);
 
@@ -111,6 +116,9 @@ namespace Reinkan::Graphics
         
         if (appImguiBool3) { appDebugFlag = appDebugFlag | 0x4; }
         else { appDebugFlag &= INT32_MAX - 0x4; }
+
+        if (appImguiBool4) { appDebugFlag = appDebugFlag | 0x8; }
+        else { appDebugFlag &= INT32_MAX - 0x8; }
 
     }
 

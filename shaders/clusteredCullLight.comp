@@ -66,7 +66,7 @@ layout (local_size_x = 16, local_size_y = 9, local_size_z = 2) in;
 bool testSphereAABB(uint light, uint tile);
 float sqDistPointAABB(vec3 point, uint tile);
 
-const uint MAX_LIGHT_PER_GRID = 200;
+const uint MAX_LIGHT_PER_GRID = 400;
 
 void main()
 {

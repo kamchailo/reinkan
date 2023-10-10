@@ -110,20 +110,6 @@ void main()
     minPointAABB = min(min(minPointNear, minPointFar),min(maxPointNear, maxPointFar));
     maxPointAABB = max(max(minPointNear, minPointFar),max(maxPointNear, maxPointFar));
 
-    // minPointAABB.x = min(min(minPointNear.x, minPointFar.x), min(maxPointNear.x, maxPointFar.x));
-    // minPointAABB.y = min(min(minPointNear.y, minPointFar.y), min(maxPointNear.y, maxPointFar.y));
-    // minPointAABB.z = min(min(minPointNear.z, minPointFar.z), min(maxPointNear.z, maxPointFar.z));
-
-    // maxPointAABB.x = max(max(minPointNear.x, minPointFar.x), max(maxPointNear.x, maxPointFar.x));
-    // maxPointAABB.y = max(max(minPointNear.y, minPointFar.y), max(maxPointNear.y, maxPointFar.y));
-    // maxPointAABB.z = max(max(minPointNear.z, minPointFar.z), max(maxPointNear.z, maxPointFar.z));
-
-    // Add more threashold for intersection
-    // minPointAABB -= 0.1 * abs(minPointAABB); 
-    // maxPointAABB += 0.1 * abs(maxPointAABB);
-
     clusterGrids[tileIndex].minPosition = minPointAABB;
     clusterGrids[tileIndex].maxPosition = maxPointAABB;
-    // clusterGrids[tileIndex].minPosition = minPointNear;
-    // clusterGrids[tileIndex].maxPosition = maxPointFar;
 }

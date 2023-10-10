@@ -5,10 +5,10 @@
 
 namespace Reinkan::Camera
 {
-	Camera::Camera() : position(glm::vec3(0.0,2.0,0.0)),
-					    spin(-1.57f), // PI / 2.0
-						//spin(0.0f), 
-					    tilt(0.0f),
+	Camera::Camera() : position(glm::vec3(-4.5,2.0,-1.0)),
+					    //spin(-1.57f), // PI / 2.0
+						spin(-3.0f),
+					    tilt(0.2f),
 						fieldOfView(45.0),
 					    pFront(0.1f),
 					    pBack(1000.0f),
@@ -19,7 +19,8 @@ namespace Reinkan::Camera
 		perspectiveMatrix = glm::mat4(1);
 		viewMatrix = glm::mat4(1);
 
-		cameraDirection = glm::normalize(glm::vec3(0.0, 0.0, 1.0));
+		//cameraDirection = glm::normalize(glm::vec3(1.0, 0.0, 1.0));
+		UpdateDirection();
 		cameraUp = glm::vec3(0.0, 1.0, 0.0);
 	}
 
@@ -68,6 +69,11 @@ namespace Reinkan::Camera
 		direction.y = -sin(tilt);
 		direction.z = sin(spin) * -cos(tilt);
 		cameraDirection = glm::normalize(direction);
+	}
+
+	glm::vec3 Camera::GetPosition() const
+	{
+		return position;
 	}
 
 	glm::mat4 Camera::GetPerspectiveMatrix() const

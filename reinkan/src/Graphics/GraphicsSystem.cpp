@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "GraphicsSystem.h"
 
-#include "ResourceLoader/ReinkanModelLoader.h"
-
+#include <random>
 #include <glm/gtx/transform.hpp>
+
+#include "ResourceLoader/ReinkanModelLoader.h"
 
 namespace Reinkan::Graphics
 {
@@ -104,12 +105,20 @@ namespace Reinkan::Graphics
 
             int bound = sqrt(maxLightNumber) / 2.0;
 
+            int boundX = 16;
+            int boundZ = 8;
+            int x, y ,z;
+
             for (int i = -bound; i < bound; ++i)
             {
                 for (int j = -bound; j < bound; ++j)
                 {
-                    glm::vec3 color = glm::vec3(static_cast<float>(i + 5) / 10.0, 1.0 - (static_cast<float>(j + 5) / 10.0), 0.0);
-                    vulkanApp->AppendLight({ glm::vec3(i, 0.5, j), color, 5.0, 1.0 });
+                    x = i % boundX;
+                    y = rand() % 3;
+                    z = j % boundZ;
+                    glm::vec3 color = glm::vec3(static_cast<float>(abs(x) + 5) / 10.0, 1.0 - (static_cast<float>(abs(z) + 5) / 10.0), 0.0);
+                    
+                    vulkanApp->AppendLight({ glm::vec3(x, y, z), color, 5.0, 1.0 });
                 }
             }
             

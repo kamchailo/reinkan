@@ -39,6 +39,7 @@ namespace Reinkan
 		alignas(4) uint32_t heightMapId;
 		alignas(4) float shininess;
 		alignas(4) uint32_t diffuseMapId;
+		alignas(4) uint32_t pyramidalHeightMapId;
 	};
 
 	struct PushConstantDebug
@@ -95,5 +96,10 @@ namespace Reinkan
 	{
 		alignas(4) uint32_t offset;
 		alignas(4) uint32_t size;
+	};
+
+	struct PyramidalHeightMap
+	{
+		alignas(4) uint32_t heightMapId;
 	};
 }

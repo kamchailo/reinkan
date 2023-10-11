@@ -35,6 +35,7 @@ struct Material
     uint heightMapId;
     float shininess;
     uint diffuseMapId;
+    uint pyramidalHeightMapId;
 };
 layout(binding = 1) buffer MaterialBlock 
 {
@@ -142,7 +143,12 @@ void main()
     ////////////////////////////////////////
     //          Parallax Occlusion
     ////////////////////////////////////////
-    // if(material.heightMapId != -1)
+    if(material.heightMapId != -1)
+    {
+        outColor = vec4(0.0, 0.7, 0.5, 1.0);
+        return;   
+    }
+
     if(false)
     {
         mat3 TBN = transpose(mat3(vertexTangent, 

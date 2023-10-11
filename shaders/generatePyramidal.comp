@@ -2,6 +2,26 @@
 
 #extension GL_EXT_nonuniform_qualifier : enable
 
+layout(binding = 0) uniform sampler2D[] textureSamplers;
+// pack all textures together (diffuse, normal, height)
+// Unpack by using Material::**texture**Id to Offset
+// vec3 height = textureSamplers[material.heightMapId];
+
+layout(binding = 1, rgba32f) uniform image2D[] pyramidalMap;
+
+struct PyramidalHeightMap
+{
+    uint heightMapId;
+    uint width;
+    uint height;
+    uint mipLevels;
+};
+layout(std140, binding = 2) readonly buffer PyramidalHeightMapBlock
+{
+    PyramidalHeightMap pyramidalHeightMap[];
+}; 
+
+
 
 void main()
 {

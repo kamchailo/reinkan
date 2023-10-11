@@ -42,26 +42,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
 
-            
-            glm::mat4 planeTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0));
-            //ModelData plane;
-            ReadAssimpFile("../assets/models/plane.obj",
-                planeTr,
-                modelDatas,
-                vulkanApp->GetAppMaterialPool(),
-                vulkanApp->GetAppTexturePool(),
-                vulkanApp->GetAppMaterialPool().size());
-            */
 
-            //ModelData sponza;
-            ReadAssimpFile("../assets/models/sponza.obj",
-                glm::mat4(0.01),
-                modelDatas,
-                vulkanApp->GetAppMaterialPool(),
-                vulkanApp->GetAppTexturePool(),
-                vulkanApp->GetAppMaterialPool().size());
-
-             
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
             //ModelData walking;
             ReadAssimpFile("../assets/models/Walking.dae",
@@ -70,6 +51,25 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            
+            */
+            glm::mat4 planeTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0));
+            //ModelData plane;
+            ReadAssimpFile("../assets/models/plane.obj",
+                planeTr,
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+
+            //ModelData sponza;
+            ReadAssimpFile("../assets/models/sponza.obj",
+                glm::mat4(0.01),
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+ 
 
             for (int i = 0; i < modelDatas.size(); ++i)
             {
@@ -100,7 +100,6 @@ namespace Reinkan::Graphics
             //vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 10.0), glm::vec3(0.0,1.0,0.0), 10.0, 3.0 });
 
             /*
-            */
             uint32_t maxLightNumber = 5000;
 
             int bound = sqrt(maxLightNumber) / 2.0;
@@ -121,6 +120,7 @@ namespace Reinkan::Graphics
                     vulkanApp->AppendLight({ glm::vec3(x, y, z), color, 5.0, 1.0 });
                 }
             }
+            */
             
 
             vulkanApp->BindResources();

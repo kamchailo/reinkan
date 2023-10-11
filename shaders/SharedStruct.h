@@ -103,5 +103,6 @@ namespace Reinkan
 		alignas(4) uint32_t heightMapId;
 		alignas(4) uint32_t width;
 		alignas(4) uint32_t height;
+		alignas(4) uint32_t mipLevels;
 	};
 }

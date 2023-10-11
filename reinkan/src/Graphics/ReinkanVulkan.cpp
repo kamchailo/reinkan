@@ -46,6 +46,9 @@ namespace Reinkan::Graphics
 
 		CreateComputeClusteredCommandBuffer();
 
+		// From ParallaxOcclusion
+		CreatePyramidalBufferWraps();
+
 		// From ComputeParticle
 		//CreateComputeParticleSyncObjects();
 

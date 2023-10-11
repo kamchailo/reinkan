@@ -140,7 +140,7 @@ namespace Reinkan::Graphics
             }
 
             // HEIGHT
-            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DISPLACEMENT, 0, &texPath)) 
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_HEIGHT, 0, &texPath))
             {
                 std::string texturePathExtended("../assets/textures/");
                 texturePathExtended += texPath.C_Str();
@@ -149,6 +149,12 @@ namespace Reinkan::Graphics
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
                 //std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
+            
+                ////////////////////////////////////////
+                //      ADD PYRAMIDAL HEIGHT MAP
+                ////////////////////////////////////////
+                PyramidalHeightMap pyramidalHeightMap{};
+                pyramidalHeightMap.heightMapId = newmat.heightMapId;
             }
 
             // change to materialPool appMaterials

@@ -177,12 +177,6 @@
     <ClCompile Include="src\Graphics\ParallaxOcclusion\ReinkanParallaxOcclusion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeGeneratePyramidalPipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParallaxOcclusion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\ReinkanVulkan.h">

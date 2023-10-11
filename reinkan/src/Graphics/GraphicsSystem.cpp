@@ -60,6 +60,7 @@ namespace Reinkan::Graphics
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppPyramidalHeightMaps(),
                 vulkanApp->GetAppMaterialPool().size());
 
             //ModelData sponza;
@@ -68,6 +69,7 @@ namespace Reinkan::Graphics
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppPyramidalHeightMaps(),
                 vulkanApp->GetAppMaterialPool().size());
  
 

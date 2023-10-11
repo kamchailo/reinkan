@@ -76,6 +76,11 @@ namespace Reinkan::Graphics
             // Move Bind Resource code part which belong to pipeline here
         }
 
+        std::vector<PyramidalHeightMap>& GetAppPyramidalHeightMaps()
+        {
+            return appPyramidalHeightMaps;
+        }
+
     // Reinkan.cpp
         //void MainLoop();
 
@@ -101,6 +106,9 @@ namespace Reinkan::Graphics
     // ReinkanLightUtility.cpp
         void AppendLight(const LightObject& lightObject);
 
+    // ------------------------------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------------------------------//
     private:
     // Reinkan.cpp
         void InitVulkan();
@@ -305,7 +313,21 @@ namespace Reinkan::Graphics
                                   uint32_t  mipLevels = 1,
                                   VkSampleCountFlagBits numSamples = VK_SAMPLE_COUNT_1_BIT);
 
+        ImageWrap CreateImage3DWrap(uint32_t width,
+                                uint32_t height,
+                                VkFormat format,
+                                VkImageTiling tiling,
+                                VkImageUsageFlags usage,
+                                VkMemoryPropertyFlags properties,
+                                uint32_t  mipLevels = 1,
+                                VkSampleCountFlagBits numSamples = VK_SAMPLE_COUNT_1_BIT);
+
         VkImageView CreateImageView(VkImage image, 
+                                    VkFormat format,
+                                    VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT,
+                                    uint32_t  mipLevels = 1);
+
+        VkImageView CreateImage3DView(VkImage image,
                                     VkFormat format,
                                     VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT,
                                     uint32_t  mipLevels = 1);
@@ -585,6 +607,8 @@ namespace Reinkan::Graphics
 
         void CreateComputeGeneratePyramidalDescriptorSetWrap();
 
+        void GeneratePyramidalMap();
+
         DescriptorWrap                  appComputeGeneratePyramidalDescriptorWrap;
         std::vector<ImageWrap>          appPyramidalImageWraps;
 
@@ -592,5 +616,7 @@ namespace Reinkan::Graphics
         std::vector<PyramidalHeightMap> appPyramidalHeightMaps;
         BufferWrap                      appPyramidalHeightMapsBufferWrap;
 
+    // ReinkanComputeClusteredCleanup.cpp
+        void DestroyComputeGeneratePyramidalResources();
     };
 }

@@ -58,6 +58,54 @@ namespace Reinkan::Graphics
         return imageWrap;
     }
 
+    ImageWrap ReinkanApp::CreateImage3DWrap(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, uint32_t mipLevels, VkSampleCountFlagBits numSamples)
+    {
+        ImageWrap imageWrap;
+
+        VkImageCreateInfo imageCreateInfo{};
+        imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_3D;
+        imageCreateInfo.extent.width = width;
+        imageCreateInfo.extent.height = height;
+        imageCreateInfo.extent.depth = 1;
+        imageCreateInfo.mipLevels = mipLevels;
+        imageCreateInfo.arrayLayers = 1;
+        imageCreateInfo.format = format;
+        imageCreateInfo.tiling = tiling;
+        imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageCreateInfo.usage = usage;
+        imageCreateInfo.samples = numSamples;
+        imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateImage(appDevice, &imageCreateInfo, nullptr, &imageWrap.image) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create image!");
+        }
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(appDevice, imageWrap.image, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
+
+        if (vkAllocateMemory(appDevice, &allocInfo, nullptr, &imageWrap.memory) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to allocate image memory!");
+        }
+
+        // Improve by use offset when binding Image Memory
+        // - alloc total size of every texture (totalSize += memRequirements.size)
+        // - bind with offset in the same memory block
+        vkBindImageMemory(appDevice, imageWrap.image, imageWrap.memory, 0);
+
+        imageWrap.imageView = VK_NULL_HANDLE;
+        imageWrap.sampler = VK_NULL_HANDLE;
+
+        return imageWrap;
+    }
+
     VkImageView ReinkanApp::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlagBits aspect, uint32_t  mipLevels)
     {
         VkImageView imageView;
@@ -74,6 +122,29 @@ namespace Reinkan::Graphics
         viewInfo.subresourceRange.layerCount = 1;
 
         if (vkCreateImageView(appDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS) 
+        {
+            throw std::runtime_error("failed to create texture image view!");
+        }
+
+        return imageView;
+    }
+
+    VkImageView ReinkanApp::CreateImage3DView(VkImage image, VkFormat format, VkImageAspectFlagBits aspect, uint32_t mipLevels)
+    {
+        VkImageView imageView;
+
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = image;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_3D;
+        viewInfo.format = format;
+        viewInfo.subresourceRange.aspectMask = aspect;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = mipLevels;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(appDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create texture image view!");
         }
@@ -224,8 +295,16 @@ namespace Reinkan::Graphics
                 barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-                destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;  // Depth Test before fragment
-                // Then write in VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT
+                destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            }
+            else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_GENERAL)
+            {
+                barrier.srcAccessMask = 0;
+                barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+                sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+                destinationStage = VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;  // Depth Test before fragment
+                // Then write in VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT
             }
             else 
             {

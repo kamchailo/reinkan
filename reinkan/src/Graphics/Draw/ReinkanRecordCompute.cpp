@@ -38,18 +38,18 @@ namespace Reinkan::Graphics
 
         if (isMemBarrier)
         {
-            VkMemoryBarrier  clusteredGridBarrier = {};
-            clusteredGridBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-            clusteredGridBarrier.pNext = nullptr;
-            clusteredGridBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-            clusteredGridBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            VkMemoryBarrier  memoryBarrier = {};
+            memoryBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            memoryBarrier.pNext = nullptr;
+            memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+            memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
             vkCmdPipelineBarrier(commandBuffer,
                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                 VK_DEPENDENCY_DEVICE_GROUP_BIT,
                 1,
-                &clusteredGridBarrier,
+                &memoryBarrier,
                 0,
                 nullptr,
                 0,

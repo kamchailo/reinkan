@@ -8,6 +8,7 @@
 #include <assimp/version.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <stb_image/stb_image.h>
 
 #include "Graphics/Structure/ObjectData.h"
 
@@ -27,6 +28,7 @@ namespace Reinkan::Graphics
         std::vector<ModelData>& modelDatas,
         std::vector<Material>& materialPool,
         std::vector<std::string>& texturePool,
+        std::vector<PyramidalHeightMap>& pyramidalHeightMaps,
         unsigned int materialOffset)
     {
         std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
@@ -153,8 +155,8 @@ namespace Reinkan::Graphics
                 ////////////////////////////////////////
                 //      ADD PYRAMIDAL HEIGHT MAP
                 ////////////////////////////////////////
-                PyramidalHeightMap pyramidalHeightMap{};
-                pyramidalHeightMap.heightMapId = newmat.heightMapId;
+                newmat.pyramidalHeightMapId = pyramidalHeightMaps.size();
+                AddPyramidalHeightMap(newmat.heightMapId, texturePathExtended, pyramidalHeightMaps);
             }
 
             // change to materialPool appMaterials
@@ -247,5 +249,24 @@ namespace Reinkan::Graphics
         {
             RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
         }
+    }
+
+    void AddPyramidalHeightMap(uint32_t heightMapId, std::string& texturePath, std::vector<PyramidalHeightMap>& pyramidalHeightMaps)
+    {
+        int textureWidth;
+        int textureHeight;
+        int textureChannels;
+
+        stbi_uc* pixels = stbi_load(texturePath.c_str(), &textureWidth, &textureHeight, &textureChannels, STBI_rgb_alpha);
+
+        uint32_t miplevels = static_cast<uint32_t>(std::floor(std::log2(std::max(textureWidth, textureHeight)))) + 1;
+        
+        pyramidalHeightMaps.emplace_back(PyramidalHeightMap
+            {
+                heightMapId,
+                static_cast<uint32_t>(textureWidth),
+                static_cast<uint32_t>(textureHeight),
+                miplevels
+            });
     }
 }

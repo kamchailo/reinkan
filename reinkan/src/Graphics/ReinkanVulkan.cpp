@@ -46,9 +46,6 @@ namespace Reinkan::Graphics
 
 		CreateComputeClusteredCommandBuffer();
 
-		// From ParallaxOcclusion
-		CreatePyramidalBufferWraps();
-
 		// From ComputeParticle
 		//CreateComputeParticleSyncObjects();
 
@@ -75,6 +72,15 @@ namespace Reinkan::Graphics
 			CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
 
 			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+
+			// Parallax Occlusion
+			CreatePyramidalBufferWraps();
+
+			CreateComputeGeneratePyramidalDescriptorSetWrap();
+
+			CreateComputeGeneratePyramidalPipeline(appComputeGeneratePyramidalDescriptorWrap);
+
+			GeneratePyramidalMap();
 
 			// Scanline
 			CreateScanlineDescriptorWrap();

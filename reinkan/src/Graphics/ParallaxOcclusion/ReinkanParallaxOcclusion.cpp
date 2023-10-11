@@ -10,24 +10,25 @@ namespace Reinkan::Graphics
         for (int i = 0; i < totalImages; ++i)
         {
             // try to pass through the pixel from texture
-            appPyramidalImageWraps[i] = CreateImageWrap(appPyramidalHeightMaps[i].width,
+            appPyramidalImageWraps[i] = CreateImage3DWrap(appPyramidalHeightMaps[i].width,
                                                         appPyramidalHeightMaps[i].height,
                                                         VK_FORMAT_R32_SFLOAT,  // only one channel is needed
                                                         VK_IMAGE_TILING_OPTIMAL,                                         // Image Tilling
                                                         VK_IMAGE_USAGE_TRANSFER_SRC_BIT  // Added for creating mipmaps which is considers a transfer operation
                                                         | VK_IMAGE_USAGE_TRANSFER_DST_BIT                   
-                                                        | VK_IMAGE_USAGE_SAMPLED_BIT ,                                   // Image Usage
+                                                        | VK_IMAGE_USAGE_SAMPLED_BIT 
+                                                        | VK_IMAGE_USAGE_STORAGE_BIT,                                   // Image Usage
                                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                             // Memory Property
                                                         appPyramidalHeightMaps[i].mipLevels);                           // Mip Levels
             
-            appPyramidalImageWraps[i].imageView = CreateImageView(appPyramidalImageWraps[i].image, VK_FORMAT_R32_SFLOAT);
+            appPyramidalImageWraps[i].imageView = CreateImage3DView(appPyramidalImageWraps[i].image, VK_FORMAT_R32_SFLOAT);
             appPyramidalImageWraps[i].sampler = CreateTextureSampler(appPyramidalHeightMaps[i].mipLevels);
-            appPyramidalImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
             TransitionImageLayout(appPyramidalImageWraps[i].image,
                                 VK_FORMAT_R32_SFLOAT,
                                 VK_IMAGE_LAYOUT_UNDEFINED,
                                 VK_IMAGE_LAYOUT_GENERAL,
                                 appPyramidalHeightMaps[i].mipLevels);
+            appPyramidalImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
         }
         /*
         for (auto texturePath : appTexturePaths)
@@ -40,7 +41,7 @@ namespace Reinkan::Graphics
             appTextureImageWraps.push_back(textureImageWrap);
         }
         */
-
+        appPyramidalHeightMapsBufferWrap = CreateStagedBufferWrap(appPyramidalHeightMaps, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     }
 
     void ReinkanApp::CreateComputeGeneratePyramidalDescriptorSetWrap()
@@ -57,7 +58,7 @@ namespace Reinkan::Graphics
         {
             bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
                                       bindingIndex++,                                               // binding;
-                                      VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,                    // descriptorType;
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
                                       static_cast<uint32_t>(appTextureImageWraps.size()),           // descriptorCount; // Has to > 0
                                       VK_SHADER_STAGE_COMPUTE_BIT });                              // stageFlags;
         }
@@ -102,8 +103,38 @@ namespace Reinkan::Graphics
         // PyramidalHeightMaps
         appComputeGeneratePyramidalDescriptorWrap.Write(appDevice, 2, appPyramidalHeightMapsBufferWrap.buffer, MAX_FRAMES_IN_FLIGHT);
 
+    }
 
+    void ReinkanApp::GeneratePyramidalMap()
+    {
+        vkWaitForFences(appDevice, 1, &appComputeClusteredInFlightFences[appCurrentFrame], VK_TRUE, UINT64_MAX);
 
+        vkResetFences(appDevice, 1, &appComputeClusteredInFlightFences[appCurrentFrame]);
 
+        vkResetCommandBuffer(appComputeClusteredCommandBuffers[appCurrentFrame], 0);
+
+        RecordComputeCommandBuffer(appComputeClusteredCommandBuffers[appCurrentFrame],
+                                    appComputeGeneratePyramidalPipeline,
+                                    appComputeGeneratePyramidalPipelineLayout,
+                                    appComputeGeneratePyramidalDescriptorWrap,
+                                    appPyramidalHeightMaps.size(), // Dispatch to the number of pyramidalMaps
+                                    1,
+                                    1,
+                                    VK_TRUE);
+
+        VkSubmitInfo submitComputeInfo{};
+        submitComputeInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitComputeInfo.commandBufferCount = 1;
+        submitComputeInfo.pCommandBuffers = &appComputeClusteredCommandBuffers[appCurrentFrame];
+        //submitComputeInfo.waitSemaphoreCount = 0;
+        //submitComputeInfo.pWaitSemaphores = {};
+        //submitComputeInfo.signalSemaphoreCount = 1;
+        //uint32_t nextFrame = (appCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+        //submitComputeInfo.pSignalSemaphores = &appComputeClusteredFinishedSemaphores[appCurrentFrame];
+
+        if (vkQueueSubmit(appComputeQueue, 1, &submitComputeInfo, appComputeClusteredInFlightFences[appCurrentFrame]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to submit compute command buffer!");
+        };
     }
 }

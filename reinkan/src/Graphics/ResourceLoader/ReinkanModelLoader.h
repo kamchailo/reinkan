@@ -16,6 +16,7 @@ namespace Reinkan::Graphics
         std::vector<ModelData>& modelData,
         std::vector<Material>& materialPool,
         std::vector<std::string>& texturePool,
+        std::vector<PyramidalHeightMap>& pyramidalHeightMaps,
         unsigned int materialOffset);
 
     // passi= in std::vector<ModelData> instead to load each mesh as individual object
@@ -26,4 +27,8 @@ namespace Reinkan::Graphics
         const aiMatrix4x4& parentTr,
         const int level,
         unsigned int materialOffset);
+
+    void AddPyramidalHeightMap(uint32_t heightMapId,
+                               std::string& texturePath,
+                               std::vector<PyramidalHeightMap>& pyramidalHeightMaps);
 }

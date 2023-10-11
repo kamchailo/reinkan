@@ -204,6 +204,7 @@
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Camera\ReinkanCamera.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeClusteredCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParallaxOcclusion.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />

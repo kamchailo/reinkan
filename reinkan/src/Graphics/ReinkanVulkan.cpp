@@ -64,6 +64,8 @@ namespace Reinkan::Graphics
 
 			BindTextures();
 
+			// Parallax Occlusion Binding
+
 			// Clustered
 			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
 
@@ -72,15 +74,6 @@ namespace Reinkan::Graphics
 			CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
 
 			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
-
-			// Parallax Occlusion
-			CreatePyramidalBufferWraps();
-
-			CreateComputeGeneratePyramidalDescriptorSetWrap();
-
-			CreateComputeGeneratePyramidalPipeline(appComputeGeneratePyramidalDescriptorWrap);
-
-			GeneratePyramidalMap();
 
 			// Scanline
 			CreateScanlineDescriptorWrap();

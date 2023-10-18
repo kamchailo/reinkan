@@ -60,18 +60,18 @@ namespace Reinkan::Graphics
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
-                vulkanApp->GetAppPyramidalHeightMaps(),
                 vulkanApp->GetAppMaterialPool().size());
 
+            /*
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
                 glm::mat4(0.01),
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
-                vulkanApp->GetAppPyramidalHeightMaps(),
                 vulkanApp->GetAppMaterialPool().size());
  
+            */
 
             for (int i = 0; i < modelDatas.size(); ++i)
             {
@@ -80,27 +80,9 @@ namespace Reinkan::Graphics
 
 
             // Lights
-            //vulkanApp->AppendLight({ glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0,0.0,0.0), 1.0, 1.0 });
-
             vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 0.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
             vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
             vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 0.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-
-            vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 1.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-
-            vulkanApp->AppendLight({ glm::vec3(-1.0, 1.0, 1.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(1.0, 1.0, 1.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-
-            vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 2.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 2.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-            vulkanApp->AppendLight({ glm::vec3(1.0, 2.0, 2.0), glm::vec3(0.0,1.0,0.0), 2.0, 1.0 });
-
-            //vulkanApp->AppendLight({ glm::vec3(0.0, 2.0, 10.0), glm::vec3(1.0,0.0,0.0), 10.0, 3.0 });
-            //vulkanApp->AppendLight({ glm::vec3(0.0, 1.0, 10.0), glm::vec3(0.0,1.0,0.0), 10.0, 3.0 });
-
             /*
             uint32_t maxLightNumber = 5000;
 
@@ -123,6 +105,19 @@ namespace Reinkan::Graphics
                 }
             }
             */
+
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_0.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_1.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_2.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_3.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_4.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_5.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_6.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_7.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_8.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_9.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_10.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_11.png");
             
 
             vulkanApp->BindResources();

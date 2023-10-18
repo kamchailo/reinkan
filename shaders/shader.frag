@@ -10,6 +10,7 @@ struct PushConstant
     int materialId;
     uint debugFlag;
     float debugFloat;
+    int debugInt;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -102,12 +103,18 @@ layout(std140, binding = 7) readonly buffer LightGridSSBO {
    LightGrid lightGrids[ ];
 };
 
+layout(binding = 8) uniform sampler2D[] pyramidalSamplers;
+
 layout(location = 0) in vec3 worldPos;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec3 vertexTangent;
 layout(location = 3) in vec3 vertexBitangent;
 layout(location = 4) in vec3 viewDir;
 layout(location = 5) in vec2 inFragTexCoord;
+// Parallax
+layout(location = 6) in vec3 TBNViewPos;
+layout(location = 7) in vec3 TBNWorldPos;
+layout(location = 8) in mat3 TBNMatrix;
 
 layout(location = 0) out vec4 outColor;
 
@@ -143,12 +150,60 @@ void main()
     ////////////////////////////////////////
     //          Parallax Occlusion
     ////////////////////////////////////////
-    if(material.heightMapId != -1)
+    if(pushConstant.materialId == 1)
     {
-        outColor = vec4(0.0, 0.7, 0.5, 1.0);
-        return;   
+        int maxLevel = 11;
+        // maxLevel = clamp(pushConstant.debugInt, 0 , 11);
+        vec3 TBNViewDir = normalize(TBNMatrix * viewDir);
+        vec3 p = vec3(fragTexCoord, 0.0);
+        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
+        float scale = depth / TBNViewDir.z;
+        vec3 p_prime = TBNViewDir * scale;
+        
+        int level = maxLevel - 1;
+        for(; level >= 0; --level)
+        {
+            depth = texture(pyramidalSamplers[level], p_prime.xy).r;
+            
+            if(p_prime.z < depth)
+            {
+                // scalar to scale p_prime to current depth
+                scale = depth / TBNViewDir.z;
+                vec3 p_temp = p + TBNViewDir * scale;
+
+                    p_prime = p_temp;
+                if(true)
+                {
+                }
+                else
+                {
+
+                }
+
+                level--;
+            }
+            else
+            {
+                level--;
+            }
+        }
+
+
+        vec2 parallaxUV = (p_prime * pushConstant.debugFloat).xy;
+        if(parallaxUV.x < 0.0 || parallaxUV.y < 0.0 || parallaxUV.x > 1.0 || parallaxUV.y > 1.0)
+        {
+            outColor = vec4(1.0, 0.3, 0.3, 1.0);
+            return;
+        }
+
+        fragTexCoord = parallaxUV;
+        // depth = texture(pyramidalSamplers[0], parallaxUV).r;
+        // outColor = vec4(vec3(depth), 1.0);
+
+        // return;   
     }
 
+    /*
     if(false)
     {
         mat3 TBN = transpose(mat3(vertexTangent, 
@@ -172,6 +227,7 @@ void main()
             discard;
         }
     }
+    */
 
     if(material.diffuseMapId != -1)
     {
@@ -193,32 +249,11 @@ void main()
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
-    
-    if((pushConstant.debugFlag & 0x8) > 0)
-    {
-        for(int i = 0; i < globalLights.length(); ++i)
-        {
-            LightObject light = globalLights[i];
-
-            float lightDistance = distance(light.position, worldPos);
-            if(lightDistance >= light.radius)
-            {
-                continue;
-            }
-            L = normalize(light.position - worldPos);
-
-            float intensity = light.intensity * (1 - lightDistance / light.radius);
-            brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
-        }
-        outColor = vec4(brdfColor, 1.0);
-        return;
-    }
 
     ////////////////////////////////////////
     //          Grid Calculation
     ////////////////////////////////////////
-    // Determine which Grid for this fragment
-    float z = length(viewDir);
+    // Define necessary variables
     float zNear = clusterPlanes[0].zNear;
     float zFar = clusterPlanes[tileNumberZ - 1].zFar;
     float linear = LinearDepth(gl_FragCoord.z, zNear, zFar);
@@ -239,6 +274,7 @@ void main()
 
     LightGrid lightGrid = lightGrids[tileIndex];
     uint offset = lightGrid.offset;
+
     // Loop through all light assigned in the grid
     for(int i = 0; i < lightGrid.size; ++i)
     {
@@ -264,20 +300,15 @@ void main()
         }
     }
 
+    // Final Color Result
+    outColor = vec4(brdfColor, 1.0);
+
 
     ////////////////////////////////////////
     //          Debug Flag
     ////////////////////////////////////////
-
-    if(lightGrid.size > 0 && (pushConstant.debugFlag & 0x1) > 0)
+    if((pushConstant.debugFlag & 0x1) > 0)
     {
-        brdfColor += vec3(float(lightGrid.size)/ 50);
-    }
 
-    outColor = vec4(brdfColor, 1.0);
-    if((pushConstant.debugFlag & 0x2) > 0)
-    {
-        uint colorIndex = sliceFlat % 8;
-        outColor += vec4(colorSample[colorIndex] * 0.3, 1.0);
     }
 }

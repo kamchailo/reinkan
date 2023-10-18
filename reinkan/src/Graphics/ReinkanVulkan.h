@@ -76,11 +76,6 @@ namespace Reinkan::Graphics
             // Move Bind Resource code part which belong to pipeline here
         }
 
-        std::vector<PyramidalHeightMap>& GetAppPyramidalHeightMaps()
-        {
-            return appPyramidalHeightMaps;
-        }
-
     // Reinkan.cpp
         //void MainLoop();
 
@@ -105,6 +100,9 @@ namespace Reinkan::Graphics
 
     // ReinkanLightUtility.cpp
         void AppendLight(const LightObject& lightObject);
+
+    // ReinkanParallaxOcclusion.cpp
+        void AddPyramidalPath(std::string const& path);
 
     // ------------------------------------------------------------------------------------------------------------------------------//
     // ------------------------------------------------------------------------------------------------------------------------------//
@@ -200,6 +198,10 @@ namespace Reinkan::Graphics
         VkSampleCountFlagBits       appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
         ImageWrap                   appMsaaImageWrap;
+
+    ////////////////////////////////////////
+    //          Scanline Pipeline
+    ////////////////////////////////////////
 
     // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
@@ -463,6 +465,7 @@ namespace Reinkan::Graphics
 
         uint32_t    appDebugFlag{ 0x0 };
         float       appDebugFloat{ 1.0f };
+        int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };
         bool        appImguiBool2{ false };
@@ -597,8 +600,11 @@ namespace Reinkan::Graphics
     // -------- Parallax Compute -------- //
 
     // ReinkanParallaxOcclusion.cpp
-        void BindPyramidalMap(std::string mapname);
+        void BindPyramidalMap(std::vector<std::string> const& filePaths);
 
+        void DestroyParallaxOcclusionResources();
+
+        std::vector<std::string>        appPyramidalPaths;
         std::vector<ImageWrap>          appPyramidalImageWraps;
     };
 }

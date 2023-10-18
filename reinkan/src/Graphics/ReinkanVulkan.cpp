@@ -65,6 +65,7 @@ namespace Reinkan::Graphics
 			BindTextures();
 
 			// Parallax Occlusion Binding
+			BindPyramidalMap(appPyramidalPaths);
 
 			// Clustered
 			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);

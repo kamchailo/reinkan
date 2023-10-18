@@ -34,6 +34,7 @@ int main()
 
 	stbi_write_png("output/out_0.png", texWidth, texHeight, 1, outPixels.begin()._Ptr, texWidth * 1);
 
+	stbi_image_free(pixels);
 
 	for (int mip = 1; mip < miplevels; ++mip)
 	{
@@ -44,10 +45,12 @@ int main()
 		std::printf("Image Info: %s\n", pathIn.c_str());
 		std::printf("Size: w:%d, h:%d\n", texWidth, texHeight);
 		std::printf("Channels: %d\n", texChannels);
+
 		std::vector<stbi_uc> outPixels;
 		outPixels.reserve((texWidth / 2) * (texHeight / 2));
 		int width = texWidth / 2;
 		int height = texHeight / 2;
+
 #pragma omp parallel 
 		for (int i = 0; i < texHeight / 2; ++i)
 		{
@@ -68,6 +71,8 @@ int main()
 		std::string path = "output/out_" + std::to_string(mip) + ".png";
 		std::printf("test path: %s\n", path.c_str());
 		stbi_write_png(path.c_str(), width, height, 1, outPixels.begin()._Ptr, width * 1);
+
+		stbi_image_free(pixels);
 	}
 
 	return 0;

@@ -16,7 +16,6 @@ namespace Reinkan::Graphics
         std::vector<ModelData>& modelData,
         std::vector<Material>& materialPool,
         std::vector<std::string>& texturePool,
-        std::vector<PyramidalHeightMap>& pyramidalHeightMaps,
         unsigned int materialOffset);
 
     // passi= in std::vector<ModelData> instead to load each mesh as individual object

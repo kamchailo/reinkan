@@ -28,7 +28,6 @@ namespace Reinkan::Graphics
         std::vector<ModelData>& modelDatas,
         std::vector<Material>& materialPool,
         std::vector<std::string>& texturePool,
-        std::vector<PyramidalHeightMap>& pyramidalHeightMaps,
         unsigned int materialOffset)
     {
         std::printf("- - [ASSIMP]: ReadAssimpFile File:  %s \n", path.c_str());
@@ -152,11 +151,6 @@ namespace Reinkan::Graphics
                 texturePool.push_back(std::string(texturePathExtended));
                 //std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
             
-                ////////////////////////////////////////
-                //      ADD PYRAMIDAL HEIGHT MAP
-                ////////////////////////////////////////
-                newmat.pyramidalHeightMapId = pyramidalHeightMaps.size();
-                AddPyramidalHeightMap(newmat.heightMapId, texturePathExtended, pyramidalHeightMaps);
             }
 
             // change to materialPool appMaterials

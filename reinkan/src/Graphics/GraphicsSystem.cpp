@@ -62,7 +62,6 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
 
-            /*
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
                 glm::mat4(0.01),
@@ -71,6 +70,7 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
  
+            /*
             */
 
             for (int i = 0; i < modelDatas.size(); ++i)

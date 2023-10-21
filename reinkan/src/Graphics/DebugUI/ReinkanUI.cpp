@@ -95,17 +95,17 @@ namespace Reinkan::Graphics
 
         //ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        //ImGui::Checkbox("Show Cluster Size: ", &appImguiBool1);
+        ImGui::Checkbox("Using Custom Scale instead of Depth: ", &appImguiBool1);
 
-        //ImGui::Checkbox("Draw Planes: ", &appImguiBool2);
+        ImGui::Checkbox("Skip Across Tile: ", &appImguiBool2);
 
         //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 
         //ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
 
-        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, -4.0f, 4.0f);
+        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 0.0f, 2.0f);
 
-        ImGui::SliderInt("Debug Int: ", &appDebugInt, -20, 20);
+        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 11);
 
         ImGui::End();
 

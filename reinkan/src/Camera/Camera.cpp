@@ -54,7 +54,7 @@ namespace Reinkan::Camera
 	void Camera::UpdatePerspectiveMatrix(const float aspect)
 	{
 		perspectiveMatrix = glm::perspective(glm::radians(fieldOfView), aspect, pFront, pBack);
-		perspectiveMatrix[1][1] *= -1;
+		perspectiveMatrix[1][1] *= -1;	
 	}
 
 	void Camera::UpdateViewMatrix(const float deltaTime)

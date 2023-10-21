@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 namespace Reinkan::Time
 {
 	class Time
@@ -17,17 +19,27 @@ namespace Reinkan::Time
 
 		uint32_t GetStableFPS() const;
 
+		void SetFixedFPS(double fixedFps);
+
+		uint32_t GetFixedFPS() const;
+
+		void SleepUntil(double untilTime);
+
 	private:
 
-		double GetCurrentTIme() const;
+		double GetEngineCurrentTime() const;
 
 		double startTime{ 0.0 };
+
+		std::chrono::time_point<std::chrono::high_resolution_clock> startTimePoint;
 
 		double timeElapse{ 0.0 };
 
 		double deltaTime{ 0.0 };
 
 		uint32_t fps;
+
+		uint32_t fixedFps{ 60 };
 
 		uint32_t timeElapseSecond;
 

@@ -144,90 +144,82 @@ float LinearDepth(float depthSample, float zNear, float zFar)
 void main() 
 {
     Material material = materials[pushConstant.materialId];
-    
     vec2 fragTexCoord = inFragTexCoord;
-
+    
     ////////////////////////////////////////
     //          Parallax Occlusion
     ////////////////////////////////////////
     if(pushConstant.materialId == 1)
     {
         int maxLevel = 11;
-        // maxLevel = clamp(pushConstant.debugInt, 0 , 11);
         vec3 TBNViewDir = normalize(TBNMatrix * viewDir);
-        vec3 p = vec3(fragTexCoord, 0.0);
-        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
-        float scale = depth / TBNViewDir.z;
-        vec3 p_prime = TBNViewDir * scale;
-        
-        int level = maxLevel - 1;
-        for(; level >= 0; --level)
-        {
-            depth = texture(pyramidalSamplers[level], p_prime.xy).r;
-            
-            if(p_prime.z < depth)
-            {
-                // scalar to scale p_prime to current depth
-                scale = depth / TBNViewDir.z;
-                vec3 p_temp = p + TBNViewDir * scale;
+        TBNViewDir.x = -TBNViewDir.x;
 
-                    p_prime = p_temp;
-                if(true)
+        vec3 pOrigin = vec3(fragTexCoord, 0.0);
+        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
+        float scale;
+        if((pushConstant.debugFlag & 0x1) > 0)
+            scale = depth / TBNViewDir.z;
+        else
+            scale = depth;
+        // Cast forward once to first level
+        vec3 pPrime = pOrigin + TBNViewDir * scale;
+
+        int minLevel = clamp(pushConstant.debugInt, 0, 10);
+
+        for(int level = maxLevel - 1; level >= minLevel; --level)
+        {
+            depth = texture(pyramidalSamplers[level], pPrime.xy).r;
+            
+            depth *= pushConstant.debugFloat;
+
+            if(pPrime.z < depth)
+            {
+                // scalar to scale pPrime to current depth
+                if((pushConstant.debugFlag & 0x1) > 0)
+                    scale = depth / TBNViewDir.z;
+                else
+                    scale = depth;
+
+                vec3 pTemp = pOrigin + TBNViewDir * scale;
+
+                if((pushConstant.debugFlag & 0x2) > 0)
                 {
+                    pPrime = pTemp;
                 }
                 else
                 {
-
+                    // TODO: fix acrossTile
+                    // tileDifferent always (0,0)
+                    ivec2 tileDifferent = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
+                    if(tileDifferent == ivec2(0,0))
+                    {
+                        pPrime = pTemp;
+                    }
+                    else
+                    {
+                        pPrime = StopAtTileBorder(pPrime, pTemp, maxLevel, level);
+                    }
                 }
-
-                level--;
             }
-            else
-            {
-                level--;
-            }
-        }
+       }
 
-
-        vec2 parallaxUV = (p_prime * pushConstant.debugFloat).xy;
+        vec2 parallaxUV = (pPrime).xy;
         if(parallaxUV.x < 0.0 || parallaxUV.y < 0.0 || parallaxUV.x > 1.0 || parallaxUV.y > 1.0)
         {
-            outColor = vec4(1.0, 0.3, 0.3, 1.0);
-            return;
+            discard;
+            // outColor = vec4(1.0, 0.3, 0.3, 1.0);
+            // return;
         }
 
         fragTexCoord = parallaxUV;
         // depth = texture(pyramidalSamplers[0], parallaxUV).r;
-        // outColor = vec4(vec3(depth), 1.0);
-
-        // return;   
+        // outColor = vec4(fragTexCoord, 0.0, 1.0);
+        // return;
     }
 
-    /*
-    if(false)
-    {
-        mat3 TBN = transpose(mat3(vertexTangent, 
-                                 vertexBitangent,
-                                 vertexNormal));
-
-        vec3 viewPos = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
-
-        vec3 TangentViewPos  = TBN * viewPos;
-        vec3 TangentFragPos  = TBN * worldPos;
-
-        vec3 viewD = normalize(TangentViewPos - TangentFragPos);
-
-        float height =  1.0 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
     
-        // fragTexCoord = ParallaxMapping(fragTexCoord, viewD, height);
-        fragTexCoord = HighParallaxMapping(fragTexCoord, viewD, textureSamplers[material.heightMapId]);
-        
-        if(fragTexCoord.x > 1.0 || fragTexCoord.y > 1.0 || fragTexCoord.x < 0.0 || fragTexCoord.y < 0.0)
-        {
-            discard;
-        }
-    }
-    */
+
 
     if(material.diffuseMapId != -1)
     {

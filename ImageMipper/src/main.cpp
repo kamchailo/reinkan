@@ -29,7 +29,7 @@ int main()
 	// create level 0 with 1 channel
 	for (int i = 0; i < texWidth * texHeight; ++i)
 	{
-		outPixels.push_back(pixels[i * texChannels]);
+		outPixels.push_back(1 - pixels[i * texChannels]);
 	}
 
 	stbi_write_png("output/out_0.png", texWidth, texHeight, 1, outPixels.begin()._Ptr, texWidth * 1);
@@ -61,7 +61,7 @@ int main()
 				stbi_uc bottomLeft = pixels[(j * 2 + (i * 2 + 1) * width * 2) * texChannels];
 				stbi_uc bottomRight = pixels[((j * 2 + 1) + (i * 2 + 1) * width * 2) * texChannels];
 
-				stbi_uc max = std::max(std::max(topLeft, topRight), std::max(bottomLeft, bottomRight));
+				stbi_uc max = std::min(std::min(topLeft, topRight), std::min(bottomLeft, bottomRight));
 
 				outPixels.push_back(max);
 			}

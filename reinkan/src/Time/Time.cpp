@@ -1,19 +1,20 @@
 #include "pch.h"
 #include "Time.h"
 
+#include <thread>
 #include <chrono>
 
 namespace Reinkan::Time
 {
 	Time::Time()
 	{
-		startTime = GetCurrentTIme();
+		startTime = GetEngineCurrentTime();
 	}
 
 	void Time::Update()
 	{
 		double lastFrame = timeElapse;
-		timeElapse = GetCurrentTIme() - startTime;
+		timeElapse = GetEngineCurrentTime() - startTime;
 
 		lastTimeElapseSecond = timeElapseSecond;
 		timeElapseSecond = timeElapse;
@@ -49,7 +50,22 @@ namespace Reinkan::Time
 		return stableFps;
 	}
 
-	double Time::GetCurrentTIme() const
+	void Time::SetFixedFPS(double fixedFps)
+	{
+		this->fixedFps = fixedFps;
+	}
+
+	uint32_t Time::GetFixedFPS() const
+	{
+		return fixedFps;
+	}
+
+	void Time::SleepUntil(double untilTime)
+	{
+		//std::this_thread::sleep_until();
+	}
+
+	double Time::GetEngineCurrentTime() const
 	{
 		return std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}

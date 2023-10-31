@@ -91,21 +91,21 @@ namespace Reinkan::Graphics
 
         glm::vec3 camPos = appMainCamera->GetPosition();
         ImGui::Text("Camera Position:");
-        ImGui::Text("[%.3f, %.3f, %.3f]", camPos.x, camPos.y, camPos.z);
+        ImGui::Text("[%.3f, %.3f, %.3f]", camPos.x, camPos.y, camPos.z);    
 
         //ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Using Custom Scale instead of Depth: ", &appImguiBool1);
+        ImGui::Checkbox("Show Overshoot: ", &appImguiBool1);
 
-        ImGui::Checkbox("Skip Across Tile: ", &appImguiBool2);
+        ImGui::Checkbox("Show Height: ", &appImguiBool2);
 
         //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 
         //ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
 
-        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 0.0f, 2.0f);
+        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 0.0f, 1.0f);
 
-        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 11);
+        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 5);
 
         ImGui::End();
 

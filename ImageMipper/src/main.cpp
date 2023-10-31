@@ -8,10 +8,11 @@
 #include <cmath>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 int main()
 {
-	std::string path = "input/cloth_knit_height_0.png";
+	std::string path = "input/simple_hill.png";
 	int texWidth;
 	int texHeight;
 	int texChannels;
@@ -29,7 +30,8 @@ int main()
 	// create level 0 with 1 channel
 	for (int i = 0; i < texWidth * texHeight; ++i)
 	{
-		outPixels.push_back(1 - pixels[i * texChannels]);
+		//stbi_uc inverseColor = 
+		outPixels.push_back(255 - pixels[i * texChannels]);
 	}
 
 	stbi_write_png("output/out_0.png", texWidth, texHeight, 1, outPixels.begin()._Ptr, texWidth * 1);

@@ -111,13 +111,13 @@ namespace Reinkan::Graphics
             vulkanApp->AddPyramidalPath("../assets/pyramidal/out_2.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/out_3.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/out_4.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_5.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_6.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_7.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_8.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_9.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_10.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_11.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_5.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_6.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_7.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_8.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_9.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_10.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/out_11.png");
             
 
             vulkanApp->BindResources();

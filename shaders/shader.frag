@@ -151,55 +151,79 @@ void main()
     ////////////////////////////////////////
     if(pushConstant.materialId == 1)
     {
-        int maxLevel = 11;
+        int maxLevel = 4;
         vec3 TBNViewDir = normalize(TBNMatrix * viewDir);
         TBNViewDir.x = -TBNViewDir.x;
 
         vec3 pOrigin = vec3(fragTexCoord, 0.0);
         float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
-        float scale;
-        if((pushConstant.debugFlag & 0x1) > 0)
-            scale = depth / TBNViewDir.z;
-        else
-            scale = depth;
+        
         // Cast forward once to first level
-        vec3 pPrime = pOrigin + TBNViewDir * scale;
+        vec3 pPrime = pOrigin + TBNViewDir * depth;
 
         int minLevel = clamp(pushConstant.debugInt, 0, 10);
 
+        int maxIteration = 10;
+
         for(int level = maxLevel - 1; level >= minLevel; --level)
         {
-            depth = texture(pyramidalSamplers[level], pPrime.xy).r;
-            
-            depth *= pushConstant.debugFloat;
+            if(--maxIteration <= 0)
+            {
+                outColor = vec4(1.0,0.3,0.3,1.0);
+                return;
+            }
 
+            depth = texture(pyramidalSamplers[level], pPrime.xy).r;
+            depth *= pushConstant.debugFloat;
+            
             if(pPrime.z < depth)
             {
-                // scalar to scale pPrime to current depth
-                if((pushConstant.debugFlag & 0x1) > 0)
-                    scale = depth / TBNViewDir.z;
-                else
-                    scale = depth;
+                vec3 pTemp = pOrigin + TBNViewDir * depth;
 
-                vec3 pTemp = pOrigin + TBNViewDir * scale;
-
-                if((pushConstant.debugFlag & 0x2) > 0)
+                ivec2 tileDifferent = GetTileDifferent(pTemp.xy, pPrime.xy, maxLevel, level);
+                if(tileDifferent == ivec2(0,0))
                 {
                     pPrime = pTemp;
                 }
                 else
                 {
-                    // TODO: fix acrossTile
-                    // tileDifferent always (0,0)
-                    ivec2 tileDifferent = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
+                    // pPrime = StopAtTileBorder(pPrime, pTemp, maxLevel, level);
+                    vec3 offset = TBNViewDir * 0.01;
+                    pPrime = AcrossNode(pPrime, pTemp, maxLevel, level) + offset;
+                    
+                    /*
+                    ivec2 tileDifferentA = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
+                    if(tileDifferentA ==  ivec2(0,0))
+                    {
+                        outColor = vec4(0.3, 0.0, 1.0, 1.0);
+                        return;
+                    }
+                    */
+
+                    depth = texture(pyramidalSamplers[level], pPrime.xy).r;
+                    depth *= pushConstant.debugFloat;
+
+                    // pTemp = pOrigin + TBNViewDir * depth;
+                    pPrime = pOrigin + TBNViewDir * depth;
+                    
+                    /*
+                    ivec2 tileDifferentB = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
                     if(tileDifferent == ivec2(0,0))
                     {
                         pPrime = pTemp;
                     }
                     else
                     {
-                        pPrime = StopAtTileBorder(pPrime, pTemp, maxLevel, level);
+                        pPrime = pTemp;
+
+                        if((pushConstant.debugFlag & 0x1) > 0)
+                        {
+                            int temp_int = tileDifferent.x % 8;
+                            outColor = vec4(colorSample[temp_int],1);
+                            return;
+                        }
                     }
+                    */
                 }
             }
        }
@@ -208,14 +232,16 @@ void main()
         if(parallaxUV.x < 0.0 || parallaxUV.y < 0.0 || parallaxUV.x > 1.0 || parallaxUV.y > 1.0)
         {
             discard;
-            // outColor = vec4(1.0, 0.3, 0.3, 1.0);
-            // return;
         }
 
         fragTexCoord = parallaxUV;
-        // depth = texture(pyramidalSamplers[0], parallaxUV).r;
-        // outColor = vec4(fragTexCoord, 0.0, 1.0);
-        // return;
+
+        if((pushConstant.debugFlag & 0x2) > 0)
+        {
+            float depthColor = texture(pyramidalSamplers[minLevel], fragTexCoord).r;
+            outColor = vec4(vec3(depthColor), 1.0);
+            return;
+        }
     }
 
     

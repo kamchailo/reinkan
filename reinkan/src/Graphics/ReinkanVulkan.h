@@ -341,6 +341,8 @@ namespace Reinkan::Graphics
 
         VkSampler CreateTextureSampler(uint32_t mipLevels);
 
+        VkSampler CreateNearestImageSampler();
+
         void TransitionImageLayout(VkImage image,
                                    VkFormat format,
                                    VkImageLayout oldLayout,
@@ -468,7 +470,7 @@ namespace Reinkan::Graphics
         int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };
-        bool        appImguiBool2{ false };
+        bool        appImguiBool2{ true };
         bool        appImguiBool3{ false };
         bool        appImguiBool4{ false };
 

@@ -13,6 +13,12 @@ namespace Reinkan::Time
 
 	void Time::Update()
 	{
+		if (deltaTime < 1.0f / fixedFps)
+		{
+			auto duration = std::chrono::duration<double>((1.0f / fixedFps) - deltaTime);
+			std::this_thread::sleep_for(duration);
+		}
+
 		double lastFrame = timeElapse;
 		timeElapse = GetEngineCurrentTime() - startTime;
 
@@ -22,6 +28,7 @@ namespace Reinkan::Time
 		deltaTime = timeElapse - lastFrame;
 
 		fps = 1.0 / deltaTime;
+
 
 		// Change to average FPS
 		if (timeElapseSecond > lastTimeElapseSecond)

@@ -36,6 +36,7 @@ namespace Reinkan::Core
 
 			while (!vulkanApp->ShouldClose())
 			{
+				
 				timeSystem->Update();
 
 				inputSystem->Update();

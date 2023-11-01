@@ -467,6 +467,7 @@ namespace Reinkan::Graphics
 
         uint32_t    appDebugFlag{ 0x0 };
         float       appDebugFloat{ 1.0f };
+        float       appDebugFloat2{ 0.0001f };
         int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };

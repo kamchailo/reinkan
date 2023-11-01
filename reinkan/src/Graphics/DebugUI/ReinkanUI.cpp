@@ -105,10 +105,12 @@ namespace Reinkan::Graphics
 
         ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 0.0f, 1.0f);
 
+        ImGui::SliderFloat("Debug Float2: ", &appDebugFloat2, 0.0f, 0.0005f, "%.5f");
+
         ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 5);
 
         ImGui::End();
-
+            
         // Update appDebugFlag
 
         if (appImguiBool1) { appDebugFlag = appDebugFlag | 0x1; }

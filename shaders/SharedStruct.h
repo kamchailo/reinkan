@@ -30,6 +30,7 @@ namespace Reinkan
 		alignas(4) uint32_t materialId;
 		alignas(4) uint32_t debugFlag;
 		alignas(4) float debugFloat;
+		alignas(4) float debugFloat2;
 		alignas(4) int debugInt;
 	};
 

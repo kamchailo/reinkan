@@ -16,8 +16,8 @@ ivec2 GetTileDifferent (vec2 uvA, vec2 uvB, int maxLevel, int level)
     // will determine which pixel
     // the uv is located
     //
-    ivec2 tileA = ivec2(uvA * pixelSize);
-    ivec2 tileB = ivec2(uvB * pixelSize);
+    ivec2 tileA = ivec2(floor(uvA * pixelSize));
+    ivec2 tileB = ivec2(floor(uvB * pixelSize));
 
     return tileA - tileB;
 }

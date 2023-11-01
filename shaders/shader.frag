@@ -10,6 +10,7 @@ struct PushConstant
     int materialId;
     uint debugFlag;
     float debugFloat;
+    float debugFloat2;
     int debugInt;
 };
 layout(push_constant) uniform PushConstantRaster_T
@@ -152,82 +153,77 @@ void main()
     if(pushConstant.materialId == 1)
     {
         int maxLevel = 4;
-        vec3 TBNViewDir = normalize(TBNMatrix * viewDir);
-        TBNViewDir.x = -TBNViewDir.x;
+        vec3 E = normalize(TBNMatrix * viewDir);
+        E.x = -E.x;
+        
+        // Make E.z = 1 for easiser calculation
+        E = E / E.z;
 
         vec3 pOrigin = vec3(fragTexCoord, 0.0);
-        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
         
         // Cast forward once to first level
-        vec3 pPrime = pOrigin + TBNViewDir * depth;
+        // float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
+        float depth;
+        // vec3 pPrime = pOrigin + E * depth;
+        vec3 pPrime = pOrigin;
 
-        int minLevel = clamp(pushConstant.debugInt, 0, 10);
+        int maxIteration = 300;
+        int minLevel = clamp(pushConstant.debugInt, 0, maxLevel);
 
-        int maxIteration = 10;
-
-        for(int level = maxLevel - 1; level >= minLevel; --level)
+        for (int level = maxLevel; level >= minLevel; )
         {
             if(--maxIteration <= 0)
             {
-                outColor = vec4(1.0,0.3,0.3,1.0);
+                outColor = vec4(0.7, 0.3, 1.0, 1.0);
                 return;
             }
 
-            depth = texture(pyramidalSamplers[level], pPrime.xy).r;
-            depth *= pushConstant.debugFloat;
+            float depth = texture(pyramidalSamplers[level], pPrime.xy).r;
             
-            if(pPrime.z < depth)
+            if(depth > pPrime.z)
             {
-                vec3 pTemp = pOrigin + TBNViewDir * depth;
+                vec3 pTemp = pOrigin + E * depth;
+                
+                // Check for node crossing
+                float nodeCount = pow(2.0, maxLevel - level);
+                
+                vec2 nodePPrime = floor(pPrime.xy * nodeCount);
+                vec2 nodePTemp = floor(pTemp.xy * nodeCount);
+                
+                vec2 test = abs(nodePPrime - nodePTemp);
 
-                ivec2 tileDifferent = GetTileDifferent(pTemp.xy, pPrime.xy, maxLevel, level);
-                if(tileDifferent == ivec2(0,0))
+                if(test.x + test.y > 0.0)
                 {
-                    pPrime = pTemp;
+                    float texelSpan = 1.0 / nodeCount;
+
+                    vec2 dirSign = (sign(E.xy) + 1.0) * 0.5; // {0, 1}
+
+                    // distance to the next node's boundary
+                    vec2 pBoundary = (nodePPrime + dirSign) * texelSpan;
+                    vec2 a = pPrime.xy    - pOrigin.xy;
+                    vec2 b = pBoundary.xy - pOrigin.xy;
+
+                    // node crossing
+                    vec2 depthAtBoundary = (pPrime.z * b.xy) / a.xy;
+
+                    float offset = texelSpan * 0.001;
+
+                    depth = min(depthAtBoundary.x, depthAtBoundary.y) + offset;
+
+                    pPrime = pOrigin + E * depth;
                 }
                 else
                 {
-                    // pPrime = StopAtTileBorder(pPrime, pTemp, maxLevel, level);
-                    vec3 offset = TBNViewDir * 0.01;
-                    pPrime = AcrossNode(pPrime, pTemp, maxLevel, level) + offset;
-                    
-                    /*
-                    ivec2 tileDifferentA = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
-                    if(tileDifferentA ==  ivec2(0,0))
-                    {
-                        outColor = vec4(0.3, 0.0, 1.0, 1.0);
-                        return;
-                    }
-                    */
-
-                    depth = texture(pyramidalSamplers[level], pPrime.xy).r;
-                    depth *= pushConstant.debugFloat;
-
-                    // pTemp = pOrigin + TBNViewDir * depth;
-                    pPrime = pOrigin + TBNViewDir * depth;
-                    
-                    /*
-                    ivec2 tileDifferentB = GetTileDifferent(pPrime.xy, pTemp.xy, maxLevel, level);
-                    if(tileDifferent == ivec2(0,0))
-                    {
-                        pPrime = pTemp;
-                    }
-                    else
-                    {
-                        pPrime = pTemp;
-
-                        if((pushConstant.debugFlag & 0x1) > 0)
-                        {
-                            int temp_int = tileDifferent.x % 8;
-                            outColor = vec4(colorSample[temp_int],1);
-                            return;
-                        }
-                    }
-                    */
+                    pPrime = pTemp;
+                    --level;
                 }
             }
-       }
-
+            else
+            {
+                --level;
+            }
+        }
+    
         vec2 parallaxUV = (pPrime).xy;
         if(parallaxUV.x < 0.0 || parallaxUV.y < 0.0 || parallaxUV.x > 1.0 || parallaxUV.y > 1.0)
         {
@@ -244,8 +240,8 @@ void main()
         }
     }
 
-    
-
+    outColor = vec4(fragTexCoord, 0.0, 1.0);
+    return;
 
     if(material.diffuseMapId != -1)
     {

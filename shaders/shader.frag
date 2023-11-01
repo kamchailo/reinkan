@@ -152,7 +152,7 @@ void main()
     ////////////////////////////////////////
     if(pushConstant.materialId == 1)
     {
-        int maxLevel = 4;
+        int maxLevel = 11;
         vec3 E = normalize(TBNMatrix * viewDir);
         E.x = -E.x;
         
@@ -162,23 +162,25 @@ void main()
         vec3 pOrigin = vec3(fragTexCoord, 0.0);
         
         // Cast forward once to first level
-        // float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r;
-        float depth;
-        // vec3 pPrime = pOrigin + E * depth;
-        vec3 pPrime = pOrigin;
+        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r * pushConstant.debugFloat ;
+
+        // float depth;
+        vec3 pPrime = pOrigin + E * depth;
+        // vec3 pPrime = pOrigin;
 
         int maxIteration = 300;
         int minLevel = clamp(pushConstant.debugInt, 0, maxLevel);
-
-        for (int level = maxLevel; level >= minLevel; )
+        
+        for (int level = maxLevel - 1; level >= minLevel; )
         {
             if(--maxIteration <= 0)
             {
+                break;
                 outColor = vec4(0.7, 0.3, 1.0, 1.0);
                 return;
             }
 
-            float depth = texture(pyramidalSamplers[level], pPrime.xy).r;
+            float depth = texture(pyramidalSamplers[level], pPrime.xy).r * pushConstant.debugFloat;
             
             if(depth > pPrime.z)
             {
@@ -192,25 +194,32 @@ void main()
                 
                 vec2 test = abs(nodePPrime - nodePTemp);
 
-                if(test.x + test.y > 0.0)
+                // Cross the pixel
+                if(test.x + test.y > 0.001)
                 {
                     float texelSpan = 1.0 / nodeCount;
 
                     vec2 dirSign = (sign(E.xy) + 1.0) * 0.5; // {0, 1}
-
+                    
                     // distance to the next node's boundary
                     vec2 pBoundary = (nodePPrime + dirSign) * texelSpan;
                     vec2 a = pPrime.xy    - pOrigin.xy;
                     vec2 b = pBoundary.xy - pOrigin.xy;
-
+                    
+                    // Fix bug when depth start at 0
+                    if( a == vec2(0))  a = vec2(0.00001);
+                    
                     // node crossing
                     vec2 depthAtBoundary = (pPrime.z * b.xy) / a.xy;
 
-                    float offset = texelSpan * 0.001;
+                    float offset = texelSpan * 0.01;
 
                     depth = min(depthAtBoundary.x, depthAtBoundary.y) + offset;
 
+                    // Move pPrime to boundary
                     pPrime = pOrigin + E * depth;
+
+
                 }
                 else
                 {
@@ -223,7 +232,7 @@ void main()
                 --level;
             }
         }
-    
+
         vec2 parallaxUV = (pPrime).xy;
         if(parallaxUV.x < 0.0 || parallaxUV.y < 0.0 || parallaxUV.x > 1.0 || parallaxUV.y > 1.0)
         {
@@ -239,9 +248,6 @@ void main()
             return;
         }
     }
-
-    outColor = vec4(fragTexCoord, 0.0, 1.0);
-    return;
 
     if(material.diffuseMapId != -1)
     {

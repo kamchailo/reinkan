@@ -104,20 +104,25 @@ namespace Reinkan::Graphics
                     vulkanApp->AppendLight({ glm::vec3(x, y, z), color, 5.0, 1.0 });
                 }
             }
-            */
 
             vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_0.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_1.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_2.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_3.png");
             vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_4.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_5.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_6.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_7.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_8.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_9.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_10.png");
-            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_11.png");
+            */
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_0.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_1.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_2.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_3.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_4.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_5.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_6.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_7.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_8.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_9.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_10.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_11.png");
             
 
             vulkanApp->BindResources();

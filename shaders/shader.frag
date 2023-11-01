@@ -152,7 +152,7 @@ void main()
     ////////////////////////////////////////
     if(pushConstant.materialId == 1)
     {
-        int MAX_LEVEL = 4;
+        int MAX_LEVEL = 11;
         vec3 E = normalize(TBNMatrix * viewDir);
         E.x = -E.x;
 
@@ -177,6 +177,26 @@ void main()
                 // return;
             }
 
+            // Refinement
+            /*            
+            if(level <= 0 )
+            {
+                vec2 ray2D = pPrime.xy - pOrigin.xy;
+                float rayLength = length(ray2D);
+                float texelSpanHalf = 0.5 / pow(2.0, MAX_LEVEL - level);
+                float depthB = pPrime.z * (rayLength + texelSpanHalf) / rayLength;
+                
+                vec3 pPrimeB = pOrigin + E * depthB;
+                float depthPrimeB = 1.0 - (texture(textureSamplers[material.heightMapId], pPrimeB.xy).r * pushConstant.debugFloat);
+                
+                if(depthPrimeB > pPrimeB.z)
+                {
+                    pPrime = pPrimeB;
+                    continue;
+                }
+            }
+            */
+
             float depth = texture(pyramidalSamplers[level], pPrime.xy).r * pushConstant.debugFloat;
             
             if(depth > pPrime.z)
@@ -195,7 +215,7 @@ void main()
                 if(test.x + test.y > 0.001)
                 {
                     float texelSpan = 1.0 / nodeCount;
-
+                    
                     vec2 dirSign = (sign(E.xy) + 1.0) * 0.5; // {0, 1}
                     
                     // distance to the next node's boundary
@@ -208,15 +228,13 @@ void main()
                     
                     // node crossing
                     vec2 depthAtBoundary = (pPrime.z * b.xy) / a.xy;
-
+                    
                     float offset = texelSpan * 0.001;
-
+                    
                     depth = min(depthAtBoundary.x, depthAtBoundary.y) + offset;
-
+                    
                     // Move pPrime to boundary
                     pPrime = pOrigin + E * depth;
-
-
                 }
                 else
                 {
@@ -257,7 +275,9 @@ void main()
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
     if(material.normalMapId <= 200)
     {
-        N = normalize(normalMap);
+        normalMap = normalMap * 2.0 - 1.0;
+        N = abs(normalize(TBNMatrix * normalMap));
+        
     }
 
     // Main Directional Light

@@ -17,6 +17,8 @@ int main()
 	int texHeight;
 	int texChannels;
 
+	std::string fileName = "simple_hill_out";
+	std::string fullFilaName = "output/" + fileName + "_";
 	stbi_uc* pixels = stbi_load(path.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 
 	std::printf("Image Info: %s\n", path.c_str());
@@ -34,7 +36,8 @@ int main()
 		outPixels.push_back(255 - pixels[i * texChannels]);
 	}
 
-	stbi_write_png("output/out_0.png", texWidth, texHeight, 1, outPixels.begin()._Ptr, texWidth * 1);
+	std::string rootFileNale = fullFilaName + "0.png";
+	stbi_write_png(rootFileNale.c_str(), texWidth, texHeight, 1, outPixels.begin()._Ptr, texWidth * 1);
 
 	stbi_image_free(pixels);
 
@@ -42,7 +45,8 @@ int main()
 	{
 		// read
 		std::printf("---------------------------------\n");
-		std::string pathIn = "output/out_" + std::to_string(mip - 1) + ".png";
+		
+		std::string pathIn = fullFilaName + std::to_string(mip - 1) + ".png";
 		stbi_uc* pixels = stbi_load(pathIn.c_str(), &texWidth, &texHeight, &texChannels, STBI_grey);
 		std::printf("Image Info: %s\n", pathIn.c_str());
 		std::printf("Size: w:%d, h:%d\n", texWidth, texHeight);
@@ -70,7 +74,7 @@ int main()
 
 		}
 		// write
-		std::string path = "output/out_" + std::to_string(mip) + ".png";
+		std::string path = fullFilaName + std::to_string(mip) + ".png";
 		std::printf("test path: %s\n", path.c_str());
 		stbi_write_png(path.c_str(), width, height, 1, outPixels.begin()._Ptr, width * 1);
 

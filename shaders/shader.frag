@@ -152,32 +152,29 @@ void main()
     ////////////////////////////////////////
     if(pushConstant.materialId == 1)
     {
-        int maxLevel = 11;
+        int MAX_LEVEL = 4;
         vec3 E = normalize(TBNMatrix * viewDir);
         E.x = -E.x;
-        
+
         // Make E.z = 1 for easiser calculation
         E = E / E.z;
 
         vec3 pOrigin = vec3(fragTexCoord, 0.0);
         
         // Cast forward once to first level
-        float depth = texture(pyramidalSamplers[maxLevel], fragTexCoord).r * pushConstant.debugFloat ;
-
-        // float depth;
+        float depth = texture(pyramidalSamplers[MAX_LEVEL], fragTexCoord).r * pushConstant.debugFloat ;
         vec3 pPrime = pOrigin + E * depth;
-        // vec3 pPrime = pOrigin;
 
-        int maxIteration = 300;
-        int minLevel = clamp(pushConstant.debugInt, 0, maxLevel);
+        int MAX_ITERATION = 30;
+        int minLevel = clamp(pushConstant.debugInt, 0, MAX_LEVEL);
         
-        for (int level = maxLevel - 1; level >= minLevel; )
+        for (int level = MAX_LEVEL - 1; level >= minLevel; )
         {
-            if(--maxIteration <= 0)
+            if(--MAX_ITERATION <= 0)
             {
                 break;
-                outColor = vec4(0.7, 0.3, 1.0, 1.0);
-                return;
+                // outColor = vec4(0.7, 0.3, 1.0, 1.0);
+                // return;
             }
 
             float depth = texture(pyramidalSamplers[level], pPrime.xy).r * pushConstant.debugFloat;
@@ -187,7 +184,7 @@ void main()
                 vec3 pTemp = pOrigin + E * depth;
                 
                 // Check for node crossing
-                float nodeCount = pow(2.0, maxLevel - level);
+                float nodeCount = pow(2.0, MAX_LEVEL - level);
                 
                 vec2 nodePPrime = floor(pPrime.xy * nodeCount);
                 vec2 nodePTemp = floor(pTemp.xy * nodeCount);
@@ -207,12 +204,12 @@ void main()
                     vec2 b = pBoundary.xy - pOrigin.xy;
                     
                     // Fix bug when depth start at 0
-                    if( a == vec2(0))  a = vec2(0.00001);
+                    if( a == vec2(0))  a = vec2(0.001);
                     
                     // node crossing
                     vec2 depthAtBoundary = (pPrime.z * b.xy) / a.xy;
 
-                    float offset = texelSpan * 0.01;
+                    float offset = texelSpan * 0.001;
 
                     depth = min(depthAtBoundary.x, depthAtBoundary.y) + offset;
 
@@ -260,7 +257,7 @@ void main()
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
     if(material.normalMapId <= 200)
     {
-        // N = normalize(normalMap * 2.0 - 1.0);
+        N = normalize(normalMap);
     }
 
     // Main Directional Light

@@ -17,7 +17,7 @@ namespace Reinkan::Graphics
         {
 
             //appPyramidalImageWraps[i] = CreateTextureImageWrap(filePaths[i]);
-
+            
             int texWidth, texHeight, texChannels;
             stbi_uc* pixels = stbi_load(filePaths[i].c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
             VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -66,8 +66,7 @@ namespace Reinkan::Graphics
                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 mipLevels);
-            
-
+                
             appPyramidalImageWraps[i].imageView = CreateImageView(appPyramidalImageWraps[i].image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
             appPyramidalImageWraps[i].sampler = CreateNearestImageSampler();
             appPyramidalImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

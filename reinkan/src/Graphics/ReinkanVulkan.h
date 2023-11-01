@@ -466,7 +466,7 @@ namespace Reinkan::Graphics
         #endif
 
         uint32_t    appDebugFlag{ 0x0 };
-        float       appDebugFloat{ 1.0f };
+        float       appDebugFloat{ 0.5f };
         float       appDebugFloat2{ 0.0001f };
         int         appDebugInt{ 0 };
 

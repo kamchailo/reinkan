@@ -106,18 +106,18 @@ namespace Reinkan::Graphics
             }
             */
 
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_0.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_1.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_2.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_3.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_4.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_5.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_6.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_7.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_8.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_9.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_10.png");
-            vulkanApp->AddPyramidalPath("../assets/pyramidal/out_11.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_0.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_1.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_2.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_3.png");
+            vulkanApp->AddPyramidalPath("../assets/pyramidal/simple_hill_out_4.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_5.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_6.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_7.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_8.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_9.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_10.png");
+            //vulkanApp->AddPyramidalPath("../assets/pyramidal/ceiling-flower_out_11.png");
             
 
             vulkanApp->BindResources();

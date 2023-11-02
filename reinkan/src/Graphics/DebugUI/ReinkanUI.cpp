@@ -95,9 +95,9 @@ namespace Reinkan::Graphics
 
         //ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Show Overshoot: ", &appImguiBool1);
+        ImGui::Checkbox("Show Bilinear: ", &appImguiBool1);
 
-        ImGui::Checkbox("Show Height: ", &appImguiBool2);
+        ImGui::Checkbox("Show pPrime & OverLoop: ", &appImguiBool2);
 
         //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 
@@ -107,7 +107,7 @@ namespace Reinkan::Graphics
 
         ImGui::SliderFloat("Debug Float2: ", &appDebugFloat2, 0.0f, 0.0005f, "%.5f");
 
-        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 5);
+        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 11);
 
         ImGui::End();
             

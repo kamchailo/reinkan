@@ -53,10 +53,10 @@ void main()
 
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
-    vec3 T   = normalize(mat3(pushConstant.modelMatrix) * inVertexTangent);
-    vec3 B   = normalize(mat3(pushConstant.modelMatrix) * inVertexBitangent);
-    vec3 N   = normalize(mat3(pushConstant.modelMatrix) * inVertexNormal);
-    mat3 TBN = transpose(mat3(T, B, N));
+    // vec3 T   = normalize(mat3(pushConstant.modelMatrix) * inVertexTangent);
+    // vec3 B   = normalize(mat3(pushConstant.modelMatrix) * inVertexBitangent);
+    // vec3 N   = normalize(mat3(pushConstant.modelMatrix) * inVertexNormal);
+    // mat3 TBN = transpose(mat3(T, B, N));
 
     // out
     worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
@@ -64,6 +64,9 @@ void main()
     vertexNormal = normalize((normalTransform * vec4(inVertexNormal, 1.0))).rgb;
     vertexTangent = normalize((normalTransform * vec4(inVertexTangent, 1.0))).rgb;
     vertexBitangent = normalize((normalTransform * vec4(inVertexBitangent, 1.0))).rgb;
+
+    mat3 TBN = transpose(mat3(vertexTangent, vertexBitangent, vertexNormal));
+
     viewDir = vec3(eye - worldPos);
     fragTexCoord = inTexCoord;
 

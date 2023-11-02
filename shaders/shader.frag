@@ -163,39 +163,60 @@ void main()
         
         // Cast forward once to first level
         float depth = texture(pyramidalSamplers[MAX_LEVEL], fragTexCoord).r * pushConstant.debugFloat ;
+        // Fix bug when depth start at 0
+        depth = max(depth, 0.001);
+
         vec3 pPrime = pOrigin + E * depth;
 
-        int MAX_ITERATION = 30;
+        int MAX_ITERATION = 100;
         int minLevel = clamp(pushConstant.debugInt, 0, MAX_LEVEL);
         
         for (int level = MAX_LEVEL - 1; level >= minLevel; )
         {
             if(--MAX_ITERATION <= 0)
             {
+                if((pushConstant.debugFlag & 0x2) > 0)
+                {
+                    outColor = vec4(0.7, 0.3, 1.0, 1.0);
+                    return;
+                }
                 break;
-                // outColor = vec4(0.7, 0.3, 1.0, 1.0);
-                // return;
             }
 
-            // Refinement
-            /*            
-            if(level <= 0 )
+            // Refinement Bilinear
+            if(level <= 0  && (pushConstant.debugFlag & 0x1) > 0)
             {
                 vec2 ray2D = pPrime.xy - pOrigin.xy;
                 float rayLength = length(ray2D);
+                
                 float texelSpanHalf = 0.5 / pow(2.0, MAX_LEVEL - level);
-                float depthB = pPrime.z * (rayLength + texelSpanHalf) / rayLength;
-                
+
+                float depthA = (pPrime.z * (rayLength - texelSpanHalf)) / rayLength;
+                float depthB = (pPrime.z * (rayLength + texelSpanHalf)) / rayLength;
+
+                vec3 pPrimeA = pOrigin + E * depthA;
                 vec3 pPrimeB = pOrigin + E * depthB;
-                float depthPrimeB = 1.0 - (texture(textureSamplers[material.heightMapId], pPrimeB.xy).r * pushConstant.debugFloat);
+
+                // float depthPrimeA = 1.0 - (texture(textureSamplers[material.heightMapId], pPrimeA.xy).r * pushConstant.debugFloat);
+                // float depthPrimeB = 1.0 - (texture(textureSamplers[material.heightMapId], pPrimeB.xy).r * pushConstant.debugFloat);
+                float depthPrimeA = 1.0 - (texture(pyramidalSamplers[level], pPrimeA.xy).r * pushConstant.debugFloat);
+                float depthPrimeB = 1.0 - (texture(pyramidalSamplers[level], pPrimeB.xy).r * pushConstant.debugFloat);
                 
+                float la = abs(pPrimeA.z - depthPrimeA);
+                float lb = abs(pPrimeB.z - depthPrimeB);
+                
+                float t = la / (la + lb);
+                pPrime = ((1 - t) * pPrimeA) + (t * pPrimeB);
+
+                break;
+                /*
                 if(depthPrimeB > pPrimeB.z)
                 {
                     pPrime = pPrimeB;
                     continue;
                 }
+                */
             }
-            */
 
             float depth = texture(pyramidalSamplers[level], pPrime.xy).r * pushConstant.debugFloat;
             
@@ -258,8 +279,10 @@ void main()
 
         if((pushConstant.debugFlag & 0x2) > 0)
         {
-            float depthColor = texture(pyramidalSamplers[minLevel], fragTexCoord).r;
+            // float depthColor = texture(pyramidalSamplers[minLevel], fragTexCoord).r;
+            float depthColor = 1 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
             outColor = vec4(vec3(depthColor), 1.0);
+            // outColor = vec4(pPrime, 1.0);
             return;
         }
     }
@@ -276,8 +299,8 @@ void main()
     if(material.normalMapId <= 200)
     {
         normalMap = normalMap * 2.0 - 1.0;
-        N = abs(normalize(TBNMatrix * normalMap));
-        
+        N = normalize(TBNMatrix * normalMap);
+        N.y = - N.y;
     }
 
     // Main Directional Light

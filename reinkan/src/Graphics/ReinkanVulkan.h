@@ -471,7 +471,7 @@ namespace Reinkan::Graphics
         int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };
-        bool        appImguiBool2{ true };
+        bool        appImguiBool2{ false };
         bool        appImguiBool3{ false };
         bool        appImguiBool4{ false };
 

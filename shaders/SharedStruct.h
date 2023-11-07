@@ -26,6 +26,7 @@ namespace Reinkan
 	struct PushConstantScanline
 	{
 		alignas(16) glm::mat4 modelMatrix;
+		alignas(16) glm::mat4 normalMatrix;
 		alignas(4) uint32_t objectId;
 		alignas(4) uint32_t materialId;
 		alignas(4) uint32_t debugFlag;

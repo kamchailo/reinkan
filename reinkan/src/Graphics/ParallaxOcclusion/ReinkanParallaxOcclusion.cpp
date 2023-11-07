@@ -26,7 +26,7 @@ namespace Reinkan::Graphics
                 throw std::runtime_error("failed to load texture image!");
             }
 
-            uint32_t mipLevels = 0;
+            uint32_t mipLevels = 1;
 
             BufferWrap stagingBufferWrap = CreateBufferWrap(imageSize,
                 VK_BUFFER_USAGE_TRANSFER_SRC_BIT,

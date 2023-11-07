@@ -61,5 +61,6 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
     }
     float G = GV * GL;
 
-    return max(NL, 0.0) * ((Kd / PI) + ( (D * G * F) / (4 * abs(NL) * abs(NV)) ) );
+    float NL = dot(N, L);
+    return ( max( NL, 0.0) * ( Kd/PI + (D*F*G) / ( 4 * abs(dot(V,N)) * abs(dot(L,N)) ) ) );
 }   

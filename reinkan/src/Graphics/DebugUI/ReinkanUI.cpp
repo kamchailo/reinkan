@@ -90,22 +90,27 @@ namespace Reinkan::Graphics
         ImGui::Text("FPS: %d", Core::TimeSystemLocator::GetTime()->GetStableFPS());
 
         glm::vec3 camPos = appMainCamera->GetPosition();
-        ImGui::Text("Camera Position [%.3f, %.3f, %.3f]", camPos.x, camPos.y, camPos.z);
+        ImGui::Text("Camera Position:");
+        ImGui::Text("[%.3f, %.3f, %.3f]", camPos.x, camPos.y, camPos.z);    
 
-        ImGui::Text("Num of Lights: %d", appLightObjects.size());
+        //ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Show Cluster Size: ", &appImguiBool1);
+        ImGui::Checkbox("Show Bilinear: ", &appImguiBool1);
 
-        ImGui::Checkbox("Draw Planes: ", &appImguiBool2);
+        ImGui::Checkbox("Show pPrime & OverLoop: ", &appImguiBool2);
 
-        ImGui::Checkbox("Fill Light: ", &appImguiBool3);
+        //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 
-        ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
+        //ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
 
-        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, -4.0f, 4.0f);
+        ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 0.0f, 1.0f);
+
+        ImGui::SliderFloat("Debug Float2: ", &appDebugFloat2, 0.0f, 0.0005f, "%.5f");
+
+        ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 11);
 
         ImGui::End();
-
+            
         // Update appDebugFlag
 
         if (appImguiBool1) { appDebugFlag = appDebugFlag | 0x1; }

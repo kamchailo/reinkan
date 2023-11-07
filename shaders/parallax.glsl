@@ -1,54 +1,102 @@
 // Parallax Occlusion Funcitons
 
-float heightScale = 0.2;
-
-vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float height)
-{ 
-    vec2 p = viewDir.xy / viewDir.z * (height * heightScale);
-    return texCoords - p;    
-} 
-
-vec2 HighParallaxMapping(vec2 texCoords, vec3 viewDir, sampler2D heightMap)
+ivec2 GetTile (vec2 uv, int maxLevel, int level)
 {
-    // number of depth layers
-    const float minLayers = 16;
-    const float maxLayers = 64;
-    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));  
-    
-    // calculate the size of each layer
-    float layerDepth = 1.0 / numLayers;
-    
-    // depth of current layer
-    float currentLayerDepth = 0.0;
-    
-    // the amount to shift the texture coordinates per layer (from vector P)
-    vec2 P = viewDir.xy / viewDir.z * heightScale; 
-    vec2 deltaTexCoords = P / numLayers;
-  
-    // get initial values
-    vec2  currentTexCoords     = texCoords;
-    float currentDepthMapValue = texture(heightMap, currentTexCoords).r;
-      
-    while(currentLayerDepth < currentDepthMapValue)
+    float pixelSize = pow(2, maxLevel - level);
+
+    return ivec2(uv * pixelSize);
+}
+
+ivec2 GetTileDifferent (vec2 uvA, vec2 uvB, int maxLevel, int level)
+{
+    float pixelSize = pow(2, maxLevel - level);
+
+    //
+    // By Multiply with pixelSize 
+    // will determine which pixel
+    // the uv is located
+    //
+    ivec2 tileA = ivec2(floor(uvA * pixelSize));
+    ivec2 tileB = ivec2(floor(uvB * pixelSize));
+
+    return tileA - tileB;
+}
+
+vec3 StopAtTileBorder(vec3 pPrime, vec3 pTemp, int maxLevel, int level)
+{
+    float pixelSize = pow(2, maxLevel - level);
+    ivec2 tilePPrime = ivec2(pPrime * pixelSize);
+    float scale;
+    vec3 direction = pTemp - pPrime;
+    float offset = 0.001;
+    // Horizontal Vector
+    if(abs(direction.x) > abs(direction.y))
     {
-        // shift texture coordinates along direction of P
-        currentTexCoords -= deltaTexCoords;
-        // get depthmap value at current texture coordinates
-        currentDepthMapValue = texture(heightMap, currentTexCoords).r;  
-        // get depth of next layer
-        currentLayerDepth += layerDepth;  
+        float borderX;
+
+        // Right Vector
+        if(direction.x > 0)
+        {
+            // borderX in UV
+            borderX = (tilePPrime.x + 1) / pixelSize;
+        }
+        // Left Vector
+        else
+        {
+            // borderX in UV
+            borderX = (tilePPrime.x) / pixelSize;
+        }
+        
+        scale = borderX / pPrime.x + offset;
     }
+    // Vertical Vector
+    else // abs(y) > abs(x)
+    {
+        float borderY;
+
+        // Up Vector
+        if(direction.y > 0)
+        {
+            borderY = (tilePPrime.y + 1) / pixelSize;
+        }
+        // Down Vector
+        else
+        {
+            borderY = (tilePPrime.y) / pixelSize;
+        }
+        
+        scale = borderY / pPrime.y + offset;
+    }
+
+    return  pPrime * scale;
+}
+
+vec3 AcrossNode(vec3 pPrime, vec3 pTemp, int maxLevel, int level)
+{
+    float pixelSize = pow(2, maxLevel - level);
+    ivec2 tilePPrime = ivec2(pPrime * pixelSize);
+
+    vec3 direction = normalize(pTemp - pPrime);
+
+    ivec3 iDirection = ivec3(ceil(direction));
+
+    float xBorder = (tilePPrime.x + iDirection.x) / pixelSize;
+    float yBorder = (tilePPrime.y + iDirection.y) / pixelSize;
+
+    float scaleX = xBorder / pPrime.x;
+    float scaleY = yBorder / pPrime.y;
+
+    float deltaX = abs(xBorder - pPrime.x);
+    float deltaY = abs(yBorder - pPrime.y);
+    // return vec3(scaleX, scaleY, 0.0);
+    // return iDirection;
     
-    // get texture coordinates before collision (reverse operations)
-    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
-
-    // get depth after and before collision for linear interpolation
-    float afterDepth  = currentDepthMapValue - currentLayerDepth;
-    float beforeDepth = texture(heightMap, prevTexCoords).r - currentLayerDepth + layerDepth;
- 
-    // interpolation of texture coordinates
-    float weight = afterDepth / (afterDepth - beforeDepth);
-    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
-
-    return finalTexCoords;
+    if(deltaX < deltaY)
+    {
+        return pPrime * scaleX;
+    }
+    else
+    {
+        return pPrime * scaleY;
+    }
 }

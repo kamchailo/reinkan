@@ -5,10 +5,11 @@
 
 namespace Reinkan::Camera
 {
-	Camera::Camera() : position(glm::vec3(-4.5,2.0,-1.0)),
-					    //spin(-1.57f), // PI / 2.0
-						spin(-3.0f),
-					    tilt(0.2f),
+	Camera::Camera() : position(glm::vec3(0.0,4.0,0.0)),
+					    //spin(-1.5707963268f), // -PI / 2.0
+						spin(1.5707963268f),
+					    //tilt(0.5f), 
+						tilt(1.57f),
 						fieldOfView(45.0),
 					    pFront(0.1f),
 					    pBack(1000.0f),
@@ -27,7 +28,7 @@ namespace Reinkan::Camera
 	Camera::Camera(glm::vec3& position,
 		float spin,
 		float tilt,
-		float fieldOfView,
+		float fieldOfView,	
 		float pFront,
 		float pBack,
 		float pRy,
@@ -54,7 +55,7 @@ namespace Reinkan::Camera
 	void Camera::UpdatePerspectiveMatrix(const float aspect)
 	{
 		perspectiveMatrix = glm::perspective(glm::radians(fieldOfView), aspect, pFront, pBack);
-		perspectiveMatrix[1][1] *= -1;
+		perspectiveMatrix[1][1] *= -1;	
 	}
 
 	void Camera::UpdateViewMatrix(const float deltaTime)

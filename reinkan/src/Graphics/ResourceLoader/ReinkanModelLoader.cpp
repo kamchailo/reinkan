@@ -8,6 +8,7 @@
 #include <assimp/version.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <stb_image/stb_image.h>
 
 #include "Graphics/Structure/ObjectData.h"
 
@@ -140,7 +141,7 @@ namespace Reinkan::Graphics
             }
 
             // HEIGHT
-            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DISPLACEMENT, 0, &texPath)) 
+            if (AI_SUCCESS == mtl->GetTexture(aiTextureType_HEIGHT, 0, &texPath))
             {
                 std::string texturePathExtended("../assets/textures/");
                 texturePathExtended += texPath.C_Str();
@@ -149,6 +150,7 @@ namespace Reinkan::Graphics
                 // use texturePool appTexturePaths
                 texturePool.push_back(std::string(texturePathExtended));
                 //std::printf("- - [ASSIMP]: ID: %d \tHeight(Disp) Texture: \t%s\n", newmat.heightMapId, texturePathExtended.c_str());
+            
             }
 
             // change to materialPool appMaterials
@@ -241,5 +243,24 @@ namespace Reinkan::Graphics
         {
             RecurseModelNodes(modelDatas, aiscene, node->mChildren[i], childTr, level + 1, materialOffset);
         }
+    }
+
+    void AddPyramidalHeightMap(uint32_t heightMapId, std::string& texturePath, std::vector<PyramidalHeightMap>& pyramidalHeightMaps)
+    {
+        int textureWidth;
+        int textureHeight;
+        int textureChannels;
+
+        stbi_uc* pixels = stbi_load(texturePath.c_str(), &textureWidth, &textureHeight, &textureChannels, STBI_rgb_alpha);
+
+        uint32_t miplevels = static_cast<uint32_t>(std::floor(std::log2(std::max(textureWidth, textureHeight)))) + 1;
+        
+        pyramidalHeightMaps.emplace_back(PyramidalHeightMap
+            {
+                heightMapId,
+                static_cast<uint32_t>(textureWidth),
+                static_cast<uint32_t>(textureHeight),
+                miplevels
+            });
     }
 }

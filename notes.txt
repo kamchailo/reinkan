@@ -1,0 +1,7 @@
+// Pair each instance with its instance transform
+struct ObjInst
+{
+    glm::mat4 transform;    // Matrix of the instance
+    uint32_t  objIndex;     // Model index
+};
+

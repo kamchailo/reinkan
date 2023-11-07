@@ -206,6 +206,7 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeClusteredCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanParallaxOcclusionCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Graphics\DebugUI\ReinkanUI.cpp" />
     <ClCompile Include="src\Graphics\DebugPipelineResources\ReinkanDebug.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="src\Graphics\MemoryBinding\ReinkanBufferUtility.cpp" />
     <ClCompile Include="src\Graphics\MemoryBinding\ReinkanVertexBuffer.cpp" />
     <ClCompile Include="src\Graphics\MultiSampling\ReinkanMultiSampling.cpp" />
+    <ClCompile Include="src\Graphics\ParallaxOcclusion\ReinkanParallaxOcclusion.cpp" />
     <ClCompile Include="src\Graphics\ParticleSystem\ReinkanParticleSystem.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeClusteredPipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeParticlePipeline.cpp" />

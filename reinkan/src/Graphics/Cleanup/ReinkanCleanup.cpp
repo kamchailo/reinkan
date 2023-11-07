@@ -17,6 +17,9 @@ namespace Reinkan::Graphics
 		// ComputeClustered
 		DestroyComputeClusteredResources();
 
+		// ParallaxOcclusion
+		DestroyParallaxOcclusionResources();
+
 		// ComputeParticle
 		//DestroyComputeParticleResources();
 

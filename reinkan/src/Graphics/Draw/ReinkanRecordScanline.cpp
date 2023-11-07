@@ -72,6 +72,8 @@ namespace Reinkan::Graphics
                     pushConstant.modelMatrix = object.transform;
                     pushConstant.debugFlag = appDebugFlag;
                     pushConstant.debugFloat = appDebugFloat;
+                    pushConstant.debugFloat2 = appDebugFloat2;
+                    pushConstant.debugInt = appDebugInt;
 
                     vkCmdPushConstants(commandBuffer,
                                        appScanlinePipelineLayout,

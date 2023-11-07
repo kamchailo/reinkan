@@ -7,6 +7,8 @@
 #include "Core/Locator/GraphicsSystemLocator.h"
 #include "Core/Locator/InputSystemLocator.h"
 
+#include <thread>
+
 namespace Reinkan::Core
 {
 	void ReinkanEngine::Init(uint32_t width, uint32_t height)
@@ -34,6 +36,7 @@ namespace Reinkan::Core
 
 			while (!vulkanApp->ShouldClose())
 			{
+				
 				timeSystem->Update();
 
 				inputSystem->Update();

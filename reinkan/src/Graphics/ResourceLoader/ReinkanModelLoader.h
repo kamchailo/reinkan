@@ -26,4 +26,8 @@ namespace Reinkan::Graphics
         const aiMatrix4x4& parentTr,
         const int level,
         unsigned int materialOffset);
+
+    void AddPyramidalHeightMap(uint32_t heightMapId,
+                               std::string& texturePath,
+                               std::vector<PyramidalHeightMap>& pyramidalHeightMaps);
 }

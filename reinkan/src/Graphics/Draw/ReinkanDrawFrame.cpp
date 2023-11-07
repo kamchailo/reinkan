@@ -66,6 +66,7 @@ namespace Reinkan::Graphics
         // ComputeClusteredGrid
         // --------------------
 
+        /*
         VkSubmitInfo submitComputeInfo{};
         submitComputeInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -88,8 +89,6 @@ namespace Reinkan::Graphics
                                     appClusteredCullLightDescriptorWrap,
                                     //appClusteredSizeX, appClusteredSizeY, appClusteredSizeZ, false);
                                     1, 1, 16, false);
-        /*
-        */
 
         submitComputeInfo.commandBufferCount = 1;
         submitComputeInfo.pCommandBuffers = &appComputeClusteredCommandBuffers[appCurrentFrame];
@@ -103,6 +102,7 @@ namespace Reinkan::Graphics
         {
             throw std::runtime_error("failed to submit compute command buffer!");
         };
+        */
 
         ////////////////////////////////////////
         //          Graphics Draw
@@ -121,18 +121,18 @@ namespace Reinkan::Graphics
         RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
 
         // Wait for Compute Shader
-        VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
-        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        //VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
+        //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[appCurrentFrame] };
-        //VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
-        //VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[appCurrentFrame] };
+        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         //submitInfo.waitSemaphoreCount = 1;
         // With Compute
-        submitInfo.waitSemaphoreCount = 2;
+        submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
         submitInfo.commandBufferCount = 1;

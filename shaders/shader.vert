@@ -7,6 +7,7 @@ struct PushConstant
     int materialId;
     uint debugFlag;
     float debugFloat;
+    int debugInt;
 };
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -34,19 +35,28 @@ layout(location = 2) out vec3 vertexTangent;
 layout(location = 3) out vec3 vertexBitangent;
 layout(location = 4) out vec3 viewDir;
 layout(location = 5) out vec2 fragTexCoord;
-
+// Parallax
+layout(location = 6) out vec3 TBNViewPos;
+layout(location = 7) out vec3 TBNWorldPos;
+layout(location = 8) out mat3 TBNMatrix;
 void main() 
 {
 
-    // gl_Position =  ubo.proj * ubo.view * ubo.model * pushConstant.modelMatrix *  vec4(inPosition, 1.0);
+    
     mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
+    
     // mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
+
     mat4 normalTransform = pushConstant.modelMatrix;
-    // mat4 normalTransform = inverse(pushConstant.modelMatrix);
 
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
-    
+
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
+
+    // vec3 T   = normalize(mat3(pushConstant.modelMatrix) * inVertexTangent);
+    // vec3 B   = normalize(mat3(pushConstant.modelMatrix) * inVertexBitangent);
+    // vec3 N   = normalize(mat3(pushConstant.modelMatrix) * inVertexNormal);
+    // mat3 TBN = transpose(mat3(T, B, N));
 
     // out
     worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));
@@ -54,6 +64,14 @@ void main()
     vertexNormal = normalize((normalTransform * vec4(inVertexNormal, 1.0))).rgb;
     vertexTangent = normalize((normalTransform * vec4(inVertexTangent, 1.0))).rgb;
     vertexBitangent = normalize((normalTransform * vec4(inVertexBitangent, 1.0))).rgb;
+
+    mat3 TBN = transpose(mat3(vertexTangent, vertexBitangent, vertexNormal));
+
     viewDir = vec3(eye - worldPos);
     fragTexCoord = inTexCoord;
+
+    // Parallax
+    TBNViewPos = TBN * eye;
+    TBNWorldPos = TBN * worldPos;
+    TBNMatrix = TBN;
 }

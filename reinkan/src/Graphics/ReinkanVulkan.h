@@ -101,6 +101,12 @@ namespace Reinkan::Graphics
     // ReinkanLightUtility.cpp
         void AppendLight(const LightObject& lightObject);
 
+    // ReinkanParallaxOcclusion.cpp
+        void AddPyramidalPath(std::string const& path);
+
+    // ------------------------------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------------------------------//
     private:
     // Reinkan.cpp
         void InitVulkan();
@@ -192,6 +198,10 @@ namespace Reinkan::Graphics
         VkSampleCountFlagBits       appMsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
         ImageWrap                   appMsaaImageWrap;
+
+    ////////////////////////////////////////
+    //          Scanline Pipeline
+    ////////////////////////////////////////
 
     // ReinkanScanlinePipeline.cpp
         void CreateScanlinePipeline(DescriptorWrap& descriptorWrap);
@@ -305,7 +315,21 @@ namespace Reinkan::Graphics
                                   uint32_t  mipLevels = 1,
                                   VkSampleCountFlagBits numSamples = VK_SAMPLE_COUNT_1_BIT);
 
+        ImageWrap CreateImage3DWrap(uint32_t width,
+                                uint32_t height,
+                                VkFormat format,
+                                VkImageTiling tiling,
+                                VkImageUsageFlags usage,
+                                VkMemoryPropertyFlags properties,
+                                uint32_t  mipLevels = 1,
+                                VkSampleCountFlagBits numSamples = VK_SAMPLE_COUNT_1_BIT);
+
         VkImageView CreateImageView(VkImage image, 
+                                    VkFormat format,
+                                    VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT,
+                                    uint32_t  mipLevels = 1);
+
+        VkImageView CreateImage3DView(VkImage image,
                                     VkFormat format,
                                     VkImageAspectFlagBits aspect = VK_IMAGE_ASPECT_COLOR_BIT,
                                     uint32_t  mipLevels = 1);
@@ -316,6 +340,8 @@ namespace Reinkan::Graphics
         VkSampler CreateImageSampler();
 
         VkSampler CreateTextureSampler(uint32_t mipLevels);
+
+        VkSampler CreateNearestImageSampler();
 
         void TransitionImageLayout(VkImage image,
                                    VkFormat format,
@@ -440,10 +466,12 @@ namespace Reinkan::Graphics
         #endif
 
         uint32_t    appDebugFlag{ 0x0 };
-        float       appDebugFloat{ 1.0f };
+        float       appDebugFloat{ 0.5f };
+        float       appDebugFloat2{ 0.0001f };
+        int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };
-        bool        appImguiBool2{ false };
+        bool        appImguiBool2{ true };
         bool        appImguiBool3{ false };
         bool        appImguiBool4{ false };
 
@@ -574,14 +602,12 @@ namespace Reinkan::Graphics
 
     // -------- Parallax Compute -------- //
 
-    // ReinkanHeightComputePipeline.cpp
-        void CreateComputeParallaxPipeline(DescriptorWrap& descriptorWrap);
-
-        VkPipelineLayout    appComputeParallaxPipelineLayout;
-        VkPipeline          appComputeParallaxPipeline;
-
     // ReinkanParallaxOcclusion.cpp
-        std::vector<ImageWrap> appPyramidalImages;
+        void BindPyramidalMap(std::vector<std::string> const& filePaths);
 
+        void DestroyParallaxOcclusionResources();
+
+        std::vector<std::string>        appPyramidalPaths;
+        std::vector<ImageWrap>          appPyramidalImageWraps;
     };
 }

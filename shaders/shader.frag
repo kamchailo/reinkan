@@ -3,42 +3,13 @@
 #extension GL_EXT_nonuniform_qualifier : enable
 // #extension GL_EXT_buffer_reference2 : require
 
-struct PushConstant
-{
-    mat4 modelMatrix;
-	int objectId;
-    int materialId;
-    uint debugFlag;
-    float debugFloat;
-    float debugFloat2;
-    int debugInt;
-};
+#include "SharedStruct.glsl"
+
 layout(push_constant) uniform PushConstantRaster_T
 {
     PushConstant pushConstant;
 };
 
-layout(binding = 0) uniform UniformBufferObject 
-{
-    mat4 model;
-    mat4 view;
-    mat4 viewInverse;
-    mat4 proj;
-    vec2 screenExtent;
-} ubo;
-
-struct Material
-{    
-    vec3 diffuse;
-    uint diffuse_padding;
-    vec3 specular;
-    uint specular_padding;
-    uint normalMapId;
-    uint heightMapId;
-    float shininess;
-    uint diffuseMapId;
-    uint pyramidalHeightMapId;
-};
 layout(binding = 1) buffer MaterialBlock 
 {
     // Get material by using PushConstant::materialId
@@ -53,38 +24,15 @@ layout(binding = 2) uniform sampler2D[] textureSamplers;
 // vec3 normal = textureSamplers[material.normalMapId];
 // vec3 height = textureSamplers[material.heightMapId];
 
-struct LightObject
-{
-    vec3	position;
-    uint    position_padding;
-    vec3	color;
-    uint    color_padding;
-    float	intensity;
-    float   radius;
-};
 layout(std140, binding = 3) readonly buffer GlobalLightSSBO {
    LightObject globalLights[ ];
 };  
 
-struct ClusterGrid
-{
-    vec3	minPosition;
-    uint    minPos_padding;
-    vec3	maxPosition;
-    uint    maxPos_padding;
-};
 layout(std140, binding = 4) readonly buffer ClusterGridBlock 
 {
     ClusterGrid clusterGrids[];
 };
 
-struct ClusterPlane
-{
-    float	zNear;
-    uint    zNear_padding;
-    float	zFar;
-    uint    zFar_padding;
-};
 layout(std140, binding = 5) readonly buffer ClusterPlaneBlock 
 {
     ClusterPlane clusterPlanes[];
@@ -95,11 +43,6 @@ layout(std140, binding = 6) readonly buffer LightIndexSSBO {
    uint lightIndexList[ ];
 };
 
-struct LightGrid
-{
-    uint offset;
-    uint size;
-};
 layout(std140, binding = 7) readonly buffer LightGridSSBO {
    LightGrid lightGrids[ ];
 };
@@ -279,10 +222,8 @@ void main()
 
         if((pushConstant.debugFlag & 0x2) > 0)
         {
-            // float depthColor = texture(pyramidalSamplers[minLevel], fragTexCoord).r;
             float depthColor = 1 - texture(textureSamplers[material.heightMapId], fragTexCoord).r;
-            outColor = vec4(vec3(depthColor), 1.0);
-            // outColor = vec4(pPrime, 1.0);
+            outColor = vec4(pPrime, 1.0);
             return;
         }
     }
@@ -298,18 +239,18 @@ void main()
     vec3 normalMap = texture(textureSamplers[material.normalMapId], fragTexCoord).rgb;
     if(material.normalMapId <= 200)
     {
-        normalMap = normalMap * 2.0 - 1.0;
+        normalMap = (normalMap * 2.0) - 1.0;
         N = normalize(TBNMatrix * normalMap);
-        N.y = - N.y;
+        N.y = -N.y;
     }
 
     // Main Directional Light
     vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
-    float ambientLight = 0.6;
+    float ambientLight = 0.1;
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
     vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
-
+    
     ////////////////////////////////////////
     //          Grid Calculation
     ////////////////////////////////////////

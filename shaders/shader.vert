@@ -1,27 +1,11 @@
 #version 450
 
-struct PushConstant
-{
-    mat4 modelMatrix;
-	int objectId;
-    int materialId;
-    uint debugFlag;
-    float debugFloat;
-    int debugInt;
-};
+#include "SharedStruct.glsl"
+
 layout(push_constant) uniform PushConstantRaster_T
 {
     PushConstant pushConstant;
 };
-
-layout(binding = 0) uniform UniformBufferObject 
-{
-    mat4 model;
-    mat4 view;
-    mat4 viewInverse;
-    mat4 proj;
-    vec2 screenExtent;
-} ubo;
 
 layout(location = 0) in vec3    inPosition;
 layout(location = 1) in vec3    inVertexNormal;
@@ -47,7 +31,7 @@ void main()
     
     // mat4 modelTransform = ubo.proj * ubo.view * ubo.model;
 
-    mat4 normalTransform = pushConstant.modelMatrix;
+    mat4 normalTransform = pushConstant.normalMatrix;
 
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
 

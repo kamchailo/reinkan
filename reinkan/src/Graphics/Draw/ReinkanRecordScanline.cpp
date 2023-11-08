@@ -24,7 +24,7 @@ namespace Reinkan::Graphics
             VkRenderPassBeginInfo renderPassBeginInfo{};
             renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             renderPassBeginInfo.renderPass = appScanlineRenderPass;
-            renderPassBeginInfo.framebuffer = appSwapchainFramebuffers[imageIndex];
+            renderPassBeginInfo.framebuffer = appSwapchainFramebuffers[imageIndex]; // change to scanline framebuffer
             renderPassBeginInfo.renderArea.offset = { 0, 0 };
             renderPassBeginInfo.renderArea.extent = appSwapchainExtent;
 
@@ -115,10 +115,6 @@ namespace Reinkan::Graphics
                 /*
                 */
 
-                #ifdef GUI
-                ImGui::Render();  // Rendering UI
-                ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
-                #endif
             }
             vkCmdEndRenderPass(commandBuffer);
         }

@@ -118,7 +118,10 @@ namespace Reinkan::Graphics
         vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);
 
         vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
-        RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        //RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
 
         // Wait for Compute Shader
         //VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
@@ -147,6 +150,10 @@ namespace Reinkan::Graphics
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
+
+        // Do Post Processing here
+
+
 
         VkSwapchainKHR swapchains[] = { appSwapchain };
 

@@ -207,12 +207,14 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanParallaxOcclusionCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanVolumetricLightingCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Graphics\DebugUI\ReinkanUI.cpp" />
     <ClCompile Include="src\Graphics\DebugPipelineResources\ReinkanDebug.cpp" />
     <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanCleanup.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp" />
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordPostProcessing.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordScanline.cpp" />
     <ClCompile Include="src\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp" />
@@ -227,11 +229,13 @@
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeParticlePipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanDebugPipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanPipelineUtility.cpp" />
+    <ClCompile Include="src\Graphics\PostProcessing\ReinkanPostProcessing.cpp" />
+    <ClCompile Include="src\Graphics\VolumetricLighting\ReinkanVolumetricLighting.cpp" />
     <ClCompile Include="src\Input\InputSystem.cpp" />
     <ClCompile Include="src\Core\ReinkanEngine.cpp" />
     <ClCompile Include="src\Graphics\ResourceLoader\ReinkanModelLoader.cpp" />
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanFrameBuffers.cpp" />
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanScanlineRenderPass.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanFrameBuffers.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanScanlinePipeline.cpp" />
     <ClCompile Include="src\Graphics\Initializer\ReinkanInstance.cpp" />
     <ClCompile Include="src\Graphics\Initializer\ReinkanDevice.cpp" />
@@ -251,7 +255,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Graphics\Initializer\ReinkanValidationLayers.cpp" />
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanDepthBuffer.cpp" />
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanDepthBuffer.cpp" />
     <ClCompile Include="src\Graphics\ResourceLoader\ReinkanResourceBinding.cpp" />
     <ClCompile Include="src\Time\Time.cpp" />
     <ClCompile Include="src\Window\ReinkanWIndow.cpp" />

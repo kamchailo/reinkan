@@ -51,10 +51,10 @@
     <ClCompile Include="src\Graphics\Pipeline\ReinkanScanlinePipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanScanlineRenderPass.cpp">
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanScanlineRenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanFrameBuffers.cpp">
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanFrameBuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp">
@@ -75,7 +75,7 @@
     <ClCompile Include="src\Graphics\UniformBuffers\ReinkanScanlineUniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\RenderPass\ReinkanDepthBuffer.cpp">
+    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanDepthBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp">
@@ -178,6 +178,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Cleanup\ReinkanParallaxOcclusionCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\VolumetricLighting\ReinkanVolumetricLighting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanVolumetricLightingCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\PostProcessing\ReinkanPostProcessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordPostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

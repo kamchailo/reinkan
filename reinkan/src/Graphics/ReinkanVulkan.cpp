@@ -34,6 +34,8 @@ namespace Reinkan::Graphics
 		// Render Pass
 		CreateScanlineRenderPass();
 
+		CreatePostRenderPass();
+
 		// MultiSampling
 		CreateSwapchainColorResources();
 
@@ -41,6 +43,8 @@ namespace Reinkan::Graphics
 
 		CreateSwapchainFrameBuffers(); // require renderpass
 		
+		CreateScanlineFrameBuffers();
+
 		// From ComputeClustered
 		CreateComputeClusteredSyncObjects();
 
@@ -80,6 +84,11 @@ namespace Reinkan::Graphics
 			CreateScanlineDescriptorWrap();
 
 			CreateScanlinePipeline(appScanlineDescriptorWrap);
+
+			// Post Processing
+			CreatePostDescriptorSetWrap();
+
+			CreatePostPipeline(appPostDescriptorWrap);
 
 			// Debug
 			CreateDebugBufferWraps();

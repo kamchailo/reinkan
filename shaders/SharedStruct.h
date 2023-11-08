@@ -35,6 +35,11 @@ namespace Reinkan
 		alignas(4) int debugInt;
 	};
 
+	struct PushConstantPost
+	{
+		alignas(4) uint32_t debugFlag;
+	};
+
 	struct Material {
 		alignas(16) glm::vec3 diffuse;
 		alignas(16) glm::vec3 specular;

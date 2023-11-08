@@ -396,6 +396,34 @@ namespace Reinkan::Graphics
         DescriptorWrap              appScanlineDescriptorWrap;
 
     ////////////////////////////////////////
+    //          Post Processing
+    ////////////////////////////////////////
+
+    // ReinkanPostProcessing
+
+        void CreatePostRenderPass();
+
+        void CreateScanlineFrameBuffers();
+
+        void CreatePostDescriptorSetWrap();
+
+        void CreatePostPipeline(DescriptorWrap& descriptorWrap);
+
+        VkRenderPass                    appPostRenderPass;
+
+        VkPipeline                      appPostPipeline;
+        VkPipelineLayout                appPostPipelineLayout;
+
+        std::vector<VkFramebuffer>      appScanlineFrameBuffers;
+        std::vector<ImageWrap>          appScanlineImageWrap;
+
+        DescriptorWrap                  appPostDescriptorWrap;
+
+    // ReinkanRecordPostProcessing.cpp
+
+        void RecordPostProcessing(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    ////////////////////////////////////////
     //          User Control
     ////////////////////////////////////////
 
@@ -609,5 +637,26 @@ namespace Reinkan::Graphics
 
         std::vector<std::string>        appPyramidalPaths;
         std::vector<ImageWrap>          appPyramidalImageWraps;
+
+    // -------- Volumetric Lighting -------- //
+
+    // ReinkanVolumetricLighting.cpp
+        void CreateVLightingRenderPass();
+
+        void CreateVLightFrameBuffers();
+
+        void CreateVLightPipeline();
+
+        void CreateVLightResources();
+
+        void DestroyVLightResources();
+
+        VkRenderPass                    appVLightRenderPass;
+
+        VkPipeline                      appVLightPipeline;
+        VkPipelineLayout                appVLightPipelineLayout;
+
+        std::vector<ImageWrap>          appVLightingDepthImageWraps;
+        std::vector<ImageWrap>          appVLightingRenderTargetImageWraps;
     };
 }

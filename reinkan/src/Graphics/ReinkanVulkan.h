@@ -339,6 +339,16 @@ namespace Reinkan::Graphics
         // and let use choose the setting.
         VkSampler CreateImageSampler();
 
+        void CreateImageLayoutBarrier(VkCommandBuffer commandBuffer,
+                                    VkImage image,
+                                    VkImageLayout oldImageLayout,
+                                    VkImageLayout newImageLayout,
+                                    VkImageAspectFlags aspectMask);
+
+        VkAccessFlags AccessFlagsForImageLayout(VkImageLayout layout);
+
+        VkPipelineStageFlags PipelineStageForLayout(VkImageLayout layout);
+
         VkSampler CreateTextureSampler(uint32_t mipLevels);
 
         VkSampler CreateNearestImageSampler();

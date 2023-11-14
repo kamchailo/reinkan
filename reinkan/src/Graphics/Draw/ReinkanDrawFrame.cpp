@@ -119,9 +119,24 @@ namespace Reinkan::Graphics
 
         vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
 
-        //RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
+        if (vkBeginCommandBuffer(appCommandBuffers[appCurrentFrame], &beginInfo) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to begin recording command buffer!");
+        }
+        {
+
+            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+
+            RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        }
+        if (vkEndCommandBuffer(appCommandBuffers[appCurrentFrame]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to record command buffer!");
+        }
 
         // Wait for Compute Shader
         //VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
@@ -152,8 +167,6 @@ namespace Reinkan::Graphics
         }
 
         // Do Post Processing here
-
-
 
         VkSwapchainKHR swapchains[] = { appSwapchain };
 

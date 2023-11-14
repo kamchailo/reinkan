@@ -18,13 +18,14 @@ namespace Reinkan::Graphics
                 VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
                 | VK_IMAGE_USAGE_TRANSFER_DST_BIT
                 | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
-                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);                            // Memory Property
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
+                1,
+                appMsaaSamples);                            
 
             TransitionImageLayout(appScanlineImageWrap[i].image,
                 appSwapchainImageFormat,
                 VK_IMAGE_LAYOUT_UNDEFINED,
                 VK_IMAGE_LAYOUT_GENERAL);
-
 
             appScanlineImageWrap[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
@@ -36,12 +37,19 @@ namespace Reinkan::Graphics
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            std::array<VkImageView, 3> attachments = {
+            //std::array<VkImageView, 3> attachments = {
+            //    // Write to Scanline ImageWrap
+            //    // which will get read by post processing
+            //    appMsaaImageWrap.imageView,
+            //    appSwapchainDepthImageWrap.imageView,
+            //    appScanlineImageWrap[i].imageView
+            //};
+
+            std::array<VkImageView, 2> attachments = {
                 // Write to Scanline ImageWrap
                 // which will get read by post processing
-                appMsaaImageWrap.imageView,
-                appSwapchainDepthImageWrap.imageView,
-                appScanlineImageWrap[i].imageView
+                appScanlineImageWrap[i].imageView,
+                appSwapchainDepthImageWrap.imageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};

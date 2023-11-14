@@ -3,9 +3,16 @@
 
 namespace Reinkan::Graphics
 {
-
+    /// <summary>
+    /// Under Construction
+    /// <para>Return only VK_SAMPLE_COUNT_1_BIT</para>
+    /// <para>To support MultiPass</para>
+    /// </summary>
+    /// <returns>VK_SAMPLE_COUNT_1_BIT</returns>
     VkSampleCountFlagBits ReinkanApp::GetMaxUsableSampleCount()
     {
+        return VK_SAMPLE_COUNT_1_BIT;
+
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(appPhysicalDevice, &physicalDeviceProperties);
 

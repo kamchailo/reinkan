@@ -189,6 +189,80 @@ namespace Reinkan::Graphics
         return sampler;
     }
 
+    void ReinkanApp::CreateImageLayoutBarrier(VkCommandBuffer commandBuffer, 
+                                                VkImage image, 
+                                                VkImageLayout oldImageLayout, 
+                                                VkImageLayout newImageLayout, 
+                                                VkImageAspectFlags aspectMask)
+    {
+        VkImageSubresourceRange subresourceRange;
+        subresourceRange.aspectMask = aspectMask;
+        subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+        subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+        subresourceRange.baseMipLevel = 0;
+        subresourceRange.baseArrayLayer = 0;
+
+        VkImageMemoryBarrier imageMemoryBarrier{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER };
+        imageMemoryBarrier.oldLayout = oldImageLayout;
+        imageMemoryBarrier.newLayout = newImageLayout;
+        imageMemoryBarrier.image = image;
+        imageMemoryBarrier.subresourceRange = subresourceRange;
+        imageMemoryBarrier.srcAccessMask = AccessFlagsForImageLayout(oldImageLayout);
+        imageMemoryBarrier.dstAccessMask = AccessFlagsForImageLayout(newImageLayout);
+        imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        VkPipelineStageFlags srcStageMask = PipelineStageForLayout(oldImageLayout);
+        VkPipelineStageFlags destStageMask = PipelineStageForLayout(newImageLayout);
+
+        vkCmdPipelineBarrier(commandBuffer, srcStageMask, destStageMask, 0,
+            0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+    }
+
+    VkAccessFlags ReinkanApp::AccessFlagsForImageLayout(VkImageLayout layout)
+    {
+        switch (layout)
+        {
+        case VK_IMAGE_LAYOUT_PREINITIALIZED:
+            return VK_ACCESS_HOST_WRITE_BIT;
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+            return VK_ACCESS_TRANSFER_WRITE_BIT;
+        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+            return VK_ACCESS_TRANSFER_READ_BIT;
+        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+            return VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+            return VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            return VK_ACCESS_SHADER_READ_BIT;
+        default:
+            return VkAccessFlags();
+        }
+    }
+
+    VkPipelineStageFlags ReinkanApp::PipelineStageForLayout(VkImageLayout layout)
+    {
+        switch (layout)
+        {
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+            return VK_PIPELINE_STAGE_TRANSFER_BIT;
+        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+            return VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+            return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;  // Allow queue other than graphic
+            // return VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;  // Allow queue other than graphic
+            // return VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+        case VK_IMAGE_LAYOUT_PREINITIALIZED:
+            return VK_PIPELINE_STAGE_HOST_BIT;
+        case VK_IMAGE_LAYOUT_UNDEFINED:
+            return VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+        default:
+            return VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+        }
+    }
+
     VkSampler ReinkanApp::CreateTextureSampler(uint32_t mipLevels)
     {
         VkSampler textureSampler;

@@ -98,10 +98,11 @@ void main()
 {
     Material material = materials[pushConstant.materialId];
     vec2 fragTexCoord = inFragTexCoord;
-    
+
     ////////////////////////////////////////
     //          Parallax Occlusion
     ////////////////////////////////////////
+    /*
     if(pushConstant.materialId == 1)
     {
         int MAX_LEVEL = 11;
@@ -161,13 +162,13 @@ void main()
                 pPrime = ((1 - t) * pPrimeA) + (t * pPrimeB);
 
                 break;
-                /*
+                
                 if(depthPrimeB > pPrimeB.z)
                 {
                     pPrime = pPrimeB;
                     continue;
                 }
-                */
+                
             }
 
             float depth = texture(pyramidalSamplers[level], pPrime.xy).r * pushConstant.debugFloat;
@@ -236,6 +237,7 @@ void main()
             return;
         }
     }
+    */
 
     if(material.diffuseMapId != -1)
     {

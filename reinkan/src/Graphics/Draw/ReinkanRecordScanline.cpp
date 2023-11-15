@@ -86,7 +86,7 @@ namespace Reinkan::Graphics
             }
 
             // Debug Draw
-            if (appDebugFlag & 0x02 && false)
+            if (appDebugFlag & 0x02)
             {
                 UpdateDebugUBO(appCurrentFrame);
 
@@ -101,8 +101,15 @@ namespace Reinkan::Graphics
                     nullptr);
 
                 VkDeviceSize offsets[] = { 0 }; // make it cache friendly by bind all vertices together and use offset
-                vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
-                vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);
+
+
+                vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appVLightVertexBufferWrap.buffer, offsets);
+                vkCmdBindIndexBuffer(commandBuffer, appVLightIndexBufferWrap.buffer, 0, VK_INDEX_TYPE_UINT32);
+
+                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(appVLightIndices.size()), 1, 0, 0, 0);
+
+                //vkCmdBindVertexBuffers(commandBuffer, 0, 1, &appClusteredGrids.buffer, offsets);
+                //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * appClusteredSizeZ * 2, 1, 0, 0);
                 //vkCmdDraw(commandBuffer, appClusteredSizeX * appClusteredSizeY * 2, 1, 0, 0);
             }
             /*

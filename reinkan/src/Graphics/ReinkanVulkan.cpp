@@ -55,6 +55,10 @@ namespace Reinkan::Graphics
 
 		//CreateComputeParticleCommandBuffer();
 
+		// From VolumicLighting
+		CreateVLightResources(1024, 1024);
+
+
 		// Resources Binding will happen after this point
 	}
 
@@ -96,7 +100,7 @@ namespace Reinkan::Graphics
 			CreateDebugDescriptorSetWrap();
 
 			CreateDebugPipeline(appDebugDescriptorWrap, 
-								VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+								VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 								VK_POLYGON_MODE_LINE,
 								1.0f);
 

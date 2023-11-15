@@ -113,6 +113,8 @@ namespace Reinkan::Graphics
         // --------------------
         UpdateScanlineUBO(appCurrentFrame);
 
+        UpdateShadowUBO(appCurrentFrame);
+
         // Only reset the fence if we are submitting work
         // [WAIT] inFlightFences[appCurrentFrame] or [UNSIGNAL]
         vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);

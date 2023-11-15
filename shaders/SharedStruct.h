@@ -35,6 +35,16 @@ namespace Reinkan
 		alignas(4) int debugInt;
 	};
 
+	struct PushConstantShadow
+	{
+		alignas(16) glm::mat4 modelMatrix;
+	};
+
+	struct PushConstantVLight
+	{
+		alignas(16) glm::mat4 modelMatrix;
+	};
+
 	struct PushConstantPost
 	{
 		alignas(4) uint32_t debugFlag;
@@ -112,5 +122,11 @@ namespace Reinkan
 		alignas(4) uint32_t width;
 		alignas(4) uint32_t height;
 		alignas(4) uint32_t mipLevels;
+	};
+
+	struct VLightVertex
+	{
+		alignas(16) glm::vec3	position;
+		alignas(16) glm::vec3	vertexNormal;
 	};
 }

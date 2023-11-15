@@ -34,7 +34,6 @@ layout(location = 7) out vec3 TBNWorldPos;
 layout(location = 8) out mat3 TBNMatrix;
 void main() 
 {
-
     
     mat4 modelTransform = ubo.proj * ubo.view * pushConstant.modelMatrix;
     
@@ -45,11 +44,6 @@ void main()
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
 
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
-
-    // vec3 T   = normalize(mat3(pushConstant.modelMatrix) * inVertexTangent);
-    // vec3 B   = normalize(mat3(pushConstant.modelMatrix) * inVertexBitangent);
-    // vec3 N   = normalize(mat3(pushConstant.modelMatrix) * inVertexNormal);
-    // mat3 TBN = transpose(mat3(T, B, N));
 
     // out
     worldPos = vec3(pushConstant.modelMatrix * vec4(inPosition, 1.0));

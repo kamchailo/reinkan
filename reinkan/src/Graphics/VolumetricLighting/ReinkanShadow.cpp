@@ -1,25 +1,25 @@
 #include "pch.h"
 #include "Graphics/ReinkanVulkan.h"
 
-#include "Graphics/Descriptor/DescriptorWrap.h"
+#include "glm/gtx/transform.hpp"
 
 namespace Reinkan::Graphics
 {
-    void ReinkanApp::CreatePostRenderPass()
-    {
+	void ReinkanApp::CreateShadowRenderPass()
+	{
         VkAttachmentDescription colorAttachment{};
-        colorAttachment.format = appSwapchainImageFormat;
-        colorAttachment.samples = appMsaaSamples;
+        colorAttachment.format = VK_FORMAT_R32_SFLOAT;
+        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_GENERAL;
 
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = FindDepthFormat();
-        depthAttachment.samples = appMsaaSamples;
+        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
         depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -27,35 +27,19 @@ namespace Reinkan::Graphics
         depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-        // MSAA
-        VkAttachmentDescription colorAttachmentResolve{};
-        colorAttachmentResolve.format = appSwapchainImageFormat;
-        colorAttachmentResolve.samples = VK_SAMPLE_COUNT_1_BIT;
-        colorAttachmentResolve.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        colorAttachmentResolve.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-        colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
-        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
 
         VkAttachmentReference depthAttachmentRef{};
         depthAttachmentRef.attachment = 1;
         depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-        VkAttachmentReference colorAttachmentResolveRef{};
-        colorAttachmentResolveRef.attachment = 2;
-        colorAttachmentResolveRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
-        subpass.pResolveAttachments = &colorAttachmentResolveRef;
 
         VkSubpassDependency dependency{};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -65,7 +49,7 @@ namespace Reinkan::Graphics
         dependency.srcAccessMask = 0;
         dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-        std::array<VkAttachmentDescription, 3> attachments = { colorAttachment, depthAttachment, colorAttachmentResolve };
+        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
 
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -76,35 +60,45 @@ namespace Reinkan::Graphics
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(appDevice, &renderPassInfo, nullptr, &appPostRenderPass) != VK_SUCCESS) {
+        if (vkCreateRenderPass(appDevice, &renderPassInfo, nullptr, &appShadowRenderPass) != VK_SUCCESS) {
             throw std::runtime_error("failed to create render pass!");
         }
-    }
+	}
 
-    void ReinkanApp::CreatePostDescriptorSetWrap()
-    {
-        
-        std::vector<VkDescriptorSetLayoutBinding> bindingTable;
-        uint32_t bindingIndex = 0;
+	void ReinkanApp::CreateShadowFrameBuffers()
+	{
+        appShadowFrameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
-        // ScanlineImageWrap
-        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                      bindingIndex++,                                               // binding;
-                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
-                                      MAX_FRAMES_IN_FLIGHT,                                         // descriptorCount; // Has to > 0
-                                      VK_SHADER_STAGE_FRAGMENT_BIT });                              // stageFlags;
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
 
-        appPostDescriptorWrap.SetBindings(appDevice,
-                                            bindingTable,
-                                            MAX_FRAMES_IN_FLIGHT);
-        
-        appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
-    }
+            std::array<VkImageView, 2> attachments = {
+                // Write to Scanline ImageWrap
+                // which will get read by post processing
+                appShadowMapImageWraps[i].imageView,
+                appSwapchainDepthImageWrap.imageView
+            };
 
-    void ReinkanApp::CreatePostPipeline(DescriptorWrap& descriptorWrap)
-    {
-        auto vertShaderCode = ReadFile("../shaders/postshader.vert.spv");
-        auto fragShaderCode = ReadFile("../shaders/postshader.frag.spv");
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = appShadowRenderPass;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
+            framebufferInfo.width = appShadowMapWidth;
+            framebufferInfo.height = appShadowMapHeight;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(appDevice, &framebufferInfo, nullptr, &appShadowFrameBuffers[i]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
+        }
+	}
+
+	void ReinkanApp::CreateShadowPipeline(DescriptorWrap descriptorWrap)
+	{
+        auto vertShaderCode = ReadFile("../shaders/shadow.vert.spv");
+        auto fragShaderCode = ReadFile("../shaders/shadow.frag.spv");
 
         VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
@@ -123,12 +117,16 @@ namespace Reinkan::Graphics
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
+        // Need dedicate Binding Description for Shadow map
+        auto bindingDescription = GetBindingDescription();
+        auto attributeDescriptions = GetAttributeDescriptions();
+
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.pVertexBindingDescriptions = nullptr;
-        vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+        vertexInputInfo.vertexBindingDescriptionCount = 1;
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -146,20 +144,20 @@ namespace Reinkan::Graphics
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
-        rasterizer.cullMode = VK_CULL_MODE_NONE;
+        rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
         rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-        multisampling.sampleShadingEnable = VK_TRUE; // enable sample shading in the pipeline
+        multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.minSampleShading = 0.2f; // min fraction for sample shading; closer to one is smoother
-        multisampling.rasterizationSamples = appMsaaSamples;
+        
 
         VkPipelineDepthStencilStateCreateInfo depthStencil{};
         depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-        depthStencil.depthTestEnable = VK_FALSE;
-        depthStencil.depthWriteEnable = VK_FALSE;
+        depthStencil.depthTestEnable = VK_TRUE;
+        depthStencil.depthWriteEnable = VK_TRUE;
         depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// BEWARE!!  NECESSARY!!
         depthStencil.depthBoundsTestEnable = VK_FALSE;
         depthStencil.minDepthBounds = 0.0f; // Optional
@@ -195,7 +193,7 @@ namespace Reinkan::Graphics
         dynamicState.pDynamicStates = dynamicStates.data();
 
         VkPushConstantRange pushConstantRanges = {
-        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantPost) };
+        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantShadow) };
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -204,7 +202,7 @@ namespace Reinkan::Graphics
         pipelineLayoutInfo.pushConstantRangeCount = 1;
         pipelineLayoutInfo.pPushConstantRanges = &pushConstantRanges;
 
-        if (vkCreatePipelineLayout(appDevice, &pipelineLayoutInfo, nullptr, &appPostPipelineLayout) != VK_SUCCESS)
+        if (vkCreatePipelineLayout(appDevice, &pipelineLayoutInfo, nullptr, &appShadowPipelineLayout) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create pipeline layout!");
         }
@@ -221,17 +219,70 @@ namespace Reinkan::Graphics
         pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = appPostPipelineLayout;
-        pipelineInfo.renderPass = appPostRenderPass;
+        pipelineInfo.layout = appShadowPipelineLayout;
+        pipelineInfo.renderPass = appShadowRenderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(appDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &appPostPipeline) != VK_SUCCESS)
+        if (vkCreateGraphicsPipelines(appDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &appShadowPipeline) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
         vkDestroyShaderModule(appDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(appDevice, vertShaderModule, nullptr);
+	}
+
+	void ReinkanApp::CreateShadowResources(size_t width, size_t height)
+	{
+        appShadowMapImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
+
+        appShadowMapWidth = width;
+        appShadowMapHeight = height;
+
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appShadowMapImageWraps[i] = CreateImageWrap(appShadowMapWidth,
+                appShadowMapHeight,
+                VK_FORMAT_R32_SFLOAT,                                           // Image Format
+                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
+                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
+                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
+                1,
+                appMsaaSamples);
+
+            TransitionImageLayout(appShadowMapImageWraps[i].image,
+                VK_FORMAT_R32_SFLOAT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_GENERAL);
+
+            appShadowMapImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+            appShadowMapImageWraps[i].imageView = CreateImageView(appShadowMapImageWraps[i].image, VK_FORMAT_R32_SFLOAT);
+            appShadowMapImageWraps[i].sampler = CreateImageSampler();
+        }
+	}
+
+    void ReinkanApp::UpdateShadowUBO(uint32_t currentImage)
+    {
+        UniformBufferObject ubo{};
+
+        ubo.view = glm::lookAt(appGlobalLightPosition, appGlobalLightPosition + appGlobalLightDirection, glm::vec3(0.0, 1.0, 0.0));
+        ubo.viewInverse = glm::inverse(ubo.view);
+        glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), static_cast<float>(appShadowMapWidth) / appShadowMapHeight, 0.1f, 1000.0f);
+        perspectiveMatrix[1][1] *= -1;
+
+        ubo.proj = perspectiveMatrix;
+
+        //auto time = Core::TimeSystemLocator().GetTime();
+        //ubo.model = glm::rotate(glm::mat4(1.0f), static_cast<float>(time->GetElapseTime() * glm::radians(90.0f)) * 0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        ubo.screenExtent = glm::vec2(appShadowMapWidth, appShadowMapHeight);
+
+        // CPU to update buffer req: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        memcpy(appShadowUBOMapped[currentImage], &ubo, sizeof(ubo));
     }
+
 }

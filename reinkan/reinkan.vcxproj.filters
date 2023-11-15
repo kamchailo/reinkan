@@ -192,6 +192,12 @@
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordPostProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\VolumetricLighting\ReinkanShadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordShadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Graphics\ReinkanVulkan.h">

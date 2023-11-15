@@ -468,7 +468,7 @@ namespace Reinkan::Graphics
     // ReinkanDebug.cpp
         static VkVertexInputBindingDescription GetDebugBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 1> GetDebugAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 2> GetDebugAttributeDescriptions();
 
         void CreateDebugBufferWraps();
 
@@ -655,18 +655,58 @@ namespace Reinkan::Graphics
 
         void CreateVLightFrameBuffers();
 
-        void CreateVLightPipeline();
+        void CreateVLightPipeline(DescriptorWrap descriptorWrap);
 
-        void CreateVLightResources();
+        void CreateVLightResources(size_t width, size_t height);
 
         void DestroyVLightResources();
 
         VkRenderPass                    appVLightRenderPass;
 
+        std::vector<VkFramebuffer>      appVLightFrameBuffers;
+
         VkPipeline                      appVLightPipeline;
         VkPipelineLayout                appVLightPipelineLayout;
 
-        std::vector<ImageWrap>          appVLightingDepthImageWraps;
         std::vector<ImageWrap>          appVLightingRenderTargetImageWraps;
+
+        std::vector<VLightVertex>       appVLightVertices;
+        std::vector<unsigned int>       appVLightIndices;
+
+        BufferWrap                      appVLightVertexBufferWrap;
+        BufferWrap                      appVLightIndexBufferWrap;
+
+    // ReinkanShadow.cpp
+        void CreateShadowRenderPass();
+
+        void CreateShadowFrameBuffers();
+
+        void CreateShadowPipeline(DescriptorWrap descriptorWrap);
+
+        void CreateShadowResources(size_t width, size_t height);
+
+        void UpdateShadowUBO(uint32_t currentImage);
+
+        void RecordShadowPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+        void DestroyShadowResources();
+
+        VkRenderPass                    appShadowRenderPass;
+
+        std::vector<VkFramebuffer>      appShadowFrameBuffers;
+
+        std::vector<ImageWrap>          appShadowMapImageWraps;
+
+        VkPipeline                      appShadowPipeline;
+        VkPipelineLayout                appShadowPipelineLayout;
+
+        size_t                          appShadowMapWidth;
+        size_t                          appShadowMapHeight;
+
+        glm::vec3                       appGlobalLightPosition{ 1.0, 3.0, 1.0 };
+        glm::vec3                       appGlobalLightDirection{-0.3, -0.9, -0.3};
+
+        std::vector<BufferWrap>         appShadowUBO;
+        std::vector<void*>              appShadowUBOMapped; // Address to Buffer | HOST_VISIBLE
     };
 }

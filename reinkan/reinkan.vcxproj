@@ -216,6 +216,7 @@
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordPostProcessing.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordScanline.cpp" />
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordShadow.cpp" />
     <ClCompile Include="src\Graphics\GraphicsSystem.cpp" />
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanDrawFrame.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="src\Graphics\Pipeline\ReinkanComputeParticlePipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanDebugPipeline.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanPipelineUtility.cpp" />
+    <ClCompile Include="src\Graphics\VolumetricLighting\ReinkanShadow.cpp" />
     <ClCompile Include="src\Graphics\PostProcessing\ReinkanPostProcessing.cpp" />
     <ClCompile Include="src\Graphics\VolumetricLighting\ReinkanVolumetricLighting.cpp" />
     <ClCompile Include="src\Input\InputSystem.cpp" />

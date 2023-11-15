@@ -22,6 +22,11 @@ void main()
     
     // gl_PointSize  = 10.0f;
 
+    if(gl_VertexIndex == 5)
+    {
+        gl_Position =  modelTransform * vec4(inPosition.x, inPosition.y, inPosition.z + 0.3, 1.0);
+    }
+
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 
     // out

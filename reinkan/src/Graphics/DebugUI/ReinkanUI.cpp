@@ -97,7 +97,7 @@ namespace Reinkan::Graphics
 
         ImGui::Checkbox("Show Bilinear: ", &appImguiBool1);
 
-        ImGui::Checkbox("Show pPrime & OverLoop: ", &appImguiBool2);
+        ImGui::Checkbox("Show Pyramid Geometry: ", &appImguiBool2);
 
         //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
 

@@ -65,36 +65,6 @@ namespace Reinkan::Graphics
         }
 	}
 
-	void ReinkanApp::CreateShadowFrameBuffers()
-	{
-        appShadowFrameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-        {
-
-            std::array<VkImageView, 2> attachments = {
-                // Write to Scanline ImageWrap
-                // which will get read by post processing
-                appShadowMapImageWraps[i].imageView,
-                appSwapchainDepthImageWrap.imageView
-            };
-
-            VkFramebufferCreateInfo framebufferInfo{};
-            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = appShadowRenderPass;
-            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-            framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = appShadowMapWidth;
-            framebufferInfo.height = appShadowMapHeight;
-            framebufferInfo.layers = 1;
-
-            if (vkCreateFramebuffer(appDevice, &framebufferInfo, nullptr, &appShadowFrameBuffers[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to create framebuffer!");
-            }
-        }
-	}
-
     void ReinkanApp::CreateShadowDescriptorSetWrap()
     {
 
@@ -222,7 +192,7 @@ namespace Reinkan::Graphics
         VkPushConstantRange pushConstantRanges = {};
         pushConstantRanges.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
         pushConstantRanges.offset = 0;
-        pushConstantRanges.size = sizeof(PushConstantScanline);
+        pushConstantRanges.size = sizeof(PushConstantShadow);
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -264,35 +234,8 @@ namespace Reinkan::Graphics
 
 	void ReinkanApp::CreateShadowResources(size_t width, size_t height)
 	{
-        // Render Target
-        appShadowMapImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
-
         appShadowMapWidth = width;
         appShadowMapHeight = height;
-
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appShadowMapImageWraps[i] = CreateImageWrap(appShadowMapWidth,
-                appShadowMapHeight,
-                VK_FORMAT_R32G32B32A32_SFLOAT,                                           // Image Format
-                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
-                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
-                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
-                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
-                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
-                1,
-                appMsaaSamples);
-
-            TransitionImageLayout(appShadowMapImageWraps[i].image,
-                VK_FORMAT_R32G32B32A32_SFLOAT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_GENERAL);
-
-            appShadowMapImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-
-            appShadowMapImageWraps[i].imageView = CreateImageView(appShadowMapImageWraps[i].image, VK_FORMAT_R32G32B32A32_SFLOAT);
-            appShadowMapImageWraps[i].sampler = CreateImageSampler();
-        }
 
         // UBO [MAX_FRAMES_IN_FLIGHT]
         VkDeviceSize bufferSize = sizeof(ShadowUniformBufferObject);

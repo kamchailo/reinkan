@@ -92,6 +92,8 @@ namespace Reinkan::Graphics
 
 			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
 
+			CreateComputeClusteredSyncObjects();
+
 			// Shadow
 			CreateShadowDescriptorSetWrap();
 

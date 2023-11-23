@@ -8,7 +8,7 @@ namespace Reinkan::Graphics
         VkRenderPassBeginInfo renderPassBeginInfo{};
         renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassBeginInfo.renderPass = appShadowRenderPass;
-        renderPassBeginInfo.framebuffer = appShadowFrameBuffers[appCurrentFrame]; // change to scanline framebuffer
+        renderPassBeginInfo.framebuffer = appShadowFrameBuffers[imageIndex];
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
         renderPassBeginInfo.renderArea.extent.width = appShadowMapWidth;
         renderPassBeginInfo.renderArea.extent.height = appShadowMapHeight;
@@ -43,6 +43,7 @@ namespace Reinkan::Graphics
                 //pushConstant.materialId = object.materialId;
                 //pushConstant.objectId = object.objectId;
                 pushConstant.modelMatrix = object.transform;
+                pushConstant.screenExtent = glm::vec2(appShadowMapWidth, appShadowMapHeight);
                 //pushConstant.normalMatrix = glm::transpose(glm::inverse(glm::mat3(object.transform)));
                 //pushConstant.debugFlag = appDebugFlag;
                 //pushConstant.debugFloat = appDebugFloat;

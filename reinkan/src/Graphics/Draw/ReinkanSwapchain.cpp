@@ -177,6 +177,8 @@ namespace Reinkan::Graphics
         // Rebind Descriptor for Post Processing
         appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
 
+        CreateShadowFrameBuffers();
+
     }
 
     void ReinkanApp::CleanupSwapchain()

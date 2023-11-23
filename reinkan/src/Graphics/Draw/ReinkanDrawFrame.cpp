@@ -131,9 +131,9 @@ namespace Reinkan::Graphics
         }
         {
 
-            RecordShadowPass(appCommandBuffers[appCurrentFrame], imageIndex);
+            RecordShadowPass(appCommandBuffers[appCurrentFrame], appCurrentFrame);
 
-            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], appCurrentFrame);
 
             RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
 

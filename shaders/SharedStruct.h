@@ -45,8 +45,8 @@ namespace Reinkan
 
 	struct PushConstantShadow
 	{
-		glm::mat4 modelMatrix;
-		glm::vec2 screenExtent;
+		alignas(16) glm::mat4 modelMatrix;
+		alignas(8)  glm::vec2 screenExtent;
 	};
 
 	// Use ScanlineUBO

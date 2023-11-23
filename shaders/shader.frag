@@ -5,6 +5,11 @@
 
 #include "SharedStruct.glsl"
 
+layout(push_constant) uniform PushConstantRaster_T
+{
+    PushConstant pushConstant;
+};
+
 layout(binding = 0) uniform UniformBufferObject 
 {
     mat4 model;
@@ -13,11 +18,6 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 proj;
     vec2 screenExtent;
 } ubo;
-
-layout(push_constant) uniform PushConstantRaster_T
-{
-    PushConstant pushConstant;
-};
 
 layout(binding = 1) buffer MaterialBlock 
 {

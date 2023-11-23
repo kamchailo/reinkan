@@ -17,7 +17,7 @@ namespace Reinkan::Graphics
         VkRenderPassBeginInfo renderPassBeginInfo{};
         renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassBeginInfo.renderPass = appScanlineRenderPass;
-        renderPassBeginInfo.framebuffer = appScanlineFrameBuffers[appCurrentFrame]; // change to scanline framebuffer
+        renderPassBeginInfo.framebuffer = appScanlineFrameBuffers[imageIndex]; // change to scanline framebuffer
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
         renderPassBeginInfo.renderArea.extent = appSwapchainExtent;
 

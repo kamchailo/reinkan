@@ -56,3 +56,19 @@ struct LightGrid
     uint size;
 };
 
+struct PushConstantShadow
+{
+    mat4 modelMatrix;
+    vec2 screenExtent;
+};
+
+struct PushConstantVLight
+{
+    mat4 modelMatrix;
+};
+
+struct PushConstantPost
+{
+    vec2 screenExtent;
+    uint debugFlag;
+};

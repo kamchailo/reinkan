@@ -20,11 +20,16 @@ namespace Reinkan::Graphics
 		// ParallaxOcclusion
 		DestroyParallaxOcclusionResources();
 
+		// Shadow
+		DestroyShadowResources();
+
 		// VolumetricLighting
 		DestroyVLightResources();
 
 		// ComputeParticle
 		//DestroyComputeParticleResources();
+
+		CleanupPostProcessing();
 
 		{ // Scanline 
 		// Resources
@@ -33,9 +38,6 @@ namespace Reinkan::Graphics
 
 			appMaterialBufferWrap.Destroy(appDevice);
 			appScanlineDescriptorWrap.Destroy(appDevice);
-
-			appPostDescriptorWrap.Destroy(appDevice);
-
 			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
 			{
 				appScanlineUBO[i].Destroy(appDevice);
@@ -51,10 +53,6 @@ namespace Reinkan::Graphics
 			vkDestroyPipelineLayout(appDevice, appScanlinePipelineLayout, nullptr);
 			vkDestroyRenderPass(appDevice, appScanlineRenderPass, nullptr);
 
-
-			vkDestroyPipeline(appDevice, appPostPipeline, nullptr);
-			vkDestroyPipelineLayout(appDevice, appPostPipelineLayout, nullptr);
-			vkDestroyRenderPass(appDevice, appPostRenderPass, nullptr);
 
 		// Sync
 			for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 

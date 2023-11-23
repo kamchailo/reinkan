@@ -18,7 +18,7 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
 
     // D factor GGX
     float mN = dot(H, N);
-    float tan_square_theta_m = (1.0 - mN * mN) / mN * mN;
+    float tan_square_theta_m = (1.0 - mN * mN) / (mN * mN);
     float alpha_square = alpha * alpha;
     float D = clamp(mN, 0.0, 1.0) * alpha_square
            / (PI * pow(mN, 4) * pow(alpha_square + tan_square_theta_m, 2));
@@ -29,7 +29,7 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
     // G factor with V
     float mV = dot(H, V);
     float NV = dot(N, V);
-    float tan_square_theta_v = (1.0 -  NV * NV) /  NV * NV;
+    float tan_square_theta_v = (1.0 -  NV * NV) /  (NV * NV);
     float GV;
     if(NV > 1.0 || sqrt(tan_square_theta_v) == 0)
     {
@@ -46,7 +46,7 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
     // G factor with L
     float mL = LH; // dot(L, H);
     float NL = dot(N, L);
-    float tan_square_theta_l = (1.0 -  NL * NL) /  NL * NL;
+    float tan_square_theta_l = (1.0 -  NL * NL) /  (NL * NL);
     float GL;
     if(NL > 1.0 || sqrt(tan_square_theta_l) == 0)
     {
@@ -61,5 +61,5 @@ vec3 EvalBrdf(vec3 N, vec3 L, vec3 V, Material mataterial)
     }
     float G = GV * GL;
 
-    return ( max( NL, 0.0) * ( Kd/PI + (D*F*G) / ( 4 * abs(dot(V,N)) * abs(dot(L,N)) ) ) );
+    return ( max( NL, 0.0) * ( Kd/PI + ((D*F*G) / ( 4 * abs(dot(V,N)) * abs(dot(L,N)) )) ) );
 }   

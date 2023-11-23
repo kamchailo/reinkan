@@ -2,6 +2,11 @@
 
 #include "SharedStruct.glsl"
 
+layout(push_constant) uniform PushConstantRaster_T
+{
+    PushConstant pushConstant;
+};
+
 layout(binding = 0) uniform UniformBufferObject 
 {
     mat4 model;
@@ -10,11 +15,6 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 proj;
     vec2 screenExtent;
 } ubo;
-
-layout(push_constant) uniform PushConstantRaster_T
-{
-    PushConstant pushConstant;
-};
 
 layout(location = 0) in vec3    inPosition;
 layout(location = 1) in vec3    inVertexNormal;
@@ -32,6 +32,7 @@ layout(location = 5) out vec2 fragTexCoord;
 layout(location = 6) out vec3 TBNViewPos;
 layout(location = 7) out vec3 TBNWorldPos;
 layout(location = 8) out mat3 TBNMatrix;
+
 void main() 
 {
     

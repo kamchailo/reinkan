@@ -48,6 +48,18 @@ namespace Reinkan::Graphics
             scissor.extent = appSwapchainExtent;
             vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+            PushConstantPost pushConstant;
+            pushConstant.screenExtent = glm::vec2(appSwapchainExtent.width, appSwapchainExtent.height);
+            pushConstant.debugFlag = appDebugFlag;
+
+            vkCmdPushConstants(commandBuffer,
+                appPostPipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(PushConstantPost),
+                &pushConstant
+            );
+
             // Draw Imaginary Vertices
             /// Access vertex instances with gl_VertexIndex
             vkCmdDraw(commandBuffer, 3, 1, 0, 0);

@@ -45,8 +45,9 @@ namespace Reinkan::Graphics
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
         {
             appFramebufferResized = false;
-            RecreateSwapchain();
             appIsClusteredGridReady = false;
+
+            RecreateSwapchain();
 #ifdef GUI
             ImGui::EndFrame();
 #endif  
@@ -130,7 +131,9 @@ namespace Reinkan::Graphics
         }
         {
 
-            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+            RecordShadowPass(appCommandBuffers[appCurrentFrame], appCurrentFrame);
+
+            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], appCurrentFrame);
 
             RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
 

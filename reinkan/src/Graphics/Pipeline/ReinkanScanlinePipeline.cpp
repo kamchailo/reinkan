@@ -11,10 +11,6 @@ namespace Reinkan::Graphics
         auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
         auto fragShaderCode = ReadFile("../shaders/shader.frag.spv");
 
-        //auto vertShaderCode = ReadFile("../shaders/particle.vert.spv");
-        //auto fragShaderCode = ReadFile("../shaders/particle.frag.spv");
-
-
         VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
 
@@ -34,9 +30,6 @@ namespace Reinkan::Graphics
 
         auto bindingDescription = GetBindingDescription();
         auto attributeDescriptions = GetAttributeDescriptions();
-        // With ComputeParticle
-        //auto bindingDescription = GetParticleBindingDescription();
-        //auto attributeDescriptions = GetParticleAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

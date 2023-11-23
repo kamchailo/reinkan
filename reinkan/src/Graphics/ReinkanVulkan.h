@@ -419,6 +419,8 @@ namespace Reinkan::Graphics
 
         void CreatePostPipeline(DescriptorWrap& descriptorWrap);
 
+        void CleanupPostProcessing();
+
         VkRenderPass                    appPostRenderPass;
 
         VkPipeline                      appPostPipeline;
@@ -681,6 +683,8 @@ namespace Reinkan::Graphics
 
         void CreateShadowFrameBuffers();
 
+        void CreateShadowDescriptorSetWrap();
+
         void CreateShadowPipeline(DescriptorWrap descriptorWrap);
 
         void CreateShadowResources(size_t width, size_t height);
@@ -706,6 +710,7 @@ namespace Reinkan::Graphics
         glm::vec3                       appGlobalLightPosition{ 1.0, 3.0, 1.0 };
         glm::vec3                       appGlobalLightDirection{-0.3, -0.9, -0.3};
 
+        DescriptorWrap                  appShadowDescriptorWrap;
         std::vector<BufferWrap>         appShadowUBO;
         std::vector<void*>              appShadowUBOMapped; // Address to Buffer | HOST_VISIBLE
     };

@@ -207,6 +207,8 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanComputeParticleCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanDebugCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanParallaxOcclusionCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanPostCleanup.cpp" />
+    <ClCompile Include="src\Graphics\Cleanup\ReinkanShadowCleanup.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanVolumetricLightingCleanup.cpp" />
     <ClCompile Include="src\Graphics\ClusterdShading\ReinkanClusteredShading.cpp" />
     <ClCompile Include="src\Graphics\DebugUI\ReinkanUI.cpp" />

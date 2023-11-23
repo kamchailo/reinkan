@@ -35,10 +35,21 @@ namespace Reinkan
 		alignas(4) int debugInt;
 	};
 
+	struct ShadowUniformBufferObject {
+		alignas(16) glm::mat4 model;
+		alignas(16) glm::mat4 view;
+		alignas(16) glm::mat4 viewInverse;
+		alignas(16) glm::mat4 proj;
+		alignas(8) glm::vec2 screenExtent;
+	};
+
 	struct PushConstantShadow
 	{
 		alignas(16) glm::mat4 modelMatrix;
+		alignas(8)  glm::vec2 screenExtent;
 	};
+
+	// Use ScanlineUBO
 
 	struct PushConstantVLight
 	{
@@ -47,6 +58,7 @@ namespace Reinkan
 
 	struct PushConstantPost
 	{
+		alignas(8) glm::vec2 screenExtent;
 		alignas(4) uint32_t debugFlag;
 	};
 

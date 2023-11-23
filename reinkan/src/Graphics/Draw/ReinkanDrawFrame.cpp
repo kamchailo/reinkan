@@ -45,8 +45,9 @@ namespace Reinkan::Graphics
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
         {
             appFramebufferResized = false;
-            RecreateSwapchain();
             appIsClusteredGridReady = false;
+
+            RecreateSwapchain();
 #ifdef GUI
             ImGui::EndFrame();
 #endif  
@@ -129,6 +130,8 @@ namespace Reinkan::Graphics
             throw std::runtime_error("failed to begin recording command buffer!");
         }
         {
+
+            RecordShadowPass(appCommandBuffers[appCurrentFrame], imageIndex);
 
             RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
 

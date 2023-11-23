@@ -36,27 +36,35 @@ namespace Reinkan::Graphics
 
 		CreatePostRenderPass();
 
+		CreateShadowRenderPass();
+
 		// MultiSampling
 		CreateSwapchainColorResources();
 
 		CreateSwapchainDepthResource();
 
-		CreateSwapchainFrameBuffers(); // require renderpass
+		// Shadow
+		CreateShadowResources(1024, 1024);
+
+		// From VolumicLighting
+		CreateVLightResources(1024, 1024);
+
+		CreateSwapchainFrameBuffers(); // require renderpass and resources
 		
 		CreateScanlineFrameBuffers();
 
-		// From ComputeClustered
-		CreateComputeClusteredSyncObjects();
+		CreateShadowFrameBuffers();
 
-		CreateComputeClusteredCommandBuffer();
+		// From ComputeClustered
+		//CreateComputeClusteredSyncObjects();
+
+		//CreateComputeClusteredCommandBuffer();
 
 		// From ComputeParticle
 		//CreateComputeParticleSyncObjects();
 
 		//CreateComputeParticleCommandBuffer();
 
-		// From VolumicLighting
-		CreateVLightResources(1024, 1024);
 
 
 		// Resources Binding will happen after this point
@@ -73,7 +81,7 @@ namespace Reinkan::Graphics
 			BindTextures();
 
 			// Parallax Occlusion Binding
-			BindPyramidalMap(appPyramidalPaths);
+			//BindPyramidalMap(appPyramidalPaths);
 
 			// Clustered
 			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
@@ -83,6 +91,11 @@ namespace Reinkan::Graphics
 			CreateClusteredGridPipeline(appClusteredGridDescriptorWrap);
 
 			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
+
+			// Shadow
+			CreateShadowDescriptorSetWrap();
+
+			CreateShadowPipeline(appShadowDescriptorWrap);
 
 			// Scanline
 			CreateScanlineDescriptorWrap();

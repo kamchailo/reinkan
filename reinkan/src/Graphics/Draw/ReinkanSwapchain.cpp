@@ -174,6 +174,8 @@ namespace Reinkan::Graphics
         // Recreate Scanline ImageWrap
         // Recreate Scanline FrameBuffers
         CreateScanlineFrameBuffers();
+        // Rebind Descriptor for Post Processing
+        appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
 
     }
 

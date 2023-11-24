@@ -112,9 +112,9 @@ namespace Reinkan::Graphics
         // --------------------
         // Update Value per frame
         // --------------------
-        UpdateScanlineUBO(appCurrentFrame);
+        UpdateShadowUBO(appCurrentFrame); // Update shadow first for appShadowProjectionViewMatrix
 
-        UpdateShadowUBO(appCurrentFrame);
+        UpdateScanlineUBO(appCurrentFrame);
 
         // Only reset the fence if we are submitting work
         // [WAIT] inFlightFences[appCurrentFrame] or [UNSIGNAL]

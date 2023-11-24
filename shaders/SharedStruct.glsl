@@ -64,7 +64,7 @@ struct PushConstantShadow
 
 struct PushConstantVLight
 {
-    mat4 modelMatrix;
+    vec4 lightConstant;
 };
 
 struct PushConstantPost

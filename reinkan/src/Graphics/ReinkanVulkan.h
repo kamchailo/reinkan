@@ -657,6 +657,12 @@ namespace Reinkan::Graphics
 
         void CreateVLightFrameBuffers();
 
+        static VkVertexInputBindingDescription GetVLightBindingDescription();
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetVLightAttributeDescriptions();
+
+        void CreateVLightDescriptorSetWrap();
+
         void CreateVLightPipeline(DescriptorWrap descriptorWrap);
 
         void CreateVLightResources(size_t width, size_t height);
@@ -675,6 +681,7 @@ namespace Reinkan::Graphics
         std::vector<VLightVertex>       appVLightVertices;
         std::vector<unsigned int>       appVLightIndices;
 
+        DescriptorWrap                  appVLightDescriptorWrap;
         BufferWrap                      appVLightVertexBufferWrap;
         BufferWrap                      appVLightIndexBufferWrap;
 
@@ -707,8 +714,10 @@ namespace Reinkan::Graphics
         size_t                          appShadowMapWidth;
         size_t                          appShadowMapHeight;
 
-        glm::vec3                       appGlobalLightPosition{ 1.0, 3.0, 1.0 };
-        glm::vec3                       appGlobalLightDirection{-0.3, -0.9, -0.3};
+        glm::vec3                       appGlobalLightPosition{ 8.0, 8.0, 1.0 };
+        glm::vec3                       appGlobalLightDirection{ -0.704361, -0.704361, -0.0880451 };
+
+        glm::mat4                       appShadowProjectionViewMatrix;
 
         DescriptorWrap                  appShadowDescriptorWrap;
         std::vector<BufferWrap>         appShadowUBO;

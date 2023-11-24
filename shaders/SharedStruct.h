@@ -20,6 +20,8 @@ namespace Reinkan
 		alignas(16) glm::mat4 view;
 		alignas(16) glm::mat4 viewInverse;
 		alignas(16) glm::mat4 proj;
+		alignas(16) glm::mat4 shadowProjectionViewMatrix;
+		alignas(16) glm::vec3 globalLightPosition;
 		alignas(8) glm::vec2 screenExtent;
 	};
 
@@ -53,7 +55,7 @@ namespace Reinkan
 
 	struct PushConstantVLight
 	{
-		alignas(16) glm::mat4 modelMatrix;
+		alignas(16) glm::vec4 lightConstant;
 	};
 
 	struct PushConstantPost

@@ -1,10 +1,7 @@
 #version 450
 
-struct PushConstantShadow
-{
-    mat4 modelMatrix;
-    vec2 screenExtent;
-};
+#include "SharedStruct.glsl"
+
 layout(push_constant) uniform PushConstantShadow_T
 {
     PushConstantShadow pushConstant;

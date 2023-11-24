@@ -256,10 +256,14 @@ namespace Reinkan::Graphics
 
         ubo.view = glm::lookAt(appGlobalLightPosition, appGlobalLightPosition + appGlobalLightDirection, glm::vec3(0.0, 1.0, 0.0));
         ubo.viewInverse = glm::inverse(ubo.view);
-        glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), static_cast<float>(appShadowMapWidth) / appShadowMapHeight, 0.1f, 1000.0f);
+        glm::mat4 perspectiveMatrix = glm::perspective(glm::radians(90.0f), static_cast<float>(appShadowMapWidth) / appShadowMapHeight, 0.1f, 1000.0f);
         perspectiveMatrix[1][1] *= -1;
 
         ubo.proj = perspectiveMatrix;
+
+        glm::mat4 offset = glm::translate(glm::mat4(1), glm::vec3(0.5)) * glm::scale(glm::mat4(1), glm::vec3(0.5));
+
+        appShadowProjectionViewMatrix = offset * ubo.proj * ubo.view;
 
         //auto time = Core::TimeSystemLocator().GetTime();
         //ubo.model = glm::rotate(glm::mat4(1.0f), static_cast<float>(time->GetElapseTime() * glm::radians(90.0f)) * 0.5f, glm::vec3(0.0f, 1.0f, 0.0f));

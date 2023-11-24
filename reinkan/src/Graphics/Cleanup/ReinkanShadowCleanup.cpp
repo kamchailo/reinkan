@@ -9,8 +9,13 @@ namespace Reinkan::Graphics
         {
             appShadowUBO[i].Destroy(appDevice);
             appShadowMapImageWraps[i].Destroy(appDevice);
+            vkDestroyFramebuffer(appDevice, appShadowFrameBuffers[i], nullptr);
         }
 
-        //appShadowDescriptorWrap.Destroy(appDevice);
+        appShadowDescriptorWrap.Destroy(appDevice);
+
+        vkDestroyPipeline(appDevice, appShadowPipeline, nullptr);
+        vkDestroyPipelineLayout(appDevice, appShadowPipelineLayout, nullptr);
+        vkDestroyRenderPass(appDevice, appShadowRenderPass, nullptr);
     }
 }

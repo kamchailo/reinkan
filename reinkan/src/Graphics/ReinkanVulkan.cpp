@@ -38,6 +38,8 @@ namespace Reinkan::Graphics
 
 		CreateShadowRenderPass();
 
+		CreateVLightingRenderPass();
+
 		// MultiSampling
 		CreateSwapchainColorResources();
 
@@ -47,13 +49,16 @@ namespace Reinkan::Graphics
 		CreateShadowResources(1024, 1024);
 
 		// From VolumicLighting
-		CreateVLightResources(1024, 1024);
+		CreateVLightResources(appShadowMapWidth, appShadowMapHeight);
+		//CreateVLightResources(4, 4);
 
 		CreateSwapchainFrameBuffers(); // require renderpass and resources
 		
 		CreateScanlineFrameBuffers();
 
 		CreateShadowFrameBuffers();
+
+		CreateVLightFrameBuffers();
 
 		// From ComputeClustered
 		//CreateComputeClusteredSyncObjects();
@@ -98,6 +103,11 @@ namespace Reinkan::Graphics
 			CreateShadowDescriptorSetWrap();
 
 			CreateShadowPipeline(appShadowDescriptorWrap);
+
+			// Volumic Light Shaft
+			CreateVLightDescriptorSetWrap();
+
+			CreateVLightPipeline(appVLightDescriptorWrap);
 
 			// Scanline
 			CreateScanlineDescriptorWrap();

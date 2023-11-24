@@ -16,6 +16,9 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
+    mat4 shadowProjectionViewMatrix;
+    vec3 globalLightPosition;
+    uint globalLightPosition_padding;
     vec2 screenExtent;
 } ubo;
 
@@ -56,7 +59,9 @@ layout(std140, binding = 7) readonly buffer LightGridSSBO {
    LightGrid lightGrids[ ];
 };
 
-layout(binding = 8) uniform sampler2D[] pyramidalSamplers;
+layout(binding = 8) uniform sampler2D shadowmap;
+
+// layout(binding = 9) uniform sampler2D[] pyramidalSamplers;
 
 layout(location = 0) in vec3 worldPos;
 layout(location = 1) in vec3 vertexNormal;
@@ -68,6 +73,8 @@ layout(location = 5) in vec2 inFragTexCoord;
 layout(location = 6) in vec3 TBNViewPos;
 layout(location = 7) in vec3 TBNWorldPos;
 layout(location = 8) in mat3 TBNMatrix;
+// Shadow Map
+layout(location = 11) in vec4 shadowCoord;
 
 layout(location = 0) out vec4 outColor;
 
@@ -98,6 +105,29 @@ void main()
 {
     Material material = materials[pushConstant.materialId];
     vec2 fragTexCoord = inFragTexCoord;
+
+    
+    int shadow = 0;
+
+    vec2 shadowIndex = shadowCoord.xy/shadowCoord.w;
+    float lightDepth = texture(shadowmap, shadowIndex).w;
+    float pixelDepth = shadowCoord.w - 0.005;
+
+    if(shadowCoord.w > 0 && 
+        shadowIndex.x >= 0 && shadowIndex.x <= 1 &&
+        shadowIndex.y >= 0 && shadowIndex.y <= 1)
+    {
+        if(pixelDepth < lightDepth)
+        {
+            // return Ambient*Kd + Rcolor;
+            shadow = 1;
+        }
+        // outColor = vec4(vec3(shadowCoord.w/100), 1.0);
+        // return;
+    }
+
+    // vec3 homogeniousShadowCoord = shadowCoord.xyz / shadowCoord.w;
+    // outColor = vec4(shadowIndex,0, 1.0);
 
     ////////////////////////////////////////
     //          Parallax Occlusion
@@ -256,11 +286,11 @@ void main()
     }
 
     // Main Directional Light
-    vec3 L = normalize(vec3(1.0, 3.0, 1.0) - worldPos);
-    float ambientLight = 0.1;
+    vec3 L = normalize(ubo.globalLightPosition - worldPos);
+    float ambientLight = 0.03;
     float intensity = 0.7;
     vec3 V = normalize(viewDir);
-    vec3 brdfColor = intensity * EvalBrdf(N, L, V, material);
+    vec3 brdfColor = (ambientLight * material.diffuse) + shadow * intensity * EvalBrdf(N, L, V, material);
     
     ////////////////////////////////////////
     //          Grid Calculation
@@ -311,7 +341,7 @@ void main()
             brdfColor += intensity * light.color * EvalBrdf(N, L, V, material);
         }
     }
-
+    
     // Final Color Result
     outColor = vec4(brdfColor, 1.0);
 

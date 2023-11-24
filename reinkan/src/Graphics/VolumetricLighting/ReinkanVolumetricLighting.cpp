@@ -101,6 +101,62 @@ namespace Reinkan::Graphics
         }
 	}
 
+    VkVertexInputBindingDescription ReinkanApp::GetVLightBindingDescription()
+    {
+        VkVertexInputBindingDescription bindingDescription{};
+        bindingDescription.binding = 0;
+        bindingDescription.stride = sizeof(VLightVertex);
+        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return bindingDescription;
+    }
+
+    std::array<VkVertexInputAttributeDescription, 2> ReinkanApp::GetVLightAttributeDescriptions()
+    {
+        std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+
+        attributeDescriptions[0].binding = 0;
+        attributeDescriptions[0].location = 0;
+        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[0].offset = offsetof(VLightVertex, position);
+
+        attributeDescriptions[1].binding = 0;
+        attributeDescriptions[1].location = 1;
+        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributeDescriptions[1].offset = offsetof(VLightVertex, vertexNormal);
+
+        return attributeDescriptions;
+    }
+
+    void ReinkanApp::CreateVLightDescriptorSetWrap()
+    {
+        std::vector<VkDescriptorSetLayoutBinding> bindingTable;
+        uint32_t bindingIndex = 0;
+
+        // UBO
+        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                  bindingIndex++,                                                   // binding;
+                                  VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                                // descriptorType;
+                                  1,                                                                // descriptorCount; 
+                                  VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT });     // stageFlags;
+
+        // ShadowImageWrap
+        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                      bindingIndex++,                                               // binding;
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
+                                      MAX_FRAMES_IN_FLIGHT,                                         // descriptorCount; // Has to > 0
+                                      VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
+
+        appVLightDescriptorWrap.SetBindings(appDevice,
+            bindingTable,
+            MAX_FRAMES_IN_FLIGHT);
+
+        bindingIndex = 0;
+
+        appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appScanlineUBO);
+        appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+    }
+
 	void ReinkanApp::CreateVLightPipeline(DescriptorWrap descriptorWrap)
 	{
         auto vertShaderCode = ReadFile("../shaders/vlight.vert.spv");
@@ -124,11 +180,8 @@ namespace Reinkan::Graphics
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
-        auto bindingDescription = GetBindingDescription();
-        auto attributeDescriptions = GetAttributeDescriptions();
-        // With ComputeParticle
-        //auto bindingDescription = GetParticleBindingDescription();
-        //auto attributeDescriptions = GetParticleAttributeDescriptions();
+        auto bindingDescription = GetVLightBindingDescription();
+        auto attributeDescriptions = GetVLightAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -236,8 +289,8 @@ namespace Reinkan::Graphics
         pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = appScanlinePipelineLayout;
-        pipelineInfo.renderPass = appScanlineRenderPass;
+        pipelineInfo.layout = appVLightPipelineLayout;
+        pipelineInfo.renderPass = appVLightRenderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -249,11 +302,10 @@ namespace Reinkan::Graphics
         vkDestroyShaderModule(appDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(appDevice, vertShaderModule, nullptr);
 	}
+
 	void ReinkanApp::CreateVLightResources(size_t width, size_t height)
 	{
         assert(width > 1 && height > 1, "VLight has given height map dimension <= 1");
-
-        // Create Height Map
 
         // Create Vertices
         appVLightVertices.resize(width * height);
@@ -267,7 +319,7 @@ namespace Reinkan::Graphics
 
                 float x = (static_cast<float>(j) / (width - 1.0f) - 0.5f) * 2.0f;
 
-                float y = (static_cast<float>(i) / (height - 1.0f) - 0.5f) * 2.0f;;
+                float y = (static_cast<float>(i) / (height - 1.0f) - 0.5f) * 2.0f;
 
                 appVLightVertices[index].position = glm::vec3(x, y, 1.0f);
                 appVLightVertices[index].vertexNormal = glm::vec3(0, 0, -1.0f);
@@ -296,7 +348,6 @@ namespace Reinkan::Graphics
             }
         }
 
-        
         // Create Index Buffer on side of pyramid
         for (int i = 0; i < height - 1; ++i)
         {
@@ -321,8 +372,6 @@ namespace Reinkan::Graphics
             appVLightIndices.push_back(peakIndex);
         }
         
-
-
         appVLightVertexBufferWrap = CreateStagedBufferWrap(appVLightVertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
         appVLightIndexBufferWrap = CreateStagedBufferWrap(appVLightIndices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);

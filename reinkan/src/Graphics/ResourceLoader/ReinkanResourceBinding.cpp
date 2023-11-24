@@ -126,6 +126,13 @@ namespace Reinkan::Graphics
                                        1,                                                   // descriptorCount; 
                                        VK_SHADER_STAGE_FRAGMENT_BIT });                      // stageFlags;
 
+        // Shadow Map
+        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                      bindingIndex++,                                               // binding;
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
+                                      static_cast<uint32_t>(appShadowMapImageWraps.size()),           // descriptorCount; // Has to > 0
+                                      VK_SHADER_STAGE_FRAGMENT_BIT });
+
         // PyramidalMap
         if (appPyramidalImageWraps.size() > 0)
         {
@@ -183,10 +190,12 @@ namespace Reinkan::Graphics
         appScanlineDescriptorWrap.Write(appDevice, 7, appClusteredLightGrid);
         std::swap(appClusteredLightGrid[0], appClusteredLightGrid[1]);
 
+        appScanlineDescriptorWrap.Write(appDevice, 8, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
         // Pyramidal only once
         if (appPyramidalImageWraps.size() > 0)
         {
-            appScanlineDescriptorWrap.Write(appDevice, 8, appPyramidalImageWraps, MAX_FRAMES_IN_FLIGHT);
+            appScanlineDescriptorWrap.Write(appDevice, 9, appPyramidalImageWraps, MAX_FRAMES_IN_FLIGHT);
         }
     }
 }

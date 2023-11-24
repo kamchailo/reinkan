@@ -13,6 +13,9 @@ layout(binding = 0) uniform UniformBufferObject
     mat4 view;
     mat4 viewInverse;
     mat4 proj;
+    mat4 shadowProjectionViewMatrix;
+    vec3 globalLightPosition;
+    uint globalLightPosition_padding;
     vec2 screenExtent;
 } ubo;
 
@@ -28,10 +31,14 @@ layout(location = 2) out vec3 vertexTangent;
 layout(location = 3) out vec3 vertexBitangent;
 layout(location = 4) out vec3 viewDir;
 layout(location = 5) out vec2 fragTexCoord;
+
 // Parallax
 layout(location = 6) out vec3 TBNViewPos;
 layout(location = 7) out vec3 TBNWorldPos;
 layout(location = 8) out mat3 TBNMatrix;
+
+// Shadow Map
+layout(location = 11) out vec4 shadowCoord;
 
 void main() 
 {
@@ -62,4 +69,7 @@ void main()
     TBNViewPos = TBN * eye;
     TBNWorldPos = TBN * worldPos;
     TBNMatrix = TBN;
+
+    // Shadow Map
+    shadowCoord = ubo.shadowProjectionViewMatrix * pushConstant.modelMatrix * vec4(inPosition, 1.0);
 }

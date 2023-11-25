@@ -171,14 +171,18 @@ namespace Reinkan::Graphics
         CreateSwapchainDepthResource();
         CreateSwapchainFrameBuffers();
 
-        // Recreate Scanline ImageWrap
-        // Recreate Scanline FrameBuffers
-        CreateScanlineFrameBuffers();
-        // Rebind Descriptor for Post Processing
-        appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
-
         // Have to recreate because shared depth
         CreateShadowFrameBuffers();
+        // Recreate Scanline FrameBuffers
+        CreateScanlineFrameBuffers();
+
+        // Rebind Descriptor for Scanline
+        appScanlineDescriptorWrap.Write(appDevice, 8, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
+        // Rebind Descriptor for Post Processing
+        appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
+        appPostDescriptorWrap.Write(appDevice, 1, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
     }
 
     void ReinkanApp::CleanupSwapchain()
@@ -187,15 +191,6 @@ namespace Reinkan::Graphics
         {
             vkDestroyFramebuffer(appDevice, appSwapchainFramebuffers[i], nullptr);
         }
-        
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            // Scanline ImageWrap
-            appScanlineImageWrap[i].Destroy(appDevice);
-            // Scanline FrameBuffers
-            vkDestroyFramebuffer(appDevice, appScanlineFrameBuffers[i], nullptr);
-        }
-        appScanlineImageWrap.clear();
 
         for (size_t i = 0; i < appSwapchainImageViews.size(); i++) 
         {
@@ -207,5 +202,20 @@ namespace Reinkan::Graphics
         appSwapchainDepthImageWrap.Destroy(appDevice);
 
         vkDestroySwapchainKHR(appDevice, appSwapchain, nullptr);
+        
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            // Scanline ImageWrap
+            appScanlineImageWrap[i].Destroy(appDevice);
+            // Scanline FrameBuffers
+            vkDestroyFramebuffer(appDevice, appScanlineFrameBuffers[i], nullptr);
+
+            // Shadow
+            appShadowMapImageWraps[i].Destroy(appDevice);
+            vkDestroyFramebuffer(appDevice, appShadowFrameBuffers[i], nullptr);
+        }
+
+        appScanlineImageWrap.clear();
+        appShadowMapImageWraps.clear();
     }
 }

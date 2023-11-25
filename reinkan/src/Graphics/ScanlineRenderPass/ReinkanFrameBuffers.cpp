@@ -147,6 +147,7 @@ namespace Reinkan::Graphics
             framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = appShadowMapWidth;
+            //framebufferInfo.flags = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT;
             framebufferInfo.height = appShadowMapHeight;
             framebufferInfo.layers = 1;
 

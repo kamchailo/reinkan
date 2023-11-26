@@ -13,6 +13,9 @@ namespace Reinkan::Graphics
         ubo.view = appMainCamera->GetViewMatrix();
         ubo.viewInverse = glm::inverse(ubo.view);
         ubo.proj = appMainCamera->GetPerspectiveMatrix();
+        ubo.globalLightPosition = appGlobalLightPosition;
+
+        ubo.shadowProjectionViewMatrix = appShadowProjectionViewMatrix;
 
         //auto time = Core::TimeSystemLocator().GetTime();
         //ubo.model = glm::rotate(glm::mat4(1.0f), static_cast<float>(time->GetElapseTime() * glm::radians(90.0f)) * 0.5f, glm::vec3(0.0f, 1.0f, 0.0f));

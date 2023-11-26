@@ -45,8 +45,9 @@ namespace Reinkan::Graphics
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
         {
             appFramebufferResized = false;
-            RecreateSwapchain();
             appIsClusteredGridReady = false;
+
+            RecreateSwapchain();
 #ifdef GUI
             ImGui::EndFrame();
 #endif  
@@ -111,6 +112,8 @@ namespace Reinkan::Graphics
         // --------------------
         // Update Value per frame
         // --------------------
+        UpdateShadowUBO(appCurrentFrame); // Update shadow first for appShadowProjectionViewMatrix
+
         UpdateScanlineUBO(appCurrentFrame);
 
         // Only reset the fence if we are submitting work
@@ -118,7 +121,29 @@ namespace Reinkan::Graphics
         vkResetFences(appDevice, 1, &inFlightFences[appCurrentFrame]);
 
         vkResetCommandBuffer(appCommandBuffers[appCurrentFrame], 0);
-        RecordCommandBuffer(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+        if (vkBeginCommandBuffer(appCommandBuffers[appCurrentFrame], &beginInfo) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to begin recording command buffer!");
+        }
+        {
+
+            RecordShadowPass(appCommandBuffers[appCurrentFrame], appCurrentFrame);
+
+            RecordCommandBuffer(appCommandBuffers[appCurrentFrame], appCurrentFrame);
+
+            RecordVLightPass(appCommandBuffers[appCurrentFrame], appCurrentFrame);
+
+            RecordPostProcessing(appCommandBuffers[appCurrentFrame], imageIndex);
+
+        }
+        if (vkEndCommandBuffer(appCommandBuffers[appCurrentFrame]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to record command buffer!");
+        }
 
         // Wait for Compute Shader
         //VkSemaphore waitSemaphores[] = { appComputeClusteredFinishedSemaphores[appCurrentFrame], imageAvailableSemaphores[appCurrentFrame] };
@@ -147,6 +172,8 @@ namespace Reinkan::Graphics
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
+
+        // Do Post Processing here
 
         VkSwapchainKHR swapchains[] = { appSwapchain };
 

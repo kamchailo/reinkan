@@ -34,22 +34,43 @@ namespace Reinkan::Graphics
 		// Render Pass
 		CreateScanlineRenderPass();
 
+		CreatePostRenderPass();
+
+		CreateShadowRenderPass();
+
+		CreateVLightingRenderPass();
+
 		// MultiSampling
 		CreateSwapchainColorResources();
 
 		CreateSwapchainDepthResource();
 
-		CreateSwapchainFrameBuffers(); // require renderpass
-		
-		// From ComputeClustered
-		CreateComputeClusteredSyncObjects();
+		// Shadow
+		CreateShadowResources(1024, 1024);
 
-		CreateComputeClusteredCommandBuffer();
+		// From VolumicLighting
+		CreateVLightResources(appShadowMapWidth, appShadowMapHeight);
+		//CreateVLightResources(4, 4);
+
+		CreateSwapchainFrameBuffers(); // require renderpass and resources
+		
+		CreateScanlineFrameBuffers();
+
+		CreateShadowFrameBuffers();
+
+		CreateVLightFrameBuffers();
+
+		// From ComputeClustered
+		//CreateComputeClusteredSyncObjects();
+
+		//CreateComputeClusteredCommandBuffer();
 
 		// From ComputeParticle
 		//CreateComputeParticleSyncObjects();
 
 		//CreateComputeParticleCommandBuffer();
+
+
 
 		// Resources Binding will happen after this point
 	}
@@ -64,8 +85,11 @@ namespace Reinkan::Graphics
 
 			BindTextures();
 
+			// Default Viewport UBO - Projection and View Matrix
+			CreateScanlineUBO();
+
 			// Parallax Occlusion Binding
-			BindPyramidalMap(appPyramidalPaths);
+			//BindPyramidalMap(appPyramidalPaths);
 
 			// Clustered
 			CreateComputeClusteredBufferWraps(16, 9, 32, 0.1, 1000.0);
@@ -76,10 +100,27 @@ namespace Reinkan::Graphics
 
 			CreateClusteredCullLightPipeline(appClusteredCullLightDescriptorWrap);
 
+			CreateComputeClusteredSyncObjects();
+
+			// Shadow
+			CreateShadowDescriptorSetWrap();
+
+			CreateShadowPipeline(appShadowDescriptorWrap);
+
+			// Volumic Light Shaft
+			CreateVLightDescriptorSetWrap();
+
+			CreateVLightPipeline(appVLightDescriptorWrap);
+
 			// Scanline
 			CreateScanlineDescriptorWrap();
 
 			CreateScanlinePipeline(appScanlineDescriptorWrap);
+
+			// Post Processing
+			CreatePostDescriptorSetWrap();
+
+			CreatePostPipeline(appPostDescriptorWrap);
 
 			// Debug
 			CreateDebugBufferWraps();
@@ -87,7 +128,7 @@ namespace Reinkan::Graphics
 			CreateDebugDescriptorSetWrap();
 
 			CreateDebugPipeline(appDebugDescriptorWrap, 
-								VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+								VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 								VK_POLYGON_MODE_LINE,
 								1.0f);
 

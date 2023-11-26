@@ -146,26 +146,6 @@ namespace Reinkan::Graphics
 
         for (size_t i = 0; i < appSwapchainImages.size(); i++)
         {
-            /*
-            VkImageViewCreateInfo createInfo{};
-            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            createInfo.image = appSwapchainImages[i];
-            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            createInfo.format = appSwapchainImageFormat;
-            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            createInfo.subresourceRange.baseMipLevel = 0;
-            createInfo.subresourceRange.levelCount = 1;
-            createInfo.subresourceRange.baseArrayLayer = 0;
-            createInfo.subresourceRange.layerCount = 1;
-
-            if (vkCreateImageView(appDevice, &createInfo, nullptr, &appSwapchainImageViews[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create image views!");
-            }
-            */
             appSwapchainImageViews[i] = CreateImageView(appSwapchainImages[i], appSwapchainImageFormat);
         }
     }
@@ -190,6 +170,25 @@ namespace Reinkan::Graphics
         CreateSwapchainColorResources();
         CreateSwapchainDepthResource();
         CreateSwapchainFrameBuffers();
+
+        // Have to recreate because shared depth
+        CreateShadowFrameBuffers();
+        // Recreate Scanline FrameBuffers
+        CreateScanlineFrameBuffers();
+        // Recreate VLight FrameBuffers
+        CreateVLightFrameBuffers();
+
+        // Rebind Descriptor for Scanline
+        appScanlineDescriptorWrap.Write(appDevice, 8, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
+        // Rebind Descriptor for VLight
+        appVLightDescriptorWrap.Write(appDevice, 1, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
+        // Rebind Descriptor for Post Processing
+        appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
+        appPostDescriptorWrap.Write(appDevice, 1, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+        appPostDescriptorWrap.Write(appDevice, 2, appVLightingRenderTargetImageWraps, MAX_FRAMES_IN_FLIGHT);
+
     }
 
     void ReinkanApp::CleanupSwapchain()
@@ -209,5 +208,25 @@ namespace Reinkan::Graphics
         appSwapchainDepthImageWrap.Destroy(appDevice);
 
         vkDestroySwapchainKHR(appDevice, appSwapchain, nullptr);
+        
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            // Scanline ImageWrap
+            appScanlineImageWrap[i].Destroy(appDevice);
+            // Scanline FrameBuffers
+            vkDestroyFramebuffer(appDevice, appScanlineFrameBuffers[i], nullptr);
+
+            // Shadow
+            appShadowMapImageWraps[i].Destroy(appDevice);
+            vkDestroyFramebuffer(appDevice, appShadowFrameBuffers[i], nullptr);
+
+            // VLight
+            appVLightingRenderTargetImageWraps[i].Destroy(appDevice);
+            vkDestroyFramebuffer(appDevice, appVLightFrameBuffers[i], nullptr);
+        }
+
+        appScanlineImageWrap.clear();
+        appShadowMapImageWraps.clear();
+        appVLightingRenderTargetImageWraps.clear();
     }
 }

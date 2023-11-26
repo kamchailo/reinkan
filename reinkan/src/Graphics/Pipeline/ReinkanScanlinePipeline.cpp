@@ -11,10 +11,6 @@ namespace Reinkan::Graphics
         auto vertShaderCode = ReadFile("../shaders/shader.vert.spv");
         auto fragShaderCode = ReadFile("../shaders/shader.frag.spv");
 
-        //auto vertShaderCode = ReadFile("../shaders/particle.vert.spv");
-        //auto fragShaderCode = ReadFile("../shaders/particle.frag.spv");
-
-
         VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
 
@@ -34,9 +30,6 @@ namespace Reinkan::Graphics
 
         auto bindingDescription = GetBindingDescription();
         auto attributeDescriptions = GetAttributeDescriptions();
-        // With ComputeParticle
-        //auto bindingDescription = GetParticleBindingDescription();
-        //auto attributeDescriptions = GetParticleAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -48,7 +41,6 @@ namespace Reinkan::Graphics
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        //inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewportState{};
@@ -69,6 +61,7 @@ namespace Reinkan::Graphics
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = VK_TRUE; // enable sample shading in the pipeline
+        //multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.minSampleShading = 0.2f; // min fraction for sample shading; closer to one is smoother
         multisampling.rasterizationSamples = appMsaaSamples;
 

@@ -62,7 +62,7 @@ namespace Reinkan::Graphics
             currentZFar = nearClippingPlane * pow(farClippingPlane / nearClippingPlane, static_cast<float>(i+1) / sizeZ);
             clusterPlanes[i].zFar = currentZFar;
 
-            std::printf("plane %d: near %f far %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar);
+            //std::printf("plane %d: near %f far %f\n", i, clusterPlanes[i].zNear, clusterPlanes[i].zFar);
         }
 
         VkDeviceSize bufferSize = sizeof(ClusterPlane) * sizeZ;

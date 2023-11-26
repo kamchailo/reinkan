@@ -36,5 +36,5 @@ void main()
 
     vec3 lightShaft = texture(vlightMap, uv).rgb * pushConstant.debugFloat2;
 
-    outColor = vec4(colorPass.rgb + lightShaft, 1);
+    outColor = vec4(colorPass.rgb + (colorPass.rgb * lightShaft * 10) + lightShaft, 1);
 }

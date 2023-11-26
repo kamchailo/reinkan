@@ -509,7 +509,7 @@ namespace Reinkan::Graphics
 
         uint32_t    appDebugFlag{ 0x0 };
         float       appDebugFloat{ 10.0f };
-        float       appDebugFloat2{ 0.0001f };
+        float       appDebugFloat2{ 0.2f };
         float       appDebugFloat3{ 0.1f };
         int         appDebugInt{ 0 };
 

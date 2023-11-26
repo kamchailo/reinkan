@@ -117,6 +117,11 @@ void main()
         }
     }
 
+    if((pushConstant.debugFlag & 0x8) > 0)
+    {
+        shadow = 1;
+    }
+
     // vec3 homogeniousShadowCoord = shadowCoord.xyz / shadowCoord.w;
     // outColor = vec4(shadowIndex,0, 1.0);
 

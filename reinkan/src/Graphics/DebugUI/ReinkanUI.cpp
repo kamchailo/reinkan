@@ -101,7 +101,7 @@ namespace Reinkan::Graphics
 
         ImGui::Checkbox("Show VLight Map: ", &appImguiBool3);
 
-        //ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
+        ImGui::Checkbox("Show Shadow: ", &appImguiBool4);
 
         ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 10.0f, 180.0f);
 

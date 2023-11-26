@@ -22,16 +22,23 @@ layout(location = 0) out vec4 outColor;
 void main()
 {
     vec4 shaftColor = pushConstant.lightConstant;
+    float shaftDistance = length(pushConstant.cameraPosition.xyz - worldPos) * 0.1;
+    // float shaftDistance = gl_FragCoord.z;
+
+    // shaftColor = vec4(0,1,0,1);
 
     int facing = 1;
 
-    if(!gl_FrontFacing)
+    if(gl_FrontFacing)
     {
-        facing = 0;
-        outColor = vec4(1,0,0,1);
+        facing = -1;
+        // outColor = vec4(1,0,0,1);
         // return;
     }
 
-    outColor = shaftColor;
-    outColor = vec4(worldPos, 1.0);
+    // outColor = vec4(0,1,0,1);
+    // return;
+
+    outColor = facing * shaftDistance * shaftColor;
+    // outColor = vec4(vec3(shaftDistance), 1.0);
 }

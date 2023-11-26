@@ -57,6 +57,7 @@ namespace Reinkan
 	{
 		alignas(16) glm::vec4 lightPosition;
 		alignas(16) glm::vec4 lightConstant;
+		alignas(16) glm::vec4 cameraPosition;
 		alignas(8) glm::vec2 shadowMapExtent;
 	};
 

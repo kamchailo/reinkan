@@ -167,7 +167,7 @@ namespace Reinkan::Graphics
         {
             appVLightingRenderTargetImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
                 appSwapchainExtent.height,
-                appSwapchainImageFormat,                                        // Image Format
+                VK_FORMAT_R32G32B32A32_SFLOAT,                                        // Image Format
                 VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
                 VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
                 | VK_IMAGE_USAGE_TRANSFER_DST_BIT
@@ -177,13 +177,13 @@ namespace Reinkan::Graphics
                 appMsaaSamples);
 
             TransitionImageLayout(appVLightingRenderTargetImageWraps[i].image,
-                appSwapchainImageFormat,
+                VK_FORMAT_R32G32B32A32_SFLOAT,
                 VK_IMAGE_LAYOUT_UNDEFINED,
                 VK_IMAGE_LAYOUT_GENERAL);
 
             appVLightingRenderTargetImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
-            appVLightingRenderTargetImageWraps[i].imageView = CreateImageView(appVLightingRenderTargetImageWraps[i].image, appSwapchainImageFormat);
+            appVLightingRenderTargetImageWraps[i].imageView = CreateImageView(appVLightingRenderTargetImageWraps[i].image, VK_FORMAT_R32G32B32A32_SFLOAT);
             appVLightingRenderTargetImageWraps[i].sampler = CreateImageSampler();
         }
 

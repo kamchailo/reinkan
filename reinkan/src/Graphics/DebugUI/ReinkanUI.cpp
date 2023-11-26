@@ -95,11 +95,11 @@ namespace Reinkan::Graphics
 
         //ImGui::Text("Num of Lights: %d", appLightObjects.size());
 
-        ImGui::Checkbox("Show Bilinear: ", &appImguiBool1);
+        ImGui::Checkbox("Show Default Light Shaft: ", &appImguiBool1);
 
         ImGui::Checkbox("Show Shadow Map: ", &appImguiBool2);
 
-        //ImGui::Checkbox("Fill Light: ", &appImguiBool3);
+        ImGui::Checkbox("Show VLight Map: ", &appImguiBool3);
 
         //ImGui::Checkbox("Forward Shading: ", &appImguiBool4);
 

@@ -55,7 +55,9 @@ namespace Reinkan
 
 	struct PushConstantVLight
 	{
+		alignas(16) glm::vec4 lightPosition;
 		alignas(16) glm::vec4 lightConstant;
+		alignas(8) glm::vec2 shadowMapExtent;
 	};
 
 	struct PushConstantPost

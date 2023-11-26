@@ -7,17 +7,10 @@ layout(push_constant) uniform PushConstantRaster_T
     PushConstant pushConstant;
 };
 
-layout(binding = 0) uniform UniformBufferObject 
+layout(binding = 0) uniform UniformBufferObject_T 
 {
-    mat4 model;
-    mat4 view;
-    mat4 viewInverse;
-    mat4 proj;
-    mat4 shadowProjectionViewMatrix;
-    vec3 globalLightPosition;
-    uint globalLightPosition_padding;
-    vec2 screenExtent;
-} ubo;
+    UniformBufferObject ubo;
+};
 
 layout(location = 0) in vec3    inPosition;
 layout(location = 1) in vec3    inVertexNormal;

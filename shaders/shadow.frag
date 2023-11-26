@@ -14,7 +14,5 @@ layout(location = 0) out vec4 outColor;
 
 void main()
 {
-    // outColor = viewDir.z / 100;
-
     outColor = vec4(worldPos, length(viewDir));
 }

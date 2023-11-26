@@ -157,4 +157,58 @@ namespace Reinkan::Graphics
             }
         }
     }
+
+    void ReinkanApp::CreateVLightFrameBuffers()
+    {
+        appVLightingRenderTargetImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appVLightingRenderTargetImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
+                appSwapchainExtent.height,
+                appSwapchainImageFormat,                                        // Image Format
+                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
+                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
+                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
+                1,
+                appMsaaSamples);
+
+            TransitionImageLayout(appVLightingRenderTargetImageWraps[i].image,
+                appSwapchainImageFormat,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_GENERAL);
+
+            appVLightingRenderTargetImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+            appVLightingRenderTargetImageWraps[i].imageView = CreateImageView(appVLightingRenderTargetImageWraps[i].image, appSwapchainImageFormat);
+            appVLightingRenderTargetImageWraps[i].sampler = CreateImageSampler();
+        }
+
+        appVLightFrameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            std::array<VkImageView, 2> attachments = {
+                // Write to appVLightingRenderTargetImageWraps
+                appVLightingRenderTargetImageWraps[i].imageView,
+                appSwapchainDepthImageWrap.imageView
+            };
+
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = appVLightRenderPass;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
+            framebufferInfo.width = appSwapchainExtent.width;
+            framebufferInfo.height = appSwapchainExtent.height;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(appDevice, &framebufferInfo, nullptr, &appVLightFrameBuffers[i]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
+        }
+    }
 }

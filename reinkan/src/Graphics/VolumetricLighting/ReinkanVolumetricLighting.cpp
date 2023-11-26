@@ -13,16 +13,31 @@ namespace Reinkan::Graphics
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkAttachmentDescription depthAttachment{};
+        depthAttachment.format = FindDepthFormat();
+        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
         colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
+        VkAttachmentReference depthAttachmentRef{};
+        depthAttachmentRef.attachment = 1;
+        depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
+        subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
         VkSubpassDependency dependency{};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -32,7 +47,7 @@ namespace Reinkan::Graphics
         dependency.srcAccessMask = 0;
         dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-        std::array<VkAttachmentDescription, 1> attachments = { colorAttachment };
+        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
 
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -45,59 +60,6 @@ namespace Reinkan::Graphics
 
         if (vkCreateRenderPass(appDevice, &renderPassInfo, nullptr, &appVLightRenderPass) != VK_SUCCESS) {
             throw std::runtime_error("failed to create render pass!");
-        }
-	}
-
-	void ReinkanApp::CreateVLightFrameBuffers()
-	{
-        appVLightingRenderTargetImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appVLightingRenderTargetImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
-                appSwapchainExtent.height,
-                appSwapchainImageFormat,                                        // Image Format
-                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
-                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
-                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
-                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
-                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
-                1,
-                appMsaaSamples);
-
-            TransitionImageLayout(appVLightingRenderTargetImageWraps[i].image,
-                appSwapchainImageFormat,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_GENERAL);
-
-            appVLightingRenderTargetImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-
-            appVLightingRenderTargetImageWraps[i].imageView = CreateImageView(appVLightingRenderTargetImageWraps[i].image, appSwapchainImageFormat);
-            appVLightingRenderTargetImageWraps[i].sampler = CreateImageSampler();
-        }
-
-        appVLightFrameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-        {
-            std::array<VkImageView, 1> attachments = {
-                // Write to appVLightingRenderTargetImageWraps
-                appVLightingRenderTargetImageWraps[i].imageView,
-            };
-
-            VkFramebufferCreateInfo framebufferInfo{};
-            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = appVLightRenderPass;
-            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-            framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = appSwapchainExtent.width;
-            framebufferInfo.height = appSwapchainExtent.height;
-            framebufferInfo.layers = 1;
-
-            if (vkCreateFramebuffer(appDevice, &framebufferInfo, nullptr, &appVLightFrameBuffers[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to create framebuffer!");
-            }
         }
 	}
 
@@ -193,7 +155,6 @@ namespace Reinkan::Graphics
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        //inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewportState{};
@@ -213,15 +174,15 @@ namespace Reinkan::Graphics
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-        multisampling.sampleShadingEnable = VK_TRUE; // enable sample shading in the pipeline
+        multisampling.sampleShadingEnable = VK_FALSE    ; // enable sample shading in the pipeline
         //multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.minSampleShading = 0.2f; // min fraction for sample shading; closer to one is smoother
         multisampling.rasterizationSamples = appMsaaSamples;
 
         VkPipelineDepthStencilStateCreateInfo depthStencil{};
         depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-        depthStencil.depthTestEnable = VK_FALSE;
-        depthStencil.depthWriteEnable = VK_FALSE;
+        depthStencil.depthTestEnable = VK_TRUE;
+        depthStencil.depthWriteEnable = VK_TRUE;
         depthStencil.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;// BEWARE!!  NECESSARY!!
         depthStencil.depthBoundsTestEnable = VK_FALSE;
         depthStencil.minDepthBounds = 0.0f; // Optional
@@ -232,7 +193,7 @@ namespace Reinkan::Graphics
 
         VkPipelineColorBlendAttachmentState colorBlendAttachment{};
         colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-        colorBlendAttachment.blendEnable = VK_TRUE;
+        colorBlendAttachment.blendEnable = VK_FALSE;
         colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
         colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
         colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -329,7 +290,7 @@ namespace Reinkan::Graphics
         // Add PeakVertex
         appVLightVertices.push_back({ glm::vec3(0, 0, 0), glm::vec3(0, 0, 0) });
         auto& peakVertex = appVLightVertices.back();
-        unsigned int peakIndex = appVLightFrameBuffers.size() - 1;
+        unsigned int peakIndex = appVLightVertices.size() - 1;
 
         // Create Index Buffer on plane
         for (int i = 0; i < height - 1; ++i)
@@ -355,14 +316,14 @@ namespace Reinkan::Graphics
             appVLightIndices.push_back((i + 1)*width);
             appVLightIndices.push_back(peakIndex);
 
-            appVLightIndices.push_back(i * width + (width  - 1));
             appVLightIndices.push_back((i + 1) * width + (width - 1));
+            appVLightIndices.push_back(i * width + (width  - 1));
             appVLightIndices.push_back(peakIndex);
         }
         for (int j = 0; j < width - 1; ++j)
         {
-            appVLightIndices.push_back(j);
             appVLightIndices.push_back(j + 1);
+            appVLightIndices.push_back(j);
             appVLightIndices.push_back(peakIndex);
 
             unsigned int bottomBorder = width * (height - 1);

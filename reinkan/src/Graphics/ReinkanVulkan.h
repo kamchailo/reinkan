@@ -391,6 +391,8 @@ namespace Reinkan::Graphics
 
         void BindTextures();
 
+        void CreateScanlineUBO();
+
         void CreateScanlineDescriptorWrap();
 
         std::vector<ModelDataLoading> appModelDataToBeLoaded;
@@ -506,7 +508,7 @@ namespace Reinkan::Graphics
         #endif
 
         uint32_t    appDebugFlag{ 0x0 };
-        float       appDebugFloat{ 90.0f };
+        float       appDebugFloat{ 10.0f };
         float       appDebugFloat2{ 0.0001f };
         int         appDebugInt{ 0 };
 
@@ -667,6 +669,8 @@ namespace Reinkan::Graphics
 
         void CreateVLightResources(size_t width, size_t height);
 
+        void RecordVLightPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
         void DestroyVLightResources();
 
         VkRenderPass                    appVLightRenderPass;
@@ -716,6 +720,8 @@ namespace Reinkan::Graphics
 
         glm::vec3                       appGlobalLightPosition{ 8.0, 8.0, 1.0 };
         glm::vec3                       appGlobalLightDirection{ -0.704361, -0.704361, -0.0880451 };
+        //glm::vec3                       appGlobalLightPosition{ 0.0, 8.0, 0.0 };
+        //glm::vec3                       appGlobalLightDirection{ 0.0, -0.7, 0.0 };
 
         glm::mat4                       appShadowProjectionViewMatrix;
 

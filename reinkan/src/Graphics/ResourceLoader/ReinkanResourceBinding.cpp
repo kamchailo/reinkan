@@ -58,6 +58,21 @@ namespace Reinkan::Graphics
         }
     }
 
+    void ReinkanApp::CreateScanlineUBO()
+    {
+        // UBO [MAX_FRAMES_IN_FLIGHT]
+        VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+        appScanlineUBO.resize(MAX_FRAMES_IN_FLIGHT);
+        appScanlineUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appScanlineUBO[i] = CreateBufferWrap(bufferSize,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
+        }
+    }
+
     void ReinkanApp::CreateScanlineDescriptorWrap()
     {
 
@@ -147,17 +162,7 @@ namespace Reinkan::Graphics
                                               bindingTable, 
                                               MAX_FRAMES_IN_FLIGHT);
 
-        // UBO [MAX_FRAMES_IN_FLIGHT]
-        VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-        appScanlineUBO.resize(MAX_FRAMES_IN_FLIGHT);
-        appScanlineUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appScanlineUBO[i] = CreateBufferWrap(bufferSize,
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-            vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
-        }
+        
         appScanlineDescriptorWrap.Write(appDevice, 0, appScanlineUBO);
         
         // Material only once

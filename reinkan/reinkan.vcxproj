@@ -215,7 +215,7 @@
     <ClCompile Include="src\Graphics\DebugPipelineResources\ReinkanDebug.cpp" />
     <ClCompile Include="src\Graphics\Descriptor\DescriptorWrap.cpp" />
     <ClCompile Include="src\Graphics\Cleanup\ReinkanCleanup.cpp" />
-    <ClCompile Include="src\Graphics\Draw\ReinkanRecodeVLight.cpp" />
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordVLight.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordCompute.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordPostProcessing.cpp" />
     <ClCompile Include="src\Graphics\Draw\ReinkanRecordScanline.cpp" />

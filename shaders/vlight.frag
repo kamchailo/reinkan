@@ -7,17 +7,10 @@ layout(push_constant) uniform PushConstantVLight_T
     PushConstantVLight pushConstant;
 };
 
-layout(binding = 0) uniform UniformBufferObject 
+layout(binding = 0) uniform UniformBufferObject_T 
 {
-    mat4 model;
-    mat4 view;
-    mat4 viewInverse;
-    mat4 proj;
-    mat4 shadowProjectionViewMatrix;
-    vec3 globalLightPosition;
-    uint globalLightPosition_padding;
-    vec2 screenExtent;
-} ubo;
+    UniformBufferObject ubo;
+};
 
 layout(binding = 1) uniform sampler2D shadowmap;
 
@@ -29,6 +22,15 @@ layout(location = 0) out vec4 outColor;
 void main()
 {
     vec4 shaftColor = pushConstant.lightConstant;
+
+    int facing = 1;
+
+    if(!gl_FrontFacing)
+    {
+        facing = 0;
+        outColor = vec4(1,0,0,1);
+        return;
+    }
 
     outColor = shaftColor;
 }

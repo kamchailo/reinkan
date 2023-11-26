@@ -46,7 +46,7 @@ namespace Reinkan::Graphics
 		CreateSwapchainDepthResource();
 
 		// Shadow
-		CreateShadowResources(1024, 1024);
+		CreateShadowResources(8, 8);
 
 		// From VolumicLighting
 		CreateVLightResources(appShadowMapWidth, appShadowMapHeight);
@@ -84,6 +84,9 @@ namespace Reinkan::Graphics
 			BindMaterials();
 
 			BindTextures();
+
+			// Default Viewport UBO - Projection and View Matrix
+			CreateScanlineUBO();
 
 			// Parallax Occlusion Binding
 			//BindPyramidalMap(appPyramidalPaths);

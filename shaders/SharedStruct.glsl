@@ -24,6 +24,18 @@ struct Material
     uint pyramidalHeightMapId;
 };
 
+struct UniformBufferObject
+{
+    mat4 model;
+    mat4 view;
+    mat4 viewInverse;
+    mat4 proj;
+    mat4 shadowProjectionViewMatrix;
+    vec3 globalLightPosition;
+    uint globalLightPosition_padding;
+    vec2 screenExtent;
+};
+
 struct LightObject
 {
     vec3	position;
@@ -64,7 +76,9 @@ struct PushConstantShadow
 
 struct PushConstantVLight
 {
+    vec4 lightPosition;
     vec4 lightConstant;
+    vec2 shadowMapExtent;
 };
 
 struct PushConstantPost

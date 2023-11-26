@@ -204,7 +204,7 @@
     <ClCompile Include="src\Graphics\Cleanup\ReinkanShadowCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Draw\ReinkanRecodeVLight.cpp">
+    <ClCompile Include="src\Graphics\Draw\ReinkanRecordVLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

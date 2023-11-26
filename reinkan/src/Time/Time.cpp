@@ -16,7 +16,7 @@ namespace Reinkan::Time
 		if (deltaTime < 1.0f / fixedFps)
 		{
 			auto duration = std::chrono::duration<double>((1.0f / fixedFps) - deltaTime);
-			std::this_thread::sleep_for(duration);
+			//std::this_thread::sleep_for(duration);
 		}
 
 		double lastFrame = timeElapse;

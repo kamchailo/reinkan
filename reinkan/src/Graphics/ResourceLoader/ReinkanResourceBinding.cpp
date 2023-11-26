@@ -58,6 +58,21 @@ namespace Reinkan::Graphics
         }
     }
 
+    void ReinkanApp::CreateScanlineUBO()
+    {
+        // UBO [MAX_FRAMES_IN_FLIGHT]
+        VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+        appScanlineUBO.resize(MAX_FRAMES_IN_FLIGHT);
+        appScanlineUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appScanlineUBO[i] = CreateBufferWrap(bufferSize,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
+        }
+    }
+
     void ReinkanApp::CreateScanlineDescriptorWrap()
     {
 
@@ -126,6 +141,13 @@ namespace Reinkan::Graphics
                                        1,                                                   // descriptorCount; 
                                        VK_SHADER_STAGE_FRAGMENT_BIT });                      // stageFlags;
 
+        // Shadow Map
+        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                      bindingIndex++,                                               // binding;
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
+                                      static_cast<uint32_t>(appShadowMapImageWraps.size()),           // descriptorCount; // Has to > 0
+                                      VK_SHADER_STAGE_FRAGMENT_BIT });
+
         // PyramidalMap
         if (appPyramidalImageWraps.size() > 0)
         {
@@ -140,17 +162,7 @@ namespace Reinkan::Graphics
                                               bindingTable, 
                                               MAX_FRAMES_IN_FLIGHT);
 
-        // UBO [MAX_FRAMES_IN_FLIGHT]
-        VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-        appScanlineUBO.resize(MAX_FRAMES_IN_FLIGHT);
-        appScanlineUBOMapped.resize(MAX_FRAMES_IN_FLIGHT);
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appScanlineUBO[i] = CreateBufferWrap(bufferSize,
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-            vkMapMemory(appDevice, appScanlineUBO[i].memory, 0, bufferSize, 0, &appScanlineUBOMapped[i]);
-        }
+        
         appScanlineDescriptorWrap.Write(appDevice, 0, appScanlineUBO);
         
         // Material only once
@@ -183,10 +195,12 @@ namespace Reinkan::Graphics
         appScanlineDescriptorWrap.Write(appDevice, 7, appClusteredLightGrid);
         std::swap(appClusteredLightGrid[0], appClusteredLightGrid[1]);
 
+        appScanlineDescriptorWrap.Write(appDevice, 8, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+
         // Pyramidal only once
         if (appPyramidalImageWraps.size() > 0)
         {
-            appScanlineDescriptorWrap.Write(appDevice, 8, appPyramidalImageWraps, MAX_FRAMES_IN_FLIGHT);
+            appScanlineDescriptorWrap.Write(appDevice, 9, appPyramidalImageWraps, MAX_FRAMES_IN_FLIGHT);
         }
     }
 }

@@ -53,8 +53,18 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool().size());
             
             */
-            glm::mat4 planeTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 1.0, 0.0));
+            glm::mat4 planeTr = glm::mat4(1);
+            planeTr = glm::scale(planeTr, glm::vec3(0.3));
+            planeTr = glm::translate(planeTr, glm::vec3(0.0, 2.0, 0.0));
             //ModelData plane;
+            ReadAssimpFile("../assets/models/plane.obj",
+                planeTr,
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+
+            planeTr = glm::translate(planeTr, glm::vec3(3.0, 1.0, 1.0));
             ReadAssimpFile("../assets/models/plane.obj",
                 planeTr,
                 modelDatas,

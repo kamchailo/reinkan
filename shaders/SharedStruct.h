@@ -20,6 +20,8 @@ namespace Reinkan
 		alignas(16) glm::mat4 view;
 		alignas(16) glm::mat4 viewInverse;
 		alignas(16) glm::mat4 proj;
+		alignas(16) glm::mat4 shadowProjectionViewMatrix;
+		alignas(16) glm::vec3 globalLightPosition;
 		alignas(8) glm::vec2 screenExtent;
 	};
 
@@ -33,6 +35,39 @@ namespace Reinkan
 		alignas(4) float debugFloat;
 		alignas(4) float debugFloat2;
 		alignas(4) int debugInt;
+	};
+
+	struct ShadowUniformBufferObject {
+		alignas(16) glm::mat4 model;
+		alignas(16) glm::mat4 view;
+		alignas(16) glm::mat4 viewInverse;
+		alignas(16) glm::mat4 proj;
+		alignas(8) glm::vec2 screenExtent;
+	};
+
+	struct PushConstantShadow
+	{
+		alignas(16) glm::mat4 modelMatrix;
+		alignas(8)  glm::vec2 screenExtent;
+	};
+
+	// Use ScanlineUBO
+
+	struct PushConstantVLight
+	{
+		alignas(16) glm::vec4 lightPosition;
+		alignas(16) glm::vec4 lightConstant;
+		alignas(16) glm::vec4 cameraPosition;
+		alignas(8) glm::vec2 shadowMapExtent;
+	};
+
+	struct PushConstantPost
+	{
+		alignas(8) glm::vec2 screenExtent;
+		alignas(4) uint32_t debugFlag;
+		alignas(4) float debugFloat;
+		alignas(4) float debugFloat2;
+		alignas(4) float debugFloat3;
 	};
 
 	struct Material {
@@ -107,5 +142,11 @@ namespace Reinkan
 		alignas(4) uint32_t width;
 		alignas(4) uint32_t height;
 		alignas(4) uint32_t mipLevels;
+	};
+
+	struct VLightVertex
+	{
+		alignas(16) glm::vec3	position;
+		alignas(16) glm::vec3	vertexNormal;
 	};
 }

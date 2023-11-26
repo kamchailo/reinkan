@@ -24,6 +24,18 @@ struct Material
     uint pyramidalHeightMapId;
 };
 
+struct UniformBufferObject
+{
+    mat4 model;
+    mat4 view;
+    mat4 viewInverse;
+    mat4 proj;
+    mat4 shadowProjectionViewMatrix;
+    vec3 globalLightPosition;
+    uint globalLightPosition_padding;
+    vec2 screenExtent;
+};
+
 struct LightObject
 {
     vec3	position;
@@ -56,11 +68,25 @@ struct LightGrid
     uint size;
 };
 
-layout(binding = 0) uniform UniformBufferObject 
+struct PushConstantShadow
 {
-    mat4 model;
-    mat4 view;
-    mat4 viewInverse;
-    mat4 proj;
+    mat4 modelMatrix;
     vec2 screenExtent;
-} ubo;
+};
+
+struct PushConstantVLight
+{
+    vec4 lightPosition;
+    vec4 lightConstant;
+    vec4 cameraPosition;
+    vec2 shadowMapExtent;
+};
+
+struct PushConstantPost
+{
+    vec2 screenExtent;
+    uint debugFlag;
+    float debugFloat;
+    float debugFloat2;
+    float debugFloat3;
+};

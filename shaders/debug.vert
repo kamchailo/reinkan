@@ -13,6 +13,7 @@ layout(location = 0) in vec3 inPosition;
 
 layout(location = 0) out vec3 worldPos;
 layout(location = 1) out vec3 viewDir;
+layout(location = 2) out vec3 vertexNormal;
 
 void main() 
 {
@@ -21,6 +22,11 @@ void main()
     gl_Position =  modelTransform * vec4(inPosition, 1.0);
     
     // gl_PointSize  = 10.0f;
+
+    if(gl_VertexIndex == 0 || gl_VertexIndex == 5)
+    {
+        gl_Position =  modelTransform * vec4(inPosition.x, inPosition.y, inPosition.z + 0.3, 1.0);
+    }
 
     vec3 eye = vec3(ubo.viewInverse * vec4(0, 0, 0, 1));
 

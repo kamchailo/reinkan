@@ -339,6 +339,16 @@ namespace Reinkan::Graphics
         // and let use choose the setting.
         VkSampler CreateImageSampler();
 
+        void CreateImageLayoutBarrier(VkCommandBuffer commandBuffer,
+                                    VkImage image,
+                                    VkImageLayout oldImageLayout,
+                                    VkImageLayout newImageLayout,
+                                    VkImageAspectFlags aspectMask);
+
+        VkAccessFlags AccessFlagsForImageLayout(VkImageLayout layout);
+
+        VkPipelineStageFlags PipelineStageForLayout(VkImageLayout layout);
+
         VkSampler CreateTextureSampler(uint32_t mipLevels);
 
         VkSampler CreateNearestImageSampler();
@@ -381,6 +391,8 @@ namespace Reinkan::Graphics
 
         void BindTextures();
 
+        void CreateScanlineUBO();
+
         void CreateScanlineDescriptorWrap();
 
         std::vector<ModelDataLoading> appModelDataToBeLoaded;
@@ -394,6 +406,36 @@ namespace Reinkan::Graphics
         std::vector<ImageWrap>      appTextureImageWraps;
 
         DescriptorWrap              appScanlineDescriptorWrap;
+
+    ////////////////////////////////////////
+    //          Post Processing
+    ////////////////////////////////////////
+
+    // ReinkanPostProcessing
+
+        void CreatePostRenderPass();
+
+        void CreateScanlineFrameBuffers();
+
+        void CreatePostDescriptorSetWrap();
+
+        void CreatePostPipeline(DescriptorWrap& descriptorWrap);
+
+        void CleanupPostProcessing();
+
+        VkRenderPass                    appPostRenderPass;
+
+        VkPipeline                      appPostPipeline;
+        VkPipelineLayout                appPostPipelineLayout;
+
+        std::vector<VkFramebuffer>      appScanlineFrameBuffers;
+        std::vector<ImageWrap>          appScanlineImageWrap;
+
+        DescriptorWrap                  appPostDescriptorWrap;
+
+    // ReinkanRecordPostProcessing.cpp
+
+        void RecordPostProcessing(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     ////////////////////////////////////////
     //          User Control
@@ -430,7 +472,7 @@ namespace Reinkan::Graphics
     // ReinkanDebug.cpp
         static VkVertexInputBindingDescription GetDebugBindingDescription();
 
-        static std::array<VkVertexInputAttributeDescription, 1> GetDebugAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 2> GetDebugAttributeDescriptions();
 
         void CreateDebugBufferWraps();
 
@@ -466,8 +508,9 @@ namespace Reinkan::Graphics
         #endif
 
         uint32_t    appDebugFlag{ 0x0 };
-        float       appDebugFloat{ 0.5f };
-        float       appDebugFloat2{ 0.0001f };
+        float       appDebugFloat{ 10.0f };
+        float       appDebugFloat2{ 0.2f };
+        float       appDebugFloat3{ 0.1f };
         int         appDebugInt{ 0 };
 
         bool        appImguiBool1{ false };
@@ -609,5 +652,82 @@ namespace Reinkan::Graphics
 
         std::vector<std::string>        appPyramidalPaths;
         std::vector<ImageWrap>          appPyramidalImageWraps;
+
+    // -------- Volumetric Lighting -------- //
+
+    // ReinkanVolumetricLighting.cpp
+        void CreateVLightingRenderPass();
+
+        void CreateVLightFrameBuffers();
+
+        static VkVertexInputBindingDescription GetVLightBindingDescription();
+
+        static std::array<VkVertexInputAttributeDescription, 2> GetVLightAttributeDescriptions();
+
+        void CreateVLightDescriptorSetWrap();
+
+        void CreateVLightPipeline(DescriptorWrap descriptorWrap);
+
+        void CreateVLightResources(size_t width, size_t height);
+
+        void RecordVLightPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+        void DestroyVLightResources();
+
+        VkRenderPass                    appVLightRenderPass;
+
+        std::vector<VkFramebuffer>      appVLightFrameBuffers;
+
+        VkPipeline                      appVLightPipeline;
+        VkPipelineLayout                appVLightPipelineLayout;
+
+        std::vector<ImageWrap>          appVLightingRenderTargetImageWraps;
+
+        std::vector<VLightVertex>       appVLightVertices;
+        std::vector<unsigned int>       appVLightIndices;
+
+        DescriptorWrap                  appVLightDescriptorWrap;
+        BufferWrap                      appVLightVertexBufferWrap;
+        BufferWrap                      appVLightIndexBufferWrap;
+
+    // ReinkanShadow.cpp
+        void CreateShadowRenderPass();
+
+        void CreateShadowFrameBuffers();
+
+        void CreateShadowDescriptorSetWrap();
+
+        void CreateShadowPipeline(DescriptorWrap descriptorWrap);
+
+        void CreateShadowResources(size_t width, size_t height);
+
+        void UpdateShadowUBO(uint32_t currentImage);
+
+        void RecordShadowPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+        void DestroyShadowResources();
+
+        VkRenderPass                    appShadowRenderPass;
+
+        std::vector<VkFramebuffer>      appShadowFrameBuffers;
+
+        std::vector<ImageWrap>          appShadowMapImageWraps;
+
+        VkPipeline                      appShadowPipeline;
+        VkPipelineLayout                appShadowPipelineLayout;
+
+        size_t                          appShadowMapWidth;
+        size_t                          appShadowMapHeight;
+
+        glm::vec3                       appGlobalLightPosition{ 8.0, 8.0, 1.0 };
+        glm::vec3                       appGlobalLightDirection{ -0.704361, -0.704361, -0.0880451 };
+        //glm::vec3                       appGlobalLightPosition{ 0.0, 8.0, 0.0 };
+        //glm::vec3                       appGlobalLightDirection{ 0.0, -0.7, 0.0 };
+
+        glm::mat4                       appShadowProjectionViewMatrix;
+
+        DescriptorWrap                  appShadowDescriptorWrap;
+        std::vector<BufferWrap>         appShadowUBO;
+        std::vector<void*>              appShadowUBOMapped; // Address to Buffer | HOST_VISIBLE
     };
 }

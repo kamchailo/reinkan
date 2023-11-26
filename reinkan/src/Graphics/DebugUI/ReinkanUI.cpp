@@ -105,7 +105,7 @@ namespace Reinkan::Graphics
 
         ImGui::SliderFloat("Debug Float: ", &appDebugFloat, 10.0f, 180.0f);
 
-        ImGui::SliderFloat("Debug Float2: ", &appDebugFloat2, 0.0f, 0.0005f, "%.5f");
+        ImGui::SliderFloat("Debug Float2: ", &appDebugFloat2, 0.0f, 1.0f, "%.2f");
 
         ImGui::SliderInt("Debug Int: ", &appDebugInt, 0, 11);
 

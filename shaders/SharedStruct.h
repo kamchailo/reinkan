@@ -64,6 +64,9 @@ namespace Reinkan
 	{
 		alignas(8) glm::vec2 screenExtent;
 		alignas(4) uint32_t debugFlag;
+		alignas(4) float debugFloat;
+		alignas(4) float debugFloat2;
+		alignas(4) float debugFloat3;
 	};
 
 	struct Material {

@@ -46,7 +46,7 @@ namespace Reinkan::Graphics
 		CreateSwapchainDepthResource();
 
 		// Shadow
-		CreateShadowResources(8, 8);
+		CreateShadowResources(1024, 1024);
 
 		// From VolumicLighting
 		CreateVLightResources(appShadowMapWidth, appShadowMapHeight);

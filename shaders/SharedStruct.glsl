@@ -85,4 +85,7 @@ struct PushConstantPost
 {
     vec2 screenExtent;
     uint debugFlag;
+    float debugFloat;
+    float debugFloat2;
+    float debugFloat3;
 };

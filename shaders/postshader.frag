@@ -19,18 +19,22 @@ void main()
 {
     vec2 uv = gl_FragCoord.xy/pushConstant.screenExtent;
     // outColor = vec4(uv, 0, 1);
-    outColor = vec4(texture(renderedImage, uv).rgb, 1);
+    vec4 colorPass = vec4(texture(renderedImage, uv).rgb, 1);
 
     if((pushConstant.debugFlag & 0x2) > 1)
     {
         outColor = vec4(texture(shadowMap, uv).rgb, 1);
         // outColor = vec4(vec3(texture(shadowMap, uv).w) / 100, 1);
+        return;
     }
 
     if((pushConstant.debugFlag & 0x4) > 1)
     {
         outColor = vec4(texture(vlightMap, uv).rgb, 1);
+        return;
     }
 
-    // outColor = vec4(uv, 0, 1);
+    vec3 lightShaft = texture(vlightMap, uv).rgb * pushConstant.debugFloat2;
+
+    outColor = vec4(colorPass.rgb + lightShaft, 1);
 }

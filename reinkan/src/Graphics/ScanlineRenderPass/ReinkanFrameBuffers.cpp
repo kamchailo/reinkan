@@ -125,7 +125,8 @@ namespace Reinkan::Graphics
             appShadowMapImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
             appShadowMapImageWraps[i].imageView = CreateImageView(appShadowMapImageWraps[i].image, VK_FORMAT_R32G32B32A32_SFLOAT);
-            appShadowMapImageWraps[i].sampler = CreateImageSampler();
+            //appShadowMapImageWraps[i].sampler = CreateImageSampler();
+            appShadowMapImageWraps[i].sampler = CreateNearestImageSampler();
         }
 
 

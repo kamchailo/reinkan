@@ -29,8 +29,9 @@ void main()
     {
         facing = 0;
         outColor = vec4(1,0,0,1);
-        return;
+        // return;
     }
 
     outColor = shaftColor;
+    outColor = vec4(worldPos, 1.0);
 }

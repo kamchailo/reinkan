@@ -51,6 +51,9 @@ namespace Reinkan::Graphics
             PushConstantPost pushConstant;
             pushConstant.screenExtent = glm::vec2(appSwapchainExtent.width, appSwapchainExtent.height);
             pushConstant.debugFlag = appDebugFlag;
+            pushConstant.debugFloat = appDebugFloat;
+            pushConstant.debugFloat2 = appDebugFloat2;
+            pushConstant.debugFloat3 = appDebugFloat3;
 
             vkCmdPushConstants(commandBuffer,
                 appPostPipelineLayout,

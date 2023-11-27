@@ -15,29 +15,14 @@ namespace Reinkan::Graphics
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         colorAttachment.finalLayout = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkAttachmentDescription depthAttachment{};
-        depthAttachment.format = FindDepthFormat();
-        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-        depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-        depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
         colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-        VkAttachmentReference depthAttachmentRef{};
-        depthAttachmentRef.attachment = 1;
-        depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
-        subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
         VkSubpassDependency dependency{};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -47,7 +32,7 @@ namespace Reinkan::Graphics
         dependency.srcAccessMask = 0;
         dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+        std::array<VkAttachmentDescription, 1> attachments = { colorAttachment };
 
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -97,18 +82,25 @@ namespace Reinkan::Graphics
 
         // UBO
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                  bindingIndex++,                                                   // binding;
+                                  bindingIndex++, // 0                                                   // binding;
                                   VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                                // descriptorType;
                                   1,                                                                // descriptorCount; 
                                   VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT });     // stageFlags;
 
         // ShadowImageWrap
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                      bindingIndex++,                                               // binding;
+                                      bindingIndex++, // 1                                              // binding;
                                       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
                                       MAX_FRAMES_IN_FLIGHT,                                         // descriptorCount; // Has to > 0
                                       VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
 
+        // SceneDepthMapWrap
+        bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
+                                      bindingIndex++, // 2                                              // binding;
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
+                                      1,                                         // descriptorCount; // Has to > 0
+                                      VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
+        
         appVLightDescriptorWrap.SetBindings(appDevice,
             bindingTable,
             MAX_FRAMES_IN_FLIGHT);
@@ -117,6 +109,8 @@ namespace Reinkan::Graphics
 
         appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appScanlineUBO);
         appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+        appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appSwapchainDepthImageWrap, MAX_FRAMES_IN_FLIGHT);
+        //appVLightDescriptorWrap.WriteFromFrameBuffer(appDevice, bindingIndex++, appSwapchainDepthImageWrap);
     }
 
 	void ReinkanApp::CreateVLightPipeline(DescriptorWrap descriptorWrap)
@@ -167,6 +161,7 @@ namespace Reinkan::Graphics
         rasterizer.depthClampEnable = VK_FALSE;
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+        //rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_NONE;
         rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -337,14 +332,6 @@ namespace Reinkan::Graphics
         appVLightVertexBufferWrap = CreateStagedBufferWrap(appVLightVertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
         appVLightIndexBufferWrap = CreateStagedBufferWrap(appVLightIndices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-
-		//std::vector<ImageWrap> appVLightingDepthImageWraps;
-		// Depth Map to store the depth from light view
-		
-		//std::vector<ImageWrap> appVLightingRenderTargetImageWraps;
-		// Image to render the light effect on
-		// which will get added to the final image
-
 	}
 }
 

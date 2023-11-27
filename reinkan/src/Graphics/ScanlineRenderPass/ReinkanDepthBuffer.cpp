@@ -11,7 +11,8 @@ namespace Reinkan::Graphics
                                                     appSwapchainExtent.height, 
                                                     depthFormat, 
                                                     VK_IMAGE_TILING_OPTIMAL, 
-                                                    VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+                                                    VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT 
+                                                    | VK_IMAGE_USAGE_SAMPLED_BIT,
                                                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                                     1,
                                                     appMsaaSamples);
@@ -21,8 +22,10 @@ namespace Reinkan::Graphics
         TransitionImageLayout(appSwapchainDepthImageWrap.image, 
                               depthFormat, 
                               VK_IMAGE_LAYOUT_UNDEFINED, 
-                              VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+                              VK_IMAGE_LAYOUT_GENERAL);
 
+        appSwapchainDepthImageWrap.sampler = CreateImageSampler();
+        appSwapchainDepthImageWrap.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
     }
 
     VkFormat ReinkanApp::FindDepthFormat()

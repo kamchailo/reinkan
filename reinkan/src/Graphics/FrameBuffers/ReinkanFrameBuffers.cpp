@@ -38,8 +38,6 @@ namespace Reinkan::Graphics
     {
         appScanlineImageWrap.resize(MAX_FRAMES_IN_FLIGHT);
 
-        VkFormat colorFormat = FindDepthFormat();
-
         for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
         {
             appScanlineImageWrap[i] = CreateImageWrap(appSwapchainExtent.width,
@@ -96,6 +94,35 @@ namespace Reinkan::Graphics
             {
                 throw std::runtime_error("failed to create framebuffer!");
             }
+        }
+    }
+
+    void ReinkanApp::CreateScanlineDepthMap()
+    {
+        appScanlineDepthMapImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            appScanlineDepthMapImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
+                appSwapchainExtent.height,
+                VK_FORMAT_R32G32B32_SFLOAT,                                        // Image Format
+                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
+                VK_IMAGE_USAGE_STORAGE_BIT                             // As a result for render
+                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
+                1,
+                appMsaaSamples);
+
+            TransitionImageLayout(appScanlineDepthMapImageWraps[i].image,
+                VK_FORMAT_R32G32B32_SFLOAT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_GENERAL);
+
+            appScanlineDepthMapImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+            appScanlineDepthMapImageWraps[i].imageView = CreateImageView(appScanlineDepthMapImageWraps[i].image, VK_FORMAT_R32G32B32_SFLOAT);
+            appScanlineDepthMapImageWraps[i].sampler = CreateImageSampler();
         }
     }
 
@@ -191,10 +218,9 @@ namespace Reinkan::Graphics
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            std::array<VkImageView, 2> attachments = {
+            std::array<VkImageView, 1> attachments = {
                 // Write to appVLightingRenderTargetImageWraps
-                appVLightingRenderTargetImageWraps[i].imageView,
-                appSwapchainDepthImageWrap.imageView
+                appVLightingRenderTargetImageWraps[i].imageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};

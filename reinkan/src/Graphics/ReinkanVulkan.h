@@ -417,6 +417,8 @@ namespace Reinkan::Graphics
 
         void CreateScanlineFrameBuffers();
 
+        void CreateScanlineDepthMap();
+
         void CreatePostDescriptorSetWrap();
 
         void CreatePostPipeline(DescriptorWrap& descriptorWrap);
@@ -430,6 +432,7 @@ namespace Reinkan::Graphics
 
         std::vector<VkFramebuffer>      appScanlineFrameBuffers;
         std::vector<ImageWrap>          appScanlineImageWrap;
+        std::vector<ImageWrap>          appScanlineDepthMapImageWraps;
 
         DescriptorWrap                  appPostDescriptorWrap;
 

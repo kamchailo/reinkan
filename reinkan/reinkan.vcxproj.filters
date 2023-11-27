@@ -54,7 +54,7 @@
     <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanScanlineRenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanFrameBuffers.cpp">
+    <ClCompile Include="src\Graphics\FrameBuffers\ReinkanFrameBuffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\Initializer\ReinkanCommandBuffer.cpp">

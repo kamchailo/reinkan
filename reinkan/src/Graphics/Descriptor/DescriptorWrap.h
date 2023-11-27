@@ -33,10 +33,13 @@ namespace Reinkan::Graphics
 
         void Write(VkDevice& device, uint32_t index, const std::vector<BufferWrap>& bufferWraps);
 
-        void Write(VkDevice& device, uint32_t index, const VkDescriptorImageInfo& textureDesc);
+        void Write(VkDevice& device, uint32_t index, const ImageWrap& texture, uint32_t maxSets);
 
         void Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures, const uint32_t maxSets);
 
+        void WriteFromFrameBuffers(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures);
+
+        void WriteFromFrameBuffer(VkDevice& device, uint32_t index, const ImageWrap& texture);
     };
 
 }

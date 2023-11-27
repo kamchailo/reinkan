@@ -239,7 +239,7 @@
     <ClCompile Include="src\Input\InputSystem.cpp" />
     <ClCompile Include="src\Core\ReinkanEngine.cpp" />
     <ClCompile Include="src\Graphics\ResourceLoader\ReinkanModelLoader.cpp" />
-    <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanFrameBuffers.cpp" />
+    <ClCompile Include="src\Graphics\FrameBuffers\ReinkanFrameBuffers.cpp" />
     <ClCompile Include="src\Graphics\ScanlineRenderPass\ReinkanScanlineRenderPass.cpp" />
     <ClCompile Include="src\Graphics\Pipeline\ReinkanScanlinePipeline.cpp" />
     <ClCompile Include="src\Graphics\Initializer\ReinkanInstance.cpp" />

@@ -432,6 +432,9 @@ namespace Reinkan::Graphics
 
         std::vector<VkFramebuffer>      appScanlineFrameBuffers;
         std::vector<ImageWrap>          appScanlineImageWrap;
+        std::vector<ImageWrap>          appScanlinePositionImageWrap;
+        std::vector<ImageWrap>          appScanlineNormalImageWrap;
+        std::vector<ImageWrap>          appScanlineAlbedoImageWrap;
         std::vector<ImageWrap>          appScanlineDepthMapImageWraps;
 
         DescriptorWrap                  appPostDescriptorWrap;
@@ -512,7 +515,7 @@ namespace Reinkan::Graphics
 
         uint32_t    appDebugFlag{ 0x0 };
         float       appDebugFloat{ 10.0f };
-        float       appDebugFloat2{ 0.2f };
+        float       appDebugFloat2{ 1.0f };
         float       appDebugFloat3{ 0.1f };
         int         appDebugInt{ 0 };
 

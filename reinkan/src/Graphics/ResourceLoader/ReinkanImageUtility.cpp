@@ -152,6 +152,7 @@ namespace Reinkan::Graphics
         return imageView;
     }
 
+    // Could be share among many VkImages
     VkSampler ReinkanApp::CreateImageSampler()
     {
         VkSampler sampler;

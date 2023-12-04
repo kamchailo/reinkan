@@ -69,7 +69,10 @@ layout(location = 8) in mat3 TBNMatrix;
 // Shadow Map
 layout(location = 11) in vec4 shadowCoord;
 
-layout(location = 0) out vec4 outColor;
+// layout(location = 0) out vec4 outColor;
+layout (location = 0) out vec4 outPosition;
+layout (location = 1) out vec4 outNormal;
+layout (location = 2) out vec4 outAlbedo;
 
 // include BRDF calculation
 #include "brdf.glsl"
@@ -121,6 +124,20 @@ void main()
     {
         shadow = 1;
     }
+
+    float sceneDepth = length(viewDir);
+    outPosition = vec4(worldPos, sceneDepth);
+    outNormal = vec4(vertexNormal, 1.0);
+
+    vec4 diffuse = vec4(1, 0, 1, 1);
+    if(material.diffuseMapId != -1)
+    {
+        diffuse = texture(textureSamplers[material.diffuseMapId], fragTexCoord);
+    }
+
+    outAlbedo = vec4(diffuse.rgb, shadow);
+    return;
+
 
     // vec3 homogeniousShadowCoord = shadowCoord.xyz / shadowCoord.w;
     // outColor = vec4(shadowIndex,0, 1.0);
@@ -338,8 +355,10 @@ void main()
         }
     }
     
+    float depth = length(viewDir);
+
     // Final Color Result
-    outColor = vec4(brdfColor, 1.0);
+    //outColor = vec4(brdfColor, depth);
 
 
     ////////////////////////////////////////

@@ -41,7 +41,9 @@ void main()
     
     // lightShaft = sqrt(lightShaft);
     // outColor = vec4(colorPass.rgb + (colorPass.rgb * lightShaft * 10) + lightShaft, 1);
-    outColor = vec4(colorPass.rgb + lightShaft, 1);
+    vec3 dodgeLightShaft = colorPass.rgb * lightShaft;
+    outColor = vec4(colorPass.rgb + dodgeLightShaft + (lightShaft * 0.5), 1);
+    // outColor = vec4(colorPass.rgb + lightShaft, 1);
 
     // outColor = vec4(texture(positionMap, uv).w/1000);
 }

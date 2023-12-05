@@ -288,7 +288,7 @@ void main()
 
     // Main Directional Light
     vec3 L = normalize(ubo.globalLightPosition - worldPos);
-    float ambientLight = 0.03;
+    float ambientLight = 0.06;
     float intensity = 0.7;
     vec3 V = normalize(-viewDir);
     vec3 brdfColor = (ambientLight * material.diffuse) + shadow * intensity * EvalBrdf(N, L, V, material);

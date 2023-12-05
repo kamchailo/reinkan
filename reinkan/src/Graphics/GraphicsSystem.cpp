@@ -26,9 +26,20 @@ namespace Reinkan::Graphics
 
             //Reinkan::ModelData model;
             glm::mat4 modelTr = glm::mat4(1);
+            /*modelTr = glm::scale(modelTr, glm::vec3(0.3));
+            modelTr = glm::translate(modelTr, glm::vec3(18.0f, 18.0f, 1.5f));
+            modelTr = glm::rotate(modelTr, glm::radians(90.0f), glm::vec3(0,0,1));*/
+            ReadAssimpFile("../assets/models/wheel.obj",
+                modelTr,
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+
             modelTr = glm::scale(modelTr, glm::vec3(0.3));
-            modelTr = glm::translate(modelTr, glm::vec3(0.0, 2.0, 0.0));
-            ReadAssimpFile("../assets/models/simpleshape.obj",
+            modelTr = glm::translate(modelTr, glm::vec3(0.0f, 2.0f, 0.0f));
+
+            ReadAssimpFile("../assets/models/simpleShapesIco.obj",
                 modelTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),

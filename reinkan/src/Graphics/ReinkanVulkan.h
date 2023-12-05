@@ -432,7 +432,7 @@ namespace Reinkan::Graphics
 
         std::vector<VkFramebuffer>      appScanlineFrameBuffers;
         std::vector<ImageWrap>          appScanlineImageWrap;
-        std::vector<ImageWrap>          appScanlineDepthMapImageWraps;
+        std::vector<ImageWrap>          appScanlinePositionImageWraps;
 
         DescriptorWrap                  appPostDescriptorWrap;
 

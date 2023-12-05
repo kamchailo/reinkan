@@ -37,6 +37,7 @@ namespace Reinkan::Graphics
     void ReinkanApp::CreateScanlineFrameBuffers()
     {
         appScanlineImageWrap.resize(MAX_FRAMES_IN_FLIGHT);
+        appScanlinePositionImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
 
         for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
         {
@@ -60,24 +61,38 @@ namespace Reinkan::Graphics
 
             appScanlineImageWrap[i].imageView = CreateImageView(appScanlineImageWrap[i].image, appSwapchainImageFormat);
             appScanlineImageWrap[i].sampler = CreateImageSampler();
+
+
+            appScanlinePositionImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
+                appSwapchainExtent.height,
+                VK_FORMAT_R32G32B32A32_SFLOAT,                                        // Image Format
+                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
+                VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT                             // As a result for render
+                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
+                1,
+                appMsaaSamples);
+
+            TransitionImageLayout(appScanlinePositionImageWraps[i].image,
+                VK_FORMAT_R32G32B32A32_SFLOAT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_GENERAL);
+
+            appScanlinePositionImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+            appScanlinePositionImageWraps[i].imageView = CreateImageView(appScanlinePositionImageWraps[i].image, VK_FORMAT_R32G32B32A32_SFLOAT);
+            appScanlinePositionImageWraps[i].sampler = CreateNearestImageSampler();
         }
 
         appScanlineFrameBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            //std::array<VkImageView, 3> attachments = {
-            //    // Write to Scanline ImageWrap
-            //    // which will get read by post processing
-            //    appMsaaImageWrap.imageView,
-            //    appSwapchainDepthImageWrap.imageView,
-            //    appScanlineImageWrap[i].imageView
-            //};
 
-            std::array<VkImageView, 2> attachments = {
-                // Write to Scanline ImageWrap
-                // which will get read by post processing
+            std::array<VkImageView, 3> attachments = {
                 appScanlineImageWrap[i].imageView,
+                appScanlinePositionImageWraps[i].imageView,
                 appSwapchainDepthImageWrap.imageView
             };
 
@@ -94,35 +109,6 @@ namespace Reinkan::Graphics
             {
                 throw std::runtime_error("failed to create framebuffer!");
             }
-        }
-    }
-
-    void ReinkanApp::CreateScanlineDepthMap()
-    {
-        appScanlineDepthMapImageWraps.resize(MAX_FRAMES_IN_FLIGHT);
-
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
-        {
-            appScanlineDepthMapImageWraps[i] = CreateImageWrap(appSwapchainExtent.width,
-                appSwapchainExtent.height,
-                VK_FORMAT_R32G32B32_SFLOAT,                                        // Image Format
-                VK_IMAGE_TILING_OPTIMAL,                                        // Image Tilling
-                VK_IMAGE_USAGE_STORAGE_BIT                             // As a result for render
-                | VK_IMAGE_USAGE_TRANSFER_DST_BIT
-                | VK_IMAGE_USAGE_SAMPLED_BIT,                                   // Image Usage
-                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,                            // Memory Property
-                1,
-                appMsaaSamples);
-
-            TransitionImageLayout(appScanlineDepthMapImageWraps[i].image,
-                VK_FORMAT_R32G32B32_SFLOAT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_GENERAL);
-
-            appScanlineDepthMapImageWraps[i].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-
-            appScanlineDepthMapImageWraps[i].imageView = CreateImageView(appScanlineDepthMapImageWraps[i].image, VK_FORMAT_R32G32B32_SFLOAT);
-            appScanlineDepthMapImageWraps[i].sampler = CreateImageSampler();
         }
     }
 

@@ -15,6 +15,8 @@ layout(binding = 1) uniform sampler2D shadowMap;
 
 layout(binding = 2) uniform sampler2D vlightMap;
 
+layout(binding = 3) uniform sampler2D positionMap;
+
 void main()
 {
     vec2 uv = gl_FragCoord.xy/pushConstant.screenExtent;
@@ -40,4 +42,6 @@ void main()
     // lightShaft = sqrt(lightShaft);
     // outColor = vec4(colorPass.rgb + (colorPass.rgb * lightShaft * 10) + lightShaft, 1);
     outColor = vec4(colorPass.rgb + lightShaft, 1);
+
+    // outColor = vec4(texture(positionMap, uv).w/1000);
 }

@@ -183,11 +183,13 @@ namespace Reinkan::Graphics
 
         // Rebind Descriptor for VLight
         appVLightDescriptorWrap.Write(appDevice, 1, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
+        appVLightDescriptorWrap.Write(appDevice, 2, appScanlinePositionImageWraps, MAX_FRAMES_IN_FLIGHT);
 
         // Rebind Descriptor for Post Processing
         appPostDescriptorWrap.Write(appDevice, 0, appScanlineImageWrap, MAX_FRAMES_IN_FLIGHT);
         appPostDescriptorWrap.Write(appDevice, 1, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
         appPostDescriptorWrap.Write(appDevice, 2, appVLightingRenderTargetImageWraps, MAX_FRAMES_IN_FLIGHT);
+        appPostDescriptorWrap.Write(appDevice, 3, appScanlinePositionImageWraps, MAX_FRAMES_IN_FLIGHT);
 
     }
 
@@ -213,6 +215,8 @@ namespace Reinkan::Graphics
         {
             // Scanline ImageWrap
             appScanlineImageWrap[i].Destroy(appDevice);
+            // ScanlinePosition ImageWrap
+            appScanlinePositionImageWraps[i].Destroy(appDevice);
             // Scanline FrameBuffers
             vkDestroyFramebuffer(appDevice, appScanlineFrameBuffers[i], nullptr);
 
@@ -226,6 +230,7 @@ namespace Reinkan::Graphics
         }
 
         appScanlineImageWrap.clear();
+        appScanlinePositionImageWraps.clear();
         appShadowMapImageWraps.clear();
         appVLightingRenderTargetImageWraps.clear();
     }

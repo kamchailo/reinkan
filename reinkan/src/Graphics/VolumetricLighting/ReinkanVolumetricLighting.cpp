@@ -94,13 +94,13 @@ namespace Reinkan::Graphics
                                       MAX_FRAMES_IN_FLIGHT,                                         // descriptorCount; // Has to > 0
                                       VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
 
-        // SceneDepthMapWrap
+        // ScanlineImageWrap
         bindingTable.emplace_back(VkDescriptorSetLayoutBinding{
-                                      bindingIndex++, // 2                                              // binding;
+                                      bindingIndex++, // 1                                              // binding;
                                       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,                    // descriptorType;
-                                      1,                                         // descriptorCount; // Has to > 0
-                                      VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
-        
+                                      MAX_FRAMES_IN_FLIGHT,                                         // descriptorCount; // Has to > 0
+                                      VK_SHADER_STAGE_FRAGMENT_BIT }); // stageFlags;
+
         appVLightDescriptorWrap.SetBindings(appDevice,
             bindingTable,
             MAX_FRAMES_IN_FLIGHT);
@@ -109,8 +109,7 @@ namespace Reinkan::Graphics
 
         appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appScanlineUBO);
         appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appShadowMapImageWraps, MAX_FRAMES_IN_FLIGHT);
-        appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appSwapchainDepthImageWrap, MAX_FRAMES_IN_FLIGHT);
-        //appVLightDescriptorWrap.WriteFromFrameBuffer(appDevice, bindingIndex++, appSwapchainDepthImageWrap);
+        appVLightDescriptorWrap.Write(appDevice, bindingIndex++, appScanlinePositionImageWraps, MAX_FRAMES_IN_FLIGHT);
     }
 
 	void ReinkanApp::CreateVLightPipeline(DescriptorWrap descriptorWrap)

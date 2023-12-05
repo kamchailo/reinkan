@@ -67,7 +67,7 @@ namespace Reinkan::Graphics
         ImGui_ImplGlfw_InitForVulkan(appWindow, true);
 
 
-        ImGui_ImplVulkan_Init(&init_info, appScanlineRenderPass);
+        ImGui_ImplVulkan_Init(&init_info, appPostRenderPass);
 
         // Upload Fonts
         VkCommandBuffer cmdbuf = BeginTempCommandBuffer();

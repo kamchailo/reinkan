@@ -106,7 +106,7 @@ void main()
     int shadow = 0;
     vec2 shadowIndex = shadowCoord.xy/shadowCoord.w;
     float lightDepth = texture(shadowmap, shadowIndex).w;
-    float pixelDepth = shadowCoord.w - 0.005;
+    float pixelDepth = shadowCoord.w - 0.01;
 
     if(shadowCoord.w > 0 && 
         shadowIndex.x >= 0 && shadowIndex.x <= 1 &&

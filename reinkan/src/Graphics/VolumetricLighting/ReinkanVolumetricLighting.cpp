@@ -160,7 +160,6 @@ namespace Reinkan::Graphics
         rasterizer.depthClampEnable = VK_FALSE;
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-        //rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_NONE;
         rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -169,7 +168,6 @@ namespace Reinkan::Graphics
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = VK_FALSE    ; // enable sample shading in the pipeline
-        //multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.minSampleShading = 0.2f; // min fraction for sample shading; closer to one is smoother
         multisampling.rasterizationSamples = appMsaaSamples;
 

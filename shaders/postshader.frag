@@ -1,6 +1,7 @@
 #version 450
 
 #include "SharedStruct.glsl"
+#include "vibrance.glsl"
 
 layout(push_constant) uniform PushConstantRaster_T
 {
@@ -35,15 +36,10 @@ void main()
         outColor = vec4(texture(vlightMap, uv).rgb, 1);
         return;
     }
-
     vec3 lightShaft = texture(vlightMap, uv).rgb * pushConstant.debugFloat2;
-    // float value = max(lightShaft.r, max(lightShaft.g, lightShaft.b));
-    
-    // lightShaft = sqrt(lightShaft);
-    // outColor = vec4(colorPass.rgb + (colorPass.rgb * lightShaft * 10) + lightShaft, 1);
-    vec3 dodgeLightShaft = colorPass.rgb * lightShaft;
-    outColor = vec4(colorPass.rgb + dodgeLightShaft + (lightShaft * 0.5), 1);
-    // outColor = vec4(colorPass.rgb + lightShaft, 1);
 
-    // outColor = vec4(texture(positionMap, uv).w/1000);
+    vec3 dodgeLightShaft = colorPass.rgb * lightShaft;
+    outColor = vec4(colorPass.rgb + dodgeLightShaft + (lightShaft * 0.3), 1);
+    // vec3 vibranceShaft = max(vec3(0.0), vibrance(vec4(lightShaft,1.0), 5).rgb);
+    // outColor = vec4(colorPass.rgb + vibranceShaft, 1);
 }

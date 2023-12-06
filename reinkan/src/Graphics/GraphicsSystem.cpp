@@ -25,15 +25,28 @@ namespace Reinkan::Graphics
             std::vector<ModelData> modelDatas;
 
             //Reinkan::ModelData model;
-            /*
-            ReadAssimpFile("../assets/models/simpleshape.obj",
-                glm::mat4(1.0),
+            glm::mat4 modelTr = glm::mat4(1);
+            /*modelTr = glm::scale(modelTr, glm::vec3(0.3));
+            modelTr = glm::translate(modelTr, glm::vec3(18.0f, 18.0f, 1.5f));
+            modelTr = glm::rotate(modelTr, glm::radians(90.0f), glm::vec3(0,0,1));*/
+            ReadAssimpFile("../assets/models/wheel.obj",
+                modelTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-            
 
+            modelTr = glm::scale(modelTr, glm::vec3(0.3));
+            modelTr = glm::translate(modelTr, glm::vec3(0.0f, 2.0f, 0.0f));
+
+            ReadAssimpFile("../assets/models/simpleShapesIco.obj",
+                modelTr,
+                modelDatas,
+                vulkanApp->GetAppMaterialPool(),
+                vulkanApp->GetAppTexturePool(),
+                vulkanApp->GetAppMaterialPool().size());
+            /*
+            
             //ModelData vampire;
             ReadAssimpFile("../assets/models/dancing_vampire.dae",
                 glm::mat4(1.0),
@@ -41,7 +54,6 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-
 
             glm::mat4 modelTr = glm::translate(glm::mat4(1), glm::vec3(0.0, 0.0, 0.0));
             //ModelData walking;
@@ -52,7 +64,6 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
             
-            */
             glm::mat4 planeTr = glm::mat4(1);
             planeTr = glm::scale(planeTr, glm::vec3(0.3));
             planeTr = glm::translate(planeTr, glm::vec3(0.0, 2.0, 0.0));
@@ -64,13 +75,14 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
 
-            planeTr = glm::translate(planeTr, glm::vec3(3.0, 1.0, 1.0));
+            planeTr = glm::translate(planeTr, glm::vec3(2.0, 1.0, 1.0));
             ReadAssimpFile("../assets/models/plane.obj",
                 planeTr,
                 modelDatas,
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
+            */
 
             //ModelData sponza;
             ReadAssimpFile("../assets/models/sponza.obj",
@@ -79,15 +91,11 @@ namespace Reinkan::Graphics
                 vulkanApp->GetAppMaterialPool(),
                 vulkanApp->GetAppTexturePool(),
                 vulkanApp->GetAppMaterialPool().size());
-            /*
  
-            */
-
             for (int i = 0; i < modelDatas.size(); ++i)
             {
                 vulkanApp->LoadModel(modelDatas[i], glm::mat4(1.0f));
             }
-
 
             // Lights
             vulkanApp->AppendLight({ glm::vec3(-1.0, 2.0, 0.0), glm::vec3(1.0,0.0,0.0), 2.0, 1.0 });

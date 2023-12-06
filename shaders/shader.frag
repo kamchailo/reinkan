@@ -70,6 +70,7 @@ layout(location = 8) in mat3 TBNMatrix;
 layout(location = 11) in vec4 shadowCoord;
 
 layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 outPosition;
 
 // include BRDF calculation
 #include "brdf.glsl"
@@ -105,7 +106,7 @@ void main()
     int shadow = 0;
     vec2 shadowIndex = shadowCoord.xy/shadowCoord.w;
     float lightDepth = texture(shadowmap, shadowIndex).w;
-    float pixelDepth = shadowCoord.w - 0.005;
+    float pixelDepth = shadowCoord.w - 0.01;
 
     if(shadowCoord.w > 0 && 
         shadowIndex.x >= 0 && shadowIndex.x <= 1 &&
@@ -116,6 +117,10 @@ void main()
             shadow = 1;
         }
     }
+
+    // Write worldPosition and depth to the outPosition attachment
+    float sceneDepth = length(viewDir);
+    outPosition = vec4(worldPos, sceneDepth);
 
     if((pushConstant.debugFlag & 0x8) > 0)
     {
@@ -283,9 +288,9 @@ void main()
 
     // Main Directional Light
     vec3 L = normalize(ubo.globalLightPosition - worldPos);
-    float ambientLight = 0.03;
+    float ambientLight = 0.06;
     float intensity = 0.7;
-    vec3 V = normalize(viewDir);
+    vec3 V = normalize(-viewDir);
     vec3 brdfColor = (ambientLight * material.diffuse) + shadow * intensity * EvalBrdf(N, L, V, material);
     
     ////////////////////////////////////////

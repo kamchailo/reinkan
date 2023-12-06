@@ -352,7 +352,7 @@ namespace Reinkan::Graphics
             barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // To transfer queue family ownership
             barrier.image = image;
 
-            if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) 
+            if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL || format == FindDepthFormat())
             {
                 barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 

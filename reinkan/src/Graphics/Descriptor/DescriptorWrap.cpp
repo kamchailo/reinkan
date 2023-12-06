@@ -3,6 +3,8 @@
 
 #include <assert.h>
 
+#include "Graphics/Constant/CoreConstant.h"
+
 namespace Reinkan::Graphics
 {
 	void DescriptorWrap::SetBindings(const VkDevice device, std::vector<VkDescriptorSetLayoutBinding> bindings, const uint32_t maxSets)
@@ -150,12 +152,36 @@ namespace Reinkan::Graphics
                                    nullptr);
         }
     }
-    
 
-    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const VkDescriptorImageInfo& textureDesc)
+    void DescriptorWrap::Write(VkDevice& device, uint32_t index, const ImageWrap& texture, uint32_t maxSets)
     {
-        // Write only one texture
-        // Has no used at this moment
+        VkDescriptorImageInfo textureImageInfo = texture.GetDescriptorImageInfo();
+
+        // In Scanline Buffer maxSets is MAX_FRAME_IN_FLIGHT
+        for (size_t i = 0; i < maxSets; i++)
+        {
+            VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            descriptorWrite.dstSet = this->descriptorSets[i];
+            descriptorWrite.dstBinding = index;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.descriptorType = bindingTable[index].descriptorType;
+            descriptorWrite.pImageInfo = &textureImageInfo;
+
+            assert(bindingTable[index].binding == index);
+
+            assert(descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
+
+            vkUpdateDescriptorSets(device,
+                1,
+                &descriptorWrite,
+                0,
+                nullptr);
+        }
     }
 
     void DescriptorWrap::Write(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures, const uint32_t maxSets)
@@ -191,5 +217,80 @@ namespace Reinkan::Graphics
         }
     }
 
+    /// <summary>
+    /// Write From FrameBuffers
+    /// </summary>
+    /// <param name="device"></param>
+    /// <param name="index"></param>
+    /// <param name="textures"></param>
+    void DescriptorWrap::WriteFromFrameBuffers(VkDevice& device, uint32_t index, const std::vector<ImageWrap>& textures)
+    {
+        assert(textures.size() == MAX_FRAMES_IN_FLIGHT, "Frame Buffers target has size != MAX_FRAMES_IN_FLIGHT");
+
+        std::vector<VkDescriptorImageInfo> des;
+        for (auto& texture : textures)
+            des.emplace_back(texture.GetDescriptorImageInfo());
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            descriptorWrite.dstSet = this->descriptorSets[i];
+            descriptorWrite.dstBinding = index;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.descriptorType = bindingTable[index].descriptorType;
+            descriptorWrite.pImageInfo = &des[i];
+
+            assert(bindingTable[index].binding == index);
+
+            assert(descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
+
+            vkUpdateDescriptorSets(device,
+                1,
+                &descriptorWrite,
+                0,
+                nullptr);
+        }
+    }
+
+    /// <summary>
+    /// Write from single Frame Buffer
+    /// </summary>
+    /// <param name="device"></param>
+    /// <param name="index"></param>
+    /// <param name="texture"></param>
+    void DescriptorWrap::WriteFromFrameBuffer(VkDevice& device, uint32_t index, const ImageWrap& texture)
+    {
+        VkDescriptorImageInfo textureImageInfo = texture.GetDescriptorImageInfo();
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+            descriptorWrite.dstSet = this->descriptorSets[i];
+            descriptorWrite.dstBinding = index;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.descriptorType = bindingTable[index].descriptorType;
+            descriptorWrite.pImageInfo = &textureImageInfo;
+
+            assert(bindingTable[index].binding == index);
+
+            assert(descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+                descriptorWrite.descriptorType == VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT);
+
+            vkUpdateDescriptorSets(device,
+                1,
+                &descriptorWrite,
+                0,
+                nullptr);
+        }
+    }
 }
 

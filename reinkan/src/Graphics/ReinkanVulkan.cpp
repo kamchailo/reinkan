@@ -56,6 +56,8 @@ namespace Reinkan::Graphics
 		
 		CreateScanlineFrameBuffers();
 
+		//CreateScanlineDepthMap();
+
 		CreateShadowFrameBuffers();
 
 		CreateVLightFrameBuffers();

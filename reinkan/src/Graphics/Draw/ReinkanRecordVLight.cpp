@@ -13,9 +13,9 @@ namespace Reinkan::Graphics
         renderPassBeginInfo.renderArea.extent = appSwapchainExtent;
 
         // Order match attachments
-        std::array<VkClearValue, 2> clearValues{};
+        std::array<VkClearValue, 1> clearValues{};
         clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-        clearValues[1].depthStencil = { 1.0f, 0 };
+        //clearValues[1].depthStencil = { 1.0f, 0 };
 
         renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
         renderPassBeginInfo.pClearValues = clearValues.data();
@@ -49,7 +49,7 @@ namespace Reinkan::Graphics
             PushConstantVLight pushConstant{};
 
             pushConstant.lightPosition = glm::vec4(appGlobalLightPosition, 1.0);
-            pushConstant.lightConstant = glm::vec4(1, 1, 1, 1);
+            pushConstant.lightConstant = glm::vec4(1, 0.9, 0.5, 1);
             pushConstant.cameraPosition = glm::vec4(appMainCamera->GetPosition(), 1.0);
             pushConstant.shadowMapExtent = glm::vec2(appShadowMapWidth, appShadowMapHeight);
 

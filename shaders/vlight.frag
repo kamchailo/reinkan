@@ -25,23 +25,13 @@ void main()
     vec4 shaftColor = pushConstant.lightConstant;
     float shaftDistance = length(pushConstant.cameraPosition.xyz - worldPos);
 
-    // float shaftDistance = gl_FragCoord.z;
-    
     vec2 uv = gl_FragCoord.xy / ubo.screenExtent;
 
     float bias = 0.1;
     vec3 scenePos = texture(depthmap, uv).rgb;
     float sceneDepth = length(pushConstant.cameraPosition.xyz - scenePos);;
 
-    // outColor = vec4(scenePos, 1.0);
-    // return;
-
-    // float sceneDepth = texture(depthmap, gl_FragCoord.xy).w + bias;
     float cullDistance = min(shaftDistance, sceneDepth);
-
-    // outColor = vec4(vec3(sceneDepth),1.0);
-    // return;
-
 
     int facing = 1;
 
@@ -49,13 +39,6 @@ void main()
     {
         facing = -1;
     }
-
-    // if(gl_FragCoord.z > 1 )
-    // {
-        // outColor = vec4(1,0,0,1);
-    // }
-        // outColor = vec4(vec3(cullDistance / 1000),1);
-        // return;
     
     float scale = 0.5;
     outColor = facing * cullDistance * shaftColor * scale;
